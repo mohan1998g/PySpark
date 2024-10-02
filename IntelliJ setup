@@ -1,0 +1,22 @@
+Firstly install Java 8 version in the laptop
+
+Next, install Python 3.10.11. At the time of writing this document, python 3.11 and 3.12 have many issues with Pyspark execution
+
+Now install IntelliJ Community edition and give the below starter code
+
+import sys
+from pyspark import SparkConf, SparkContext
+from pyspark.sql import *
+import os
+from pyspark.sql.functions import *
+
+# ======================================================================================
+python_path = sys.executable
+os.environ['PYSPARK_PYTHON'] = python_path
+os.environ['JAVA_HOME'] = r'Java path'
+conf = SparkConf().setAppName("pyspark").setMaster("local[*]").set("spark.driver.host", "localhost").set("spark.default.parallelism", "1")
+sc = SparkContext(conf=conf)
+spark = SparkSession.builder.getOrCreate()
+
+# ======================================================================================
+
