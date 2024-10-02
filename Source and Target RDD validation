@@ -1,0 +1,34 @@
+from pyspark import SparkConf
+from pyspark.sql import SparkSession
+import os
+from pyspark.sql.functions import *
+
+# ======================================================================================
+python_path = sys.executable
+os.environ['PYSPARK_PYTHON'] = python_path
+os.environ['JAVA_HOME'] = r'C:\Users\subhash_narkedamilli\.jdks\corretto-1.8.0_392'
+conf = (SparkConf().setAppName("pyspark").setMaster("local[*]")
+        .set("spark.driver.host", "localhost").set("spark.default.parallelism", "1"))
+sc = SparkContext(conf=conf)
+spark = SparkSession.builder.getOrCreate()
+
+# ======================================================================================
+
+source_rdd = spark.sparkContext.parallelize([(1, 'A'), (2, 'B'), (3, 'C'), (4, 'D')])
+target_rdd = spark.sparkContext.parallelize([(1, 'A'), (2, 'B'), (4, 'X'), (5, 'D')])
+
+sdf = source_rdd.toDF(["id", "name"])
+tdf = target_rdd.toDF(["id", "name1"])
+
+sdf.show()
+tdf.show()
+
+fulljoin = sdf.join(tdf, ["id"], "full")
+fulljoin.show()
+
+output = (fulljoin.withColumn("comment", expr("case when name=name1 then 'matched' "
+                                              "when name is null then 'New in target' "
+                                              "when name1 is null then 'new in source' else 'mismatched' end"))
+          .filter("comment != 'matched'").drop("name", "name1"))
+
+output.show()
