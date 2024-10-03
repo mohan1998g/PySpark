@@ -20,7 +20,10 @@ df_pyspark.show()
 
 df = df_pyspark.withColumn("new", regexp_replace(df_pyspark.name, r'-',' ')).withColumn("split", split("new", ' '))
 df.show()
+
 # df_pyspark.name == "name" == col("name") all are same
+# split return array of seperate strings
+
 final = df.withColumn("first name", expr("split[0]")).withColumn("last name", expr("split[1]")).drop("name", "new", "split")
 final.show()
 
