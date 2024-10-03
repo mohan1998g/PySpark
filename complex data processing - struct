@@ -1,0 +1,82 @@
+data = """
+{
+    "id": 2,
+    "trainer": "Sai",
+    "zeyoaddress": {
+            "permanentAddress": "Hyderabad",
+            "temporaryAddress": "Chennai"
+    }
+}
+"""
+df = spark.read.json(sc.parallelize([data], 1))
+df.show()
+df.printSchema()
+
+data1 = """
+{
+    "id": 2,
+    "trainer": "Sai",
+    "zeyoaddress": {
+        "user": {
+            "permanentAddress": "Hyderabad",
+            "temporaryAddress": "Chennai"
+        }
+    }
+}
+"""
+df = spark.read.json(sc.parallelize([data1], 1))
+df.show()
+df.printSchema()
+
+flattendf = df.selectExpr(
+    "id",
+    "trainer",
+    "zeyoaddress.user.permanentAddress",
+    "zeyoaddress.user.temporaryAddress",
+)
+
+flattendf.show()
+flattendf.printSchema()
+
+df = spark.read.json(sc.parallelize([data], 1))
+df.show()
+df.printSchema()
+
+
+data = """
+
+{
+    "id": 2,
+    "trainer": "Sai",
+    "zeyoaddress": {
+        "user": {
+            "permanentAddress": "Hyderabad",
+            "temporaryAddress": "Chennai",
+            "postAddress": {
+                "doorno": 14,
+                "street": "sriram nagar"
+            }
+        }
+    }
+}
+
+"""
+df = spark.read.json(sc.parallelize([data], 1))
+df.show()
+df.printSchema()
+
+
+flattendf = df.selectExpr(
+
+    "id",
+    "trainer",
+    "zeyoaddress.user.permanentAddress",
+    "zeyoaddress.user.postAddress.doorno",
+    "zeyoaddress.user.postAddress.street",
+    "zeyoaddress.user.temporaryAddress"
+
+)
+
+flattendf.show()
+
+flattendf.printSchema()
