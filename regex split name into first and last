@@ -1,0 +1,40 @@
+data=[(1,"Sagar-Prajapati"),(2,"Alex-John"),(3,"John Cena"),(4,"Kim Joe")]
+schema="ID int,Name string"
+df=spark.createDataFrame(data,schema)
+df.show()
+
+df2 = df.withColumn("new", regexp_replace("name", '-', ' ')).drop("ID")
+df2.show()
+
+df3 = df2.withColumn("split", split("new", ' '))
+df3.show()
+
+final = df3.withColumn("first name", expr("split[0]")).withColumn("last name", expr("split[1]")).select("first name", "last name")
+final.show()
+
++---------------+---------------+
+|           Name|            new|
++---------------+---------------+
+|Sagar-Prajapati|Sagar Prajapati|
+|      Alex-John|      Alex John|
+|      John Cena|      John Cena|
+|        Kim Joe|        Kim Joe|
++---------------+---------------+
+
++---------------+---------------+------------------+
+|           Name|            new|             split|
++---------------+---------------+------------------+
+|Sagar-Prajapati|Sagar Prajapati|[Sagar, Prajapati]|
+|      Alex-John|      Alex John|      [Alex, John]|
+|      John Cena|      John Cena|      [John, Cena]|
+|        Kim Joe|        Kim Joe|        [Kim, Joe]|
++---------------+---------------+------------------+
+
++----------+---------+
+|first name|last name|
++----------+---------+
+|     Sagar|Prajapati|
+|      Alex|     John|
+|      John|     Cena|
+|       Kim|      Joe|
++----------+---------+
