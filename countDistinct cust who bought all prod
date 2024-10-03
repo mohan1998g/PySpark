@@ -1,0 +1,50 @@
+# We need to find out all the custid's who bought all the prodids
+
+# Define the schema for the DataFrame
+schema = StructType([
+        StructField("custid", IntegerType(), True),
+        StructField("prodid", IntegerType(), True)
+])
+
+# Data for the table
+data = [
+        (1, 5),
+        (2, 6),
+        (3, 5),
+        (3, 6),
+        (1, 6)
+]
+
+# Create the DataFrame
+df1 = spark.createDataFrame(data, schema=schema)
+
+# Show the DataFrame
+df1.show()
+
+
+custdist = df1.groupby("custid").agg(countDistinct("prodid").alias("count"))
+custdist.show()
+
+schema = StructType([
+        StructField("prodid", IntegerType(), True)
+])
+
+
+# Data for the prodid column
+data2 = [
+        (5,),
+        (6,)
+]
+
+# Create the DataFrame
+df2 = spark.createDataFrame(data2, schema=schema)
+
+# Show the DataFrame
+df2.show()
+
+# Finding the distinct prodids
+distprodid = df2.agg(countDistinct("prodid").alias("count"))
+distprodid.show()
+
+df = custdist.join(distprodid, "count", "inner").drop("count")
+df.show()
