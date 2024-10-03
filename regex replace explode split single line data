@@ -1,0 +1,27 @@
+When the entire data is a long string such as
+
+data = "A-24-TV-B-25-FRIDGE-C-26-AC-D-40-FAN"
+
+Here the data is repeating, so we need to seperate as rows
+
+The regex for this is
+
+        .*?\\| = .*?\|
+        .*?\\- = .*?\-
+
+The last character in aboue regex is based on the string
+
+\ ----> is used in regex tools
+\\ ---> is ised in string literals and languages
+
+$0- or $0, -----  $0  -->  represents the entire string that matches the regex. When we give this, we are appending - or , to the matched string, without replacing it
+
+If we give only - or, without $0, entire string will be deleted
+
+replacedf = df.withColumn("new", regexp_replace("value", '(.*?\\-){n})', "$0,"))
+
+explodedf = replacedf.withColumn("explode", explode(split(replacedf.new, '-,')))
+
+splitdf = explodedf.withColumn("col name", split(explodedf.explode, '-')[0])
+
+# write the with column for as many columns required
