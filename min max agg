@@ -1,0 +1,48 @@
+data=[('Genece' , 2 , 75000),
+      ('𝗝𝗮𝗶𝗺𝗶𝗻' , 2 , 80000 ),
+      ('𝗣𝗮𝗻𝗸𝗮𝗷' , 2 , 80000 ),
+      ('Tarvares' , 2 , 70000),
+      ('Marlania' , 4 , 70000),
+      ('Briana' , 4 , 85000),
+      ('𝗞𝗶𝗺𝗯𝗲𝗿𝗹𝗶' , 4 , 55000),
+      ('𝗚𝗮𝗯𝗿𝗶𝗲𝗹𝗹𝗮' , 4 , 55000),
+      ('Lakken', 5, 60000),
+      ('Latoynia' , 5 , 65000) ]
+schema="emp_name string,dept_id int,salary int"
+df=spark.createDataFrame(data,schema)
+
+df.show(truncate=False)
+
+minsalary = df.groupby("dept_id").agg(min("salary").alias("min salary"))
+minsalary.show()
+
+maxsalary = df.groupby("dept_id").agg(max("salary").alias("max salary"))
+maxsalary.show()
+
+minmax = df.groupby("dept_id").agg(min("salary").alias("min salary"),
+                                   max("salary").alias("max salary"))
+minmax.show()
+
++-------+----------+
+|dept_id|min salary|
++-------+----------+
+|      5|     60000|
+|      4|     55000|
+|      2|     70000|
++-------+----------+
+
++-------+----------+
+|dept_id|max salary|
++-------+----------+
+|      5|     65000|
+|      4|     85000|
+|      2|     80000|
++-------+----------+
+
++-------+----------+----------+
+|dept_id|min salary|max salary|
++-------+----------+----------+
+|      5|     60000|     65000|
+|      4|     55000|     85000|
+|      2|     70000|     80000|
++-------+----------+----------+
