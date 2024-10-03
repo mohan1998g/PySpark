@@ -1,0 +1,60 @@
+# Define the schema for the DataFrame
+schema = StructType([
+        StructField("id", IntegerType(), True),
+        StructField("name", StringType(), True),
+        StructField("age", IntegerType(), True),
+        StructField("marks", StringType(), True)
+])
+
+# Data from the table
+data = [
+        (1, "A", 20, "90|92|96"),
+        (2, "B", 21, "100|96|95"),
+        (3, "C", 22, "89|60|90"),
+        (4, "B", 23, "70|78|80")
+]
+
+# Create a PySpark DataFrame
+df_pyspark = spark.createDataFrame(data, schema=schema)
+
+# Show the DataFrame
+df_pyspark.show()
+
+# dividing the columns to multiple columns
+
+df_split = (df_pyspark.withColumn("phy", split(col("marks"), "\\|")[0])
+      .withColumn("Chem", split(df_pyspark.marks, "\\|")[1])
+      .withColumn("Mat", split(df_pyspark["marks"], "\\|")[2])
+      .drop("marks"))
+df_split.show()
+
+# exploding the marks column
+
+df_explode = df_pyspark.select("id", "name", "age", explode(split(df_pyspark.marks, "\\|")))
+df_explode.show()
+
++---+----+---+---+----+---+
+| id|name|age|phy|Chem|Mat|
++---+----+---+---+----+---+
+|  1|   A| 20| 90|  92| 96|
+|  2|   B| 21|100|  96| 95|
+|  3|   C| 22| 89|  60| 90|
+|  4|   B| 23| 70|  78| 80|
++---+----+---+---+----+---+
+
++---+----+---+---+
+| id|name|age|col|
++---+----+---+---+
+|  1|   A| 20| 90|
+|  1|   A| 20| 92|
+|  1|   A| 20| 96|
+|  2|   B| 21|100|
+|  2|   B| 21| 96|
+|  2|   B| 21| 95|
+|  3|   C| 22| 89|
+|  3|   C| 22| 60|
+|  3|   C| 22| 90|
+|  4|   B| 23| 70|
+|  4|   B| 23| 78|
+|  4|   B| 23| 80|
++---+----+---+---+
