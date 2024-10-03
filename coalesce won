@@ -1,0 +1,39 @@
+data = [('A', 'D', 'A'), ('B', 'A', 'A'), ('A', 'D', 'D')]
+
+df = spark.createDataFrame(data).toDF("TeamA", "TeamB", "Won")
+
+allteam = (df.select("TeamA").union(df.select("TeamB"))
+           .distinct().withColumnRenamed("TeamA", "Team Name"))
+
+allteam.show()
+
+won = df.groupby("Won").agg(count("won").alias("countwon")).withColumnRenamed("won", "Team Name")
+
+won.show()
+
+joindf = allteam.join(won, "Team Name", "left").withColumn("countwon", expr("coalesce(countwon, 0)")).withColumnRenamed("count won", "won")
+
+joindf.show()
+
++---------+
+|Team Name|
++---------+
+|        B|
+|        A|
+|        D|
++---------+
+
++---------+--------+
+|Team Name|countwon|
++---------+--------+
+|        D|       1|
+|        A|       2|
++---------+--------+
+
++---------+--------+
+|Team Name|countwon|
++---------+--------+
+|        B|       0|
+|        A|       2|
+|        D|       1|
++---------+--------+
