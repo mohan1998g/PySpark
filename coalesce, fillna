@@ -1,0 +1,50 @@
+data1 = [(1, 'Henry'), (2, 'Smith'), (3, "Hall")]
+data2 = [(1,100),(2,500), (4,1000)]
+
+columns1 = ["id", "name"]
+columns2 = ["id","salary"]
+
+namedf = spark.createDataFrame(data1, columns1)
+salarydf = spark.createDataFrame(data2, columns2)
+
+namedf.show()
+salarydf.show()
+
+joined = (namedf.join(salarydf, ["id"], "left")
+          .withColumn("salary", expr("coalesce(salary,0)")))
+joined.show()
+
+namedf.join(salarydf, ["id"], "left").fillna(0).show()
+
++---+-----+
+| id| name|
++---+-----+
+|  1|Henry|
+|  2|Smith|
+|  3| Hall|
++---+-----+
+
++---+------+
+| id|salary|
++---+------+
+|  1|   100|
+|  2|   500|
+|  4|  1000|
++---+------+
+
++---+-----+------+
+| id| name|salary|
++---+-----+------+
+|  1|Henry|   100|
+|  3| Hall|     0|
+|  2|Smith|   500|
++---+-----+------+
+
++---+-----+------+
+| id| name|salary|
++---+-----+------+
+|  1|Henry|   100|
+|  3| Hall|     0|
+|  2|Smith|   500|
++---+-----+------+
+
