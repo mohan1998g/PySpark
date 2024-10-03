@@ -1,0 +1,30 @@
+data = [(4001, 17), (4002, 45), (4003, 65), (4004, 30), (4005, 80)]
+
+schema = ["userid", "age"]
+
+df = spark.createDataFrame(data, schema)
+
+df.show()
+
+# Valid When Otherwise syntaxes are
+
+agegroup = df.withColumn("age group", when(df['age'] < 18, 'Youth')
+                         .when(df['age']>= 60, 'Senior').otherwise(("adult")))
+
+agegroup.show()
+
+agegroup1 = df.withColumn("age group", when(col('age') < 18, 'Youth')
+                          .when(col('age')>= 60, 'Senior').otherwise(("adult")))
+agegroup1.show()
+
+# Invalid When Otherwise syntaxes are
+
+# agegroup1 = df.withColumn("age group", when('age' < 18, 'Youth')
+#                           .when('age'>= 60, 'Senior').otherwise(("adult")))
+
+# The error is '<' not supported between instances of 'str' and 'int'
+
+# agegroup1 = df.withColumn("age group", when("'age' < 18", 'Youth')
+#                           .when("'age'>= 60", 'Senior').otherwise(("adult")))
+#
+# The error is [NOT_COLUMN] Argument `condition` should be a Column, got str.
