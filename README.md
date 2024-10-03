@@ -1,7 +1,7 @@
 # PySpark
 All I know about PySpark
 
-For all the code executions above, the one time code is
+For all the code executions above, Please put the below code at the begining
 
 import sys
 from pyspark import SparkConf, SparkContext
