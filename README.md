@@ -15,3 +15,10 @@ os.environ['JAVA_HOME'] = r'Java path' # Please write the java path here as per 
 conf = SparkConf().setAppName("pyspark").setMaster("local[*]").set("spark.driver.host", "localhost").set("spark.default.parallelism", "1")
 sc = SparkContext(conf=conf)
 spark = SparkSession.builder.getOrCreate()
+
+If you truly want to learn Big data tools like Hadoop, Sqoop, Hive, Spark and Cloud counterparts of them. Please ping me on whatsapp 9490716829. I will refer you a great course
+Course highlights
+1. 5 months
+2. only on saturday and sunday(3 hours per day)(online 3.5 hours per day)
+3. Fee is 14000 or 18000 INR
+4. The biggest difficulty of the course is no skiping of class.
