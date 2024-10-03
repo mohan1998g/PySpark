@@ -1,0 +1,16 @@
+df = spark.read.option("header", "true").option("inferschema", "true").csv("file3.txt")
+
+df.show()
+
+dtypeset = set(i[1] for i in df.dtypes)
+
+for i in dtypeset:
+    cols = []
+    for j in df.dtypes:
+        if(i == j[1]):
+            cols.append(j[0])
+    print(cols)
+
+['txnno', 'custno']
+['txndate', 'category', 'product', 'city', 'state', 'spendby']
+['amount']
