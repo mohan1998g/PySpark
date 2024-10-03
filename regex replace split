@@ -1,0 +1,34 @@
+# Define the schema for the DataFrame
+schema = StructType([
+        StructField("id", IntegerType(), True),
+        StructField("name", StringType(), True)
+])
+
+# Data from the table
+data = [
+        (1, "A-Z"),
+        (2, "B-Y"),
+        (3, "C X"),
+        (4, "B W")
+]
+
+# Create a PySpark DataFrame
+df_pyspark = spark.createDataFrame(data, schema=schema)
+
+# Show the DataFrame
+df_pyspark.show()
+
+df = df_pyspark.withColumn("new", regexp_replace(df_pyspark.name, r'-',' ')).withColumn("split", split("new", ' '))
+df.show()
+# df_pyspark.name == "name" == col("name") all are same
+final = df.withColumn("first name", expr("split[0]")).withColumn("last name", expr("split[1]")).drop("name", "new", "split")
+final.show()
+
++---+----------+---------+
+| id|first name|last name|
++---+----------+---------+
+|  1|         A|        Z|
+|  2|         B|        Y|
+|  3|         C|        X|
+|  4|         B|        W|
++---+----------+---------+
