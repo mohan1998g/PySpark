@@ -1,0 +1,90 @@
+data = [Row(1, "John", 30, "Sales", 50000.0),
+        Row(2, "Alice", 28, "Marketing", 60000.0),
+        Row(3, "Bob", 32, "Finance", 55000.0),
+        Row(4, "Sarah", 29, "Sales", 52000.0),
+        Row(5, "Mike", 31, "Finance", 58000.0)
+        ]
+
+schema = StructType([
+    StructField("id", IntegerType(), nullable=False),
+    StructField("name", StringType(), nullable=False),
+    StructField("age", IntegerType(), nullable=False),
+    StructField("department", StringType(), nullable=False),
+    StructField("salary", DoubleType(), nullable=False)
+])
+# Create the DataFrame
+employeeDF = spark.createDataFrame(data, schema)
+# Show the DataFrame
+employeeDF.show()
+
+# Questions
+# Add a new column named "bonus" that is 10% of the salary for all employees
+# Calculate the average salary for each department
+# Group the data by department and find the employee with the highest salary in each department
+# Find the top 3 departments with the highest total salary
+# Find the top most department having highest salary
+# Filter the DataFrame to keep only employees aged 30 or above and working in the "Sales" department
+# Calculate the difference between each employee's salary and the average salary of their respective department
+# Calculate the sum of salaries for employees whose names start with the letter "J"
+# Sort the DataFrame based on the "age" column in ascending order and then by "salary" column in descending order
+# Replace the department name "Finance" with "Financial Services" in the DataFrame
+# Calculate the percentage of total salary each employee contributes to their respective department
+
+
+# answers
+bonus = employeeDF.withColumn("bonus", expr("salary * 0.1"))
+bonus.show()
+
+window = Window.partitionBy("department").orderBy(col("salary").desc())
+
+highest = employeeDF.withColumn("drank", dense_rank().over(window)).filter("drank = 1").select("name","salary")
+
+highest.show()
+
+total = employeeDF.groupby("department").agg(sum(col("salary")).alias("total")).orderBy(col("total").desc())
+total.show()
+
+depthighest = total.first()
+print(depthighest[0])
+
+sales30 = employeeDF.filter("age >= 30 and department = 'Sales'")
+sales30.show()
+
+avg = employeeDF.groupby("department").agg(avg("salary").alias("avg"))
+avg.show()
+
+diff1 = employeeDF.join(avg, "department", "full")
+diff1.show()
+diff = diff1.withColumn("diff", col('salary') - col('avg'))
+diff.show()
+diff = diff1.withColumn("diff", expr("salary - avg"))
+diff.show()
+
+Jtotal = employeeDF.filter("name like 'J%'").agg(sum("salary"))
+Jtotal.show()
+
+ageasc = employeeDF.orderBy("age")
+ageasc.show()
+
+salarydesc = employeeDF.orderBy(col("salary").desc())
+salarydesc.show()
+
+agesalary = employeeDF.orderBy(col("age")).orderBy(col("salary").desc())
+agesalary.show()
+agesalary1 = employeeDF.orderBy("age", col("salary").desc())
+agesalary1.show()
+
+finserv = employeeDF.withColumnRenamed("Finance", "Financial services")
+finserv.show()
+
+percentage1 = employeeDF.join(total, "department", "full")
+percentage = ((percentage1.withColumn("percent1",
+                                     expr("case when total != salary then ((total - salary)/total)*100 else 100 end")))
+              .withColumn("percent", round('percent1', 2)))
+percentage.show()
+
+df = spark.read.option("header","true").csv("file3.txt")
+
+df.withColumn("full", expr("concat('category', ('-'), 'product')")).show()
+
+df.withColumn("name", when(df['spendby'] == 'cash', '0').otherwise('1')).show()
