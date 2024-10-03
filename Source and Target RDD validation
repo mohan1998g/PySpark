@@ -32,3 +32,41 @@ output = (fulljoin.withColumn("comment", expr("case when name=name1 then 'matche
           .filter("comment != 'matched'").drop("name", "name1"))
 
 output.show()
+
+
++---+----+
+| id|name|
++---+----+
+|  1|   A|
+|  2|   B|
+|  3|   C|
+|  4|   D|
++---+----+
+
++---+-----+
+| id|name1|
++---+-----+
+|  1|    A|
+|  2|    B|
+|  4|    X|
+|  5|    D|
++---+-----+
+
++---+----+-----+
+| id|name|name1|
++---+----+-----+
+|  1|   A|    A|
+|  2|   B|    B|
+|  3|   C| NULL|
+|  4|   D|    X|
+|  5|NULL|    D|
++---+----+-----+
+
++---+-------------+
+| id|      comment|
++---+-------------+
+|  3|new in source|
+|  4|   mismatched|
+|  5|New in target|
++---+-------------+
+
