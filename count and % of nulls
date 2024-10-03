@@ -1,0 +1,73 @@
+# Define the schema for the DataFrame
+schema = StructType([
+        StructField("Column1", FloatType(), True),
+        StructField("Column2", FloatType(), True),
+        StructField("Column3", FloatType(), True),
+        StructField("Column4", FloatType(), True),
+        StructField("Column5", FloatType(), True)
+])
+
+# Data similar to the one we generated before
+data = [
+        (2.0, 10.0, 100.0, None, 10000.0),
+        (None, None, None, 1000.0, 10000.0),
+        (2.0, 30.0, None, None, None),
+        (1.0, 20.0, None, None, 30000.0),
+        (None, None, 100.0, 2000.0, 10000.0),
+        (None, 10.0, 200.0, 2000.0, 30000.0),
+        (3.0, 20.0, None, 2000.0, 20000.0),
+        (None, None, 200.0, None, 10000.0),
+        (3.0, 20.0, 200.0, 3000.0, None),
+        (None, 20.0, 200.0, 2000.0, 20000.0),
+        (3.0, 30.0, 200.0, 1000.0, 30000.0),
+        (None, 10.0, 100.0, 2000.0, 20000.0),
+        (3.0, 20.0, 200.0, 2000.0, 30000.0),
+        (None, 30.0, None, 2000.0, 30000.0),
+        (None, 20.0, 200.0, None, None),
+        (None, 20.0, 100.0, 2000.0, 20000.0),
+        (1.0, None, 300.0, 1000.0, None),
+        (1.0, 30.0, 200.0, 1000.0, 30000.0),
+        (3.0, None, 300.0, None, 10000.0),
+        (2.0, 10.0, 200.0, 2000.0, 30000.0)
+]
+
+# Create the DataFrame
+df = spark.createDataFrame(data, schema=schema)
+
+# Show the DataFrame
+df.show()
+df.cache()
+# To count the nulls
+
+# Method1
+countofnulls = df.select([count(when(col(i).isNull(), i)).alias(i) for i in df.columns])
+countofnulls.show()
+
+# Method2
+nullscount = df.select([sum(col(i).isNull().cast("int")).alias(i) for i in df.columns])
+nullscount.show()
+
+# Calculate the percentage of nulls
+for i in df.columns:
+        totalcount = df.select(col(i)).count()
+        nulls = df.filter(col(i).isNull()).count()
+        percentage = (nulls*100)/totalcount
+        print(percentage)
+
++-------+-------+-------+-------+-------+
+|Column1|Column2|Column3|Column4|Column5|
++-------+-------+-------+-------+-------+
+|      9|      5|      5|      6|      4|
++-------+-------+-------+-------+-------+
+
++-------+-------+-------+-------+-------+
+|Column1|Column2|Column3|Column4|Column5|
++-------+-------+-------+-------+-------+
+|      9|      5|      5|      6|      4|
++-------+-------+-------+-------+-------+
+
+45.0
+25.0
+25.0
+30.0
+20.0
