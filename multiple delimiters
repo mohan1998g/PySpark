@@ -1,0 +1,32 @@
+# Sample data
+data = ["1,Alice\t30|New York"]
+
+# Creating a DataFrame with a single column
+df = spark.createDataFrame(data, "string")
+
+df.show(truncate= True)
+# Custom logic to split the mixed delimiter row
+# split_col = split(df['value'], ',|\t|\|')
+# print(split_col)
+# Creating new columns for each split part
+df = df.withColumn('id', split(df['value'], ',|\t|\|').getItem(0)) \
+    .withColumn('name', split(df['value'], ',|\t|\|').getItem(1)) \
+    .withColumn('age', split(df['value'], ',|\t|\|').getItem(2)) \
+    .withColumn('city', split(df['value'], ',|\t|\|').getItem(3))
+
+# Selecting and showing the result
+df.select('id', 'name', 'age', 'city').show()
+
++--------------------+
+|               value|
++--------------------+
+|1,Alice\t30|New York|
++--------------------+
+
++---+-----+---+--------+
+| id| name|age|    city|
++---+-----+---+--------+
+|  1|Alice| 30|New York|
++---+-----+---+--------+
+
+
