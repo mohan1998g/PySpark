@@ -23,6 +23,16 @@ minmax = df.groupby("dept_id").agg(min("salary").alias("min salary"),
                                    max("salary").alias("max salary"))
 minmax.show()
 
+# now we got the min max salaries
+# to get the names of the employees who has these salaries
+
+inner = (df.join(minmax, "dept_id", "inner")
+         .filter("min = salary or max = salary")
+         .groupby("dept_id", "salary")
+         .agg(collect_set("emp_name")
+              .alias("employee")))
+inner.show(truncate=False)
+
 +-------+----------+
 |dept_id|min salary|
 +-------+----------+
@@ -46,3 +56,14 @@ minmax.show()
 |      4|     55000|     85000|
 |      2|     70000|     80000|
 +-------+----------+----------+
+
++-------+------+--------------------------------------+
+|dept_id|salary|employee                              |
++-------+------+--------------------------------------+
+|5      |60000 |[Lakken]                              |
+|5      |65000 |[Latoynia]                            |
+|4      |85000 |[Briana]                              |
+|4      |55000 |[𝗚𝗮𝗯𝗿𝗶𝗲𝗹𝗹𝗮, 𝗞𝗶𝗺𝗯𝗲𝗿𝗹𝗶]|
+|2      |80000 |[𝗝𝗮𝗶𝗺𝗶𝗻, 𝗣𝗮𝗻𝗸𝗮𝗷]          |
+|2      |70000 |[Tarvares]                            |
++-------+------+--------------------------------------+
