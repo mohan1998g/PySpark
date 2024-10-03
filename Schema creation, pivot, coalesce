@@ -1,0 +1,74 @@
+from pyspark.sql.types import StructField, IntegerType, FloatType
+
+transaction_schema = StructType([
+    StructField("customer_id", IntegerType(), True),
+    StructField("transaction_type", StringType(), True),
+    StructField("transaction_amount", FloatType(), True)
+])
+
+# Create the transactions DataFrame
+transactions_data = [
+    (1, "credit", 30.0),
+    (1, "debit", 90.0),
+    (2, "credit", 50.0),
+    (3, "debit", 57.0),
+    (2, "debit", 90.0)
+]
+
+transactions_df = spark.createDataFrame(transactions_data, schema=transaction_schema)
+
+# Show the transactions DataFrame
+# transactions_df.show()
+
+# Define the schema for amounts
+amount_schema = StructType([StructField("customer_id", IntegerType(), True), StructField("current_amount", FloatType(), True)])
+
+# Create the amounts DataFrame
+amounts_data = [
+    (1, 1000.0),
+    (2, 2000.0),
+    (3, 3000.0),
+    (4, 4000.0)
+]
+
+amounts_df = spark.createDataFrame(amounts_data, schema=amount_schema)
+
+# Show the amounts DataFrame
+# amounts_df.show()
+
+df1 = transactions_df.groupby("customer_id").pivot("transaction_type").agg(first("transaction_amount"))
+df1.show()
+
+df = amounts_df.join(df1, "customer_id", "full").withColumn("credit", expr("coalesce(credit, 0)")).withColumn("debit", expr("coalesce(debit, 0)"))
+df.show()
+
+final = df.withColumn("final", expr("current_amount - debit + credit")).select("customer_id", "final")
+
+final.show()
+
++-----------+------+-----+
+|customer_id|credit|debit|
++-----------+------+-----+
+|          1|  30.0| 90.0|
+|          3|  NULL| 57.0|
+|          2|  50.0| 90.0|
++-----------+------+-----+
+
++-----------+--------------+------+-----+
+|customer_id|current_amount|credit|debit|
++-----------+--------------+------+-----+
+|          1|        1000.0|  30.0| 90.0|
+|          2|        2000.0|  50.0| 90.0|
+|          3|        3000.0|   0.0| 57.0|
+|          4|        4000.0|   0.0|  0.0|
++-----------+--------------+------+-----+
+
++-----------+------+
+|customer_id| final|
++-----------+------+
+|          1| 940.0|
+|          2|1960.0|
+|          3|2943.0|
+|          4|4000.0|
++-----------+------+
+
