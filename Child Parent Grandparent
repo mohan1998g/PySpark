@@ -1,0 +1,78 @@
+from pyspark import SparkConf
+from pyspark.sql import SparkSession
+import os
+from pyspark.sql.functions import *
+
+# ======================================================================================
+python_path = sys.executable
+os.environ['PYSPARK_PYTHON'] = python_path
+os.environ['JAVA_HOME'] = r'C:\Users\subhash_narkedamilli\.jdks\corretto-1.8.0_392'
+conf = (SparkConf().setAppName("pyspark").setMaster("local[*]")
+        .set("spark.driver.host", "localhost").set("spark.default.parallelism", "1"))
+sc = SparkContext(conf=conf)
+spark = SparkSession.builder.getOrCreate()
+
+# ======================================================================================
+
+data = [("A", "AA"), ("B", "BB"), ("C", "CC"), ("AA", "AAA"), ("BB", "BBB"), ("CC", "CCC")]
+
+rdd = sc.parallelize(data)
+df = rdd.toDF(["child", "parent"])
+
+df1 = rdd.toDF(["parent", "grandparent"])
+
+innerjoin = df.join(df1, ["parent"], "inner")
+fulljoin = df.join(df1, ["parent"], "full")
+leftjoin = df.join(df1, ["parent"], "left")
+rightjoin = df.join(df1, ["parent"], "right")
+#.filter("child is not null").filter("grandparent is not null").select("child","parent","grandparent"))
+fulljoin.show()
+innerjoin.show()
+leftjoin.show()
+rightjoin.show()
+
+## inner join is the most efficient as it gove 3 rows only
+
++------+-----+-----------+
+|parent|child|grandparent|
++------+-----+-----------+
+|     A| NULL|         AA|
+|    AA|    A|        AAA|
+|   AAA|   AA|       NULL|
+|     B| NULL|         BB|
+|    BB|    B|        BBB|
+|   BBB|   BB|       NULL|
+|     C| NULL|         CC|
+|    CC|    C|        CCC|
+|   CCC|   CC|       NULL|
++------+-----+-----------+
+
++------+-----+-----------+
+|parent|child|grandparent|
++------+-----+-----------+
+|    AA|    A|        AAA|
+|    BB|    B|        BBB|
+|    CC|    C|        CCC|
++------+-----+-----------+
+
++------+-----+-----------+
+|parent|child|grandparent|
++------+-----+-----------+
+|    AA|    A|        AAA|
+|   CCC|   CC|       NULL|
+|   BBB|   BB|       NULL|
+|    CC|    C|        CCC|
+|   AAA|   AA|       NULL|
+|    BB|    B|        BBB|
++------+-----+-----------+
+
++------+-----+-----------+
+|parent|child|grandparent|
++------+-----+-----------+
+|    AA|    A|        AAA|
+|     B| NULL|         BB|
+|     C| NULL|         CC|
+|     A| NULL|         AA|
+|    CC|    C|        CCC|
+|    BB|    B|        BBB|
++------+-----+-----------+
