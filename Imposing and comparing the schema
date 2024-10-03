@@ -1,0 +1,26 @@
+# imposing the schema of 1 file to another
+
+df1 = spark.read.option("header", "true").option("inferschema", "true").csv("file3.txt")
+
+print(df1.schema)
+
+schema = df1.schema
+
+df2 = spark.read.option("header", "true").schema(schema).csv("file1.txt")
+
+df3 = spark.read.csv("file2.txt", header=True, schema=schema)
+
+print(df2.schema)
+print(df3.schema)
+
+# comparing the schema
+
+if(df2.schema == df1.schema):
+        print("same schema")
+else:
+        print("different schema")
+
+StructType([StructField('txnno', IntegerType(), True), StructField('txndate', StringType(), True), StructField('custno', IntegerType(), True), StructField('amount', DoubleType(), True), StructField('category', StringType(), True), StructField('product', StringType(), True), StructField('city', StringType(), True), StructField('state', StringType(), True), StructField('spendby', StringType(), True)])
+StructType([StructField('txnno', IntegerType(), True), StructField('txndate', StringType(), True), StructField('custno', IntegerType(), True), StructField('amount', DoubleType(), True), StructField('category', StringType(), True), StructField('product', StringType(), True), StructField('city', StringType(), True), StructField('state', StringType(), True), StructField('spendby', StringType(), True)])
+StructType([StructField('txnno', IntegerType(), True), StructField('txndate', StringType(), True), StructField('custno', IntegerType(), True), StructField('amount', DoubleType(), True), StructField('category', StringType(), True), StructField('product', StringType(), True), StructField('city', StringType(), True), StructField('state', StringType(), True), StructField('spendby', StringType(), True)])
+same schema
