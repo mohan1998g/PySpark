@@ -1,0 +1,44 @@
+data = [("DEPT3", 500),
+        ("DEPT3", 200),
+        ("DEPT1", 1000),
+        ("DEPT1", 700),
+        ("DEPT1", 500),
+        ("DEPT2", 400),
+        ("DEPT2", 200)]
+columns = ["dept", "salary"]
+
+# Create DataFrame
+df = spark.createDataFrame(data, columns)
+
+df.show()
+
+# Defined My Window
+
+from pyspark.sql import Window
+deptwindow = Window.partitionBy("dept").orderBy(col("salary").desc())
+
+# Applying window with Dense Rank
+
+finaldf = df.withColumn("drank", dense_rank().over(deptwindow)).filter("drank=2").drop("drank")
+
+finaldf.show()
+
++-----+------+
+| dept|salary|
++-----+------+
+|DEPT3|   500|
+|DEPT3|   200|
+|DEPT1|  1000|
+|DEPT1|   700|
+|DEPT1|   500|
+|DEPT2|   400|
+|DEPT2|   200|
++-----+------+
+
++-----+------+
+| dept|salary|
++-----+------+
+|DEPT1|   700|
+|DEPT2|   200|
+|DEPT3|   200|
++-----+------+
