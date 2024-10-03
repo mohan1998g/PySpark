@@ -1,0 +1,24 @@
+# lets say we have a table with 2 columns, Date and visitor id.
+# We need to find the unique visitors per day
+
+# Define schema
+schema = StructType([
+    StructField("Date", StringType(), True),
+    StructField("VisitorID", IntegerType(), True)
+])
+
+# Create sample data
+data = [("2024-10-01", 123), ("2024-10-01", 123), ("2024-10-01", 124)]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show the DataFrame
+df.show()
+
+unique = df.withColumn('Date', to_date(df['Date'], "yyyy-mm-dd")).groupBy("Date").agg(countDistinct("Visitorid"))
+
+unique.show()
+
+# to_date(col("Date")) = to_date("Date") = col('Date').cast("Date") = to_date(df['Date'], "yyyy-mm-dd")
+# to_date(df['Date'], "YYYY-MM-DD")  != to_date(df['Date'], "yyyy-mm-dd") Capital letters will throw an error
