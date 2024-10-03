@@ -1,0 +1,24 @@
+data=[('ABSHFJFJ12QWERT12dfghjk456',1),('QWERT5674OTUT1wertyu4567',2),('DGDGNJDJ1234UYIxcvbnm987',3)]
+df=spark.createDataFrame(data,schema="input_string string,id int")
+
+output = (df.withColumn("col1", regexp_extract("input_string", "(^[a-zA-Z]*[0-9]*)", 1))
+          .withColumn("col2", regexp_extract("input_string", "(^[a-zA-Z]*[0-9]*)([a-zA-Z]*[0-9]*)", 2))
+          .withColumn("col3", regexp_extract("input_string", "(^[a-zA-Z]*[0-9]*)([a-zA-Z]*[0-9]*)([a-zA-Z]*[0-9]*$)", 3)))
+output.drop("input_string", "id").show(truncate=False)
+
+
++--------------------+---+
+|        input_string| id|
++--------------------+---+
+|ABSHFJFJ12QWERT12...|  1|
+|QWERT5674OTUT1wer...|  2|
+|DGDGNJDJ1234UYIxc...|  3|
++--------------------+---+
+
++------------+------------+----------+
+|col1        |col2        |col3      |
++------------+------------+----------+
+|ABSHFJFJ12  |QWERT12     |dfghjk456 |
+|QWERT5674   |OTUT1       |wertyu4567|
+|DGDGNJDJ1234|UYIxcvbnm987|          |
++------------+------------+----------+
