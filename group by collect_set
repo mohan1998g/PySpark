@@ -1,0 +1,50 @@
+# Define the schema for the DataFrame
+schema = StructType([
+        StructField("name", StringType(), True),
+        StructField("item", StringType(), True),
+        StructField("weight", IntegerType(), True)
+])
+
+# Data from the image
+data = [
+        ('mohan', 'tomatos', 2),
+        ('satya', 'tomatos', 1),
+        ('mohan', 'potato', 2),
+        ('satya', 'potato', 7),
+        ('sid', 'cabbage', 3),
+        ('mohan', 'chilli', 6),
+        ('satya', 'banana', 3),
+        ('sid', 'banana', 8)
+]
+
+# Create a PySpark DataFrame
+df_pyspark = spark.createDataFrame(data, schema=schema)
+
+# Show the DataFrame
+df_pyspark.show()
+
+df = df_pyspark.groupby("name", "item").agg(sum("weight").alias("total"))
+
+result = df.groupby("name").agg(collect_set(struct('item', 'total')))
+
+
++-----+-------+------+
+| name|   item|weight|
++-----+-------+------+
+|mohan|tomatos|     2|
+|satya|tomatos|     1|
+|mohan| potato|     2|
+|satya| potato|     7|
+|  sid|cabbage|     3|
+|mohan| chilli|     6|
+|satya| banana|     3|
+|  sid| banana|     8|
++-----+-------+------+
+
++-----+----------------------------------------+
+|name |collect_set(struct(item, total))        |
++-----+----------------------------------------+
+|mohan|[{chilli, 6}, {tomatos, 2}, {potato, 2}]|
+|satya|[{tomatos, 1}, {potato, 7}, {banana, 3}]|
+|sid  |[{banana, 8}, {cabbage, 3}]             |
++-----+----------------------------------------+
