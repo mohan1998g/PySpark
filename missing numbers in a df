@@ -17,6 +17,12 @@ result = df_new.subtract(df)
 
 result.show()
 
+or
+
+missing_numbers = full_range.join(df_numbers, "Number", "left_anti")
+
+missing_numbers.show()
+
 +-------+
 |numbers|
 +-------+
