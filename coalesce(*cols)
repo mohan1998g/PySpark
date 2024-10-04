@@ -1,0 +1,42 @@
+# Define schema for the data
+schema = StructType([
+        StructField("city1", StringType(), True),
+        StructField("city2", StringType(), True),
+        StructField("city3", StringType(), True)
+])
+
+# Data in list of tuples format with None for null values
+data = [
+        ("Goa", None, "AP"),
+        (None, "AP", None),
+        (None, None, "Bglr")
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show the DataFrame
+df.show(truncate=False)
+
++-----+-----+-----+
+|city1|city2|city3|
++-----+-----+-----+
+|Goa  |NULL |AP   |
+|NULL |AP   |NULL |
+|NULL |NULL |Bglr |
++-----+-----+-----+
+
+df1 = df.withColumn("result", coalesce("city1", "city2", "city3")).drop("city1", "city2", "city3")
+
+df1.show()
+
++------+
+|result|
++------+
+|   Goa|
+|    AP|
+|  Bglr|
++------+
+
+
+coalesce(*cols) will skip the null values and give the 1st not null value
