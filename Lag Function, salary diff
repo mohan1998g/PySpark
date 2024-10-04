@@ -1,0 +1,50 @@
+data = [
+        (1, 80000, 2020),
+        (1, 70000, 2019),
+        (1, 60000, 2018),
+        (2, 65000, 2020),
+        (2, 65000, 2019),
+        (2, 60000, 2018),
+        (3, 65000, 2019),
+        (3, 60000, 2018)]
+df = sc.parallelize(data).toDF(["employee_id", "salary", "year"])
+
+df.show()
+
+windowspec = Window.partitionBy("employee_id").orderBy("year")
+
+resultdf = df.withColumn("last_year_salary", lag("salary", 1).over(windowspec))
+
+resultdf.show()
+
+salarydiff = (resultdf.withColumn("salary_diff", expr("salary-last_year_salary"))
+              .select("employee_id", "year", "salary", "salary_diff"))
+
+salarydiff.show()
+
++-----------+------+----+----------------+
+|employee_id|salary|year|last_year_salary|
++-----------+------+----+----------------+
+|          1| 60000|2018|            NULL|
+|          1| 70000|2019|           60000|
+|          1| 80000|2020|           70000|
+|          2| 60000|2018|            NULL|
+|          2| 65000|2019|           60000|
+|          2| 65000|2020|           65000|
+|          3| 60000|2018|            NULL|
+|          3| 65000|2019|           60000|
++-----------+------+----+----------------+
+
++-----------+----+------+-----------+
+|employee_id|year|salary|salary_diff|
++-----------+----+------+-----------+
+|          1|2018| 60000|       NULL|
+|          1|2019| 70000|      10000|
+|          1|2020| 80000|      10000|
+|          2|2018| 60000|       NULL|
+|          2|2019| 65000|       5000|
+|          2|2020| 65000|          0|
+|          3|2018| 60000|       NULL|
+|          3|2019| 65000|       5000|
++-----------+----+------+-----------+
+
