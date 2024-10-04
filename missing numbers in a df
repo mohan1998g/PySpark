@@ -1,0 +1,46 @@
+# Data in list format
+data = [(1,), (2,), (4,), (6,), (8,), (9,)]
+
+# Create DataFrame
+df = spark.createDataFrame(data).toDF("numbers")
+
+# Show the DataFrame
+df.show()
+
+df_list = df.select(min("numbers"), max("numbers"))
+
+df_list.show()
+
+df_new = spark.range(df_list.first()[0], df_list.first()[1] + 1)
+
+result = df_new.subtract(df)
+
+result.show()
+
++-------+
+|numbers|
++-------+
+|      1|
+|      2|
+|      4|
+|      6|
+|      8|
+|      9|
++-------+
+
++------------+------------+
+|min(numbers)|max(numbers)|
++------------+------------+
+|           1|           9|
++------------+------------+
+
++---+
+| id|
++---+
+|  7|
+|  5|
+|  3|
++---+
+
+
+In range function, 1st object is inclusive and 2nd object is exclusive
