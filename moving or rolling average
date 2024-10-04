@@ -1,0 +1,41 @@
+from pyspark.sql.types import Row
+
+# Sample data
+data = [Row(Date='2023-01-01', ProductID=100, QuantitySold=10),
+        Row(Date='2023-01-02', ProductID=100, QuantitySold=15),
+        Row(Date='2023-01-03', ProductID=100, QuantitySold=20),
+        Row(Date='2023-01-04', ProductID=100, QuantitySold=25),
+        Row(Date='2023-01-05', ProductID=100, QuantitySold=30),
+        Row(Date='2023-01-06', ProductID=100, QuantitySold=35),
+        Row(Date='2023-01-07', ProductID=100, QuantitySold=40),
+        Row(Date='2023-01-08', ProductID=100, QuantitySold=45)]
+
+# Create DataFrame
+df_sales = spark.createDataFrame(data)
+
+# Convert Date string to Date type
+df_sales = df_sales.withColumn("Date", to_date(col("Date")))
+
+# Window specification for 7-day rolling average
+windowSpec = Window.partitionBy('ProductID').orderBy('Date').rowsBetween(-6, 0)
+
+# Calculating the rolling average
+rollingAvg = df_sales.withColumn('7DayAvg', avg('QuantitySold').over(windowSpec))
+
+# Show results
+rollingAvg.show()
+
++----------+---------+------------+-------+
+|      Date|ProductID|QuantitySold|7DayAvg|
++----------+---------+------------+-------+
+|2023-01-01|      100|          10|   10.0|
+|2023-01-02|      100|          15|   12.5|
+|2023-01-03|      100|          20|   15.0|
+|2023-01-04|      100|          25|   17.5|
+|2023-01-05|      100|          30|   20.0|
+|2023-01-06|      100|          35|   22.5|
+|2023-01-07|      100|          40|   25.0|
+|2023-01-08|      100|          45|   30.0|
++----------+---------+------------+-------+
+
+The code is same for n day average
