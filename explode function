@@ -1,0 +1,30 @@
+# Define schema for the data
+schema = StructType([
+        StructField("name", StringType(), True),
+        StructField("hobbies", StringType(), True)
+])
+
+# Data in list of tuples format
+data = [
+        ("Alice", "chess, carrom"),
+        ("Bob", "business, ladder, snake"),
+        ("Julie", "cricket, tennis, cards")
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show the DataFrame
+df.show(truncate=False)
+
+df_split = df.withColumn("split", split("hobbies", ","))
+df_split.show()
+
+# Explode the array into multiple rows
+df_exploded = df_split.withColumn("hobby", explode("split")).drop("hobbies", "split")
+
+# Show the resulting DataFrame
+df_exploded.show(truncate=False)
+
+
+Explode can only be used on array type objects, but above is given a string. Once we do split operation on tuple, it will give the output as array of objects on which we can do explode
