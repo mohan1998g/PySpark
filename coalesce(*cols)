@@ -39,4 +39,8 @@ df1.show()
 +------+
 
 
-coalesce(*cols) will skip the null values and give the 1st not null value
+coalesce(*cols) checks the columns in the given order and returns the first non null value
+
+It's useful for handling misssing data when multiple columns may have null values.
+
+It doesn't change the underlying data, but adds a new column
