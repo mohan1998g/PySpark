@@ -1,0 +1,310 @@
+# ======================================================================================
+pyspark.sql.functions.rlike
+# ======================================================================================
+pyspark.sql.functions.rlike(str: ColumnOrName, regexp: ColumnOrName) → pyspark.sql.column.Column 
+Returns true if str matches the Java regex regexp, or false otherwise.
+
+Parameters
+strColumn or str
+target column to work on.
+
+regexpColumn or str
+regex pattern to apply.
+
+Returns
+Column
+true if str matches a Java regex, or false otherwise.
+
+Examples
+
+df = spark.createDataFrame([("1a 2b 14m", r"(\d+)")], ["str", "regexp"])
+df.select(rlike('str', lit(r'(\d+)')).alias('d')).show()
+[Row(d=True)]
+df.select(rlike('str', lit(r'\d{2}b')).alias('d')).show()
+[Row(d=False)]
+df.select(rlike("str", col("regexp")).alias('d')).show()
+[Row(d=True)]
+# ======================================================================================
+pyspark.sql.functions.regexp
+# ======================================================================================
+pyspark.sql.functions.regexp(str: ColumnOrName, regexp: ColumnOrName) → pyspark.sql.column.Column 
+Returns true if str matches the Java regex regexp, or false otherwise.
+
+New in version 3.5.0.
+
+Parameters
+strColumn or str
+target column to work on.
+
+regexpColumn or str
+regex pattern to apply.
+
+Returns
+Column
+true if str matches a Java regex, or false otherwise.
+
+Examples
+
+import pyspark.sql.functions as sf
+spark.createDataFrame(
+    [("1a 2b 14m", r"(\d+)")], ["str", "regexp"]
+).select(sf.regexp('str', sf.lit(r'(\d+)'))).show()
++------------------+
+|REGEXP(str, (\d+))|
++------------------+
+|              true|
++------------------+
+import pyspark.sql.functions as sf
+spark.createDataFrame(
+    [("1a 2b 14m", r"(\d+)")], ["str", "regexp"]
+).select(sf.regexp('str', sf.lit(r'\d{2}b'))).show()
++-------------------+
+|REGEXP(str, \d{2}b)|
++-------------------+
+|              false|
++-------------------+
+import pyspark.sql.functions as sf
+spark.createDataFrame(
+    [("1a 2b 14m", r"(\d+)")], ["str", "regexp"]
+).select(sf.regexp('str', sf.col("regexp"))).show()
++-------------------+
+|REGEXP(str, regexp)|
++-------------------+
+|               true|
++-------------------+
+# ======================================================================================
+pyspark.sql.functions.regexp_like
+# ======================================================================================
+pyspark.sql.functions.regexp_like(str: ColumnOrName, regexp: ColumnOrName) → pyspark.sql.column.Column 
+Returns true if str matches the Java regex regexp, or false otherwise.
+
+New in version 3.5.0.
+
+Parameters
+strColumn or str
+target column to work on.
+
+regexpColumn or str
+regex pattern to apply.
+
+Returns
+Column
+true if str matches a Java regex, or false otherwise.
+
+Examples
+
+import pyspark.sql.functions as sf
+spark.createDataFrame(
+    [("1a 2b 14m", r"(\d+)")], ["str", "regexp"]
+).select(sf.regexp_like('str', sf.lit(r'(\d+)'))).show()
++-----------------------+
+|REGEXP_LIKE(str, (\d+))|
++-----------------------+
+|                   true|
++-----------------------+
+import pyspark.sql.functions as sf
+spark.createDataFrame(
+    [("1a 2b 14m", r"(\d+)")], ["str", "regexp"]
+).select(sf.regexp_like('str', sf.lit(r'\d{2}b'))).show()
++------------------------+
+|REGEXP_LIKE(str, \d{2}b)|
++------------------------+
+|                   false|
++------------------------+
+import pyspark.sql.functions as sf
+spark.createDataFrame(
+    [("1a 2b 14m", r"(\d+)")], ["str", "regexp"]
+).select(sf.regexp_like('str', sf.col("regexp"))).show()
++------------------------+
+|REGEXP_LIKE(str, regexp)|
++------------------------+
+|                    true|
++------------------------+
+# ======================================================================================
+pyspark.sql.functions.regexp_count
+# ======================================================================================
+pyspark.sql.functions.regexp_count(str: ColumnOrName, regexp: ColumnOrName) → pyspark.sql.column.Column 
+Returns a count of the number of times that the Java regex pattern regexp is matched in the string str.
+
+New in version 3.5.0.
+
+Parameters
+strColumn or str
+target column to work on.
+
+regexpColumn or str
+regex pattern to apply.
+
+Returns
+Column
+the number of times that a Java regex pattern is matched in the string.
+
+Examples
+
+df = spark.createDataFrame([("1a 2b 14m", r"\d+")], ["str", "regexp"])
+df.select(regexp_count('str', lit(r'\d+')).alias('d')).show()
+[Row(d=3)]
+df.select(regexp_count('str', lit(r'mmm')).alias('d')).show()
+[Row(d=0)]
+df.select(regexp_count("str", col("regexp")).alias('d')).show()
+[Row(d=3)]
+# ======================================================================================
+pyspark.sql.functions.regexp_extract
+# ======================================================================================
+pyspark.sql.functions.regexp_extract(str: ColumnOrName, pattern: str, idx: int) → pyspark.sql.column.Column 
+Extract a specific group matched by the Java regex regexp, from the specified string column. If the regex did not match, or the specified group did not match, an empty string is returned.
+
+New in version 1.5.0.
+
+Changed in version 3.4.0: Supports Spark Connect.
+
+Parameters
+strColumn or str
+target column to work on.
+
+patternstr
+regex pattern to apply.
+
+idxint
+matched group id.
+
+Returns
+Column
+matched value specified by idx group id.
+
+Examples
+
+df = spark.createDataFrame([('100-200',)], ['str'])
+df.select(regexp_extract('str', r'(\d+)-(\d+)', 1).alias('d')).show()
+[Row(d='100')]
+df = spark.createDataFrame([('foo',)], ['str'])
+df.select(regexp_extract('str', r'(\d+)', 1).alias('d')).show()
+[Row(d='')]
+df = spark.createDataFrame([('aaaac',)], ['str'])
+df.select(regexp_extract('str', '(a+)(b)?(c)', 2).alias('d')).show()
+[Row(d='')]
+# ======================================================================================
+pyspark.sql.functions.regexp_extract_all
+# ======================================================================================
+pyspark.sql.functions.regexp_extract_all(str: ColumnOrName, regexp: ColumnOrName, idx: Union[int, pyspark.sql.column.Column, None] = None) → pyspark.sql.column.Column 
+Extract all strings in the str that match the Java regex regexp and corresponding to the regex group index.
+
+New in version 3.5.0.
+
+Parameters
+strColumn or str
+target column to work on.
+
+regexpColumn or str
+regex pattern to apply.
+
+idxint
+matched group id.
+
+Returns
+Column
+all strings in the str that match a Java regex and corresponding to the regex group index.
+
+Examples
+
+df = spark.createDataFrame([("100-200, 300-400", r"(\d+)-(\d+)")], ["str", "regexp"])
+df.select(regexp_extract_all('str', lit(r'(\d+)-(\d+)')).alias('d')).show()
+[Row(d=['100', '300'])]
+df.select(regexp_extract_all('str', lit(r'(\d+)-(\d+)'), 1).alias('d')).show()
+[Row(d=['100', '300'])]
+df.select(regexp_extract_all('str', lit(r'(\d+)-(\d+)'), 2).alias('d')).show()
+[Row(d=['200', '400'])]
+df.select(regexp_extract_all('str', col("regexp")).alias('d')).show()
+[Row(d=['100', '300'])]
+# ======================================================================================
+pyspark.sql.functions.regexp_replace
+# ======================================================================================
+pyspark.sql.functions.regexp_replace(string: ColumnOrName, pattern: Union[str, pyspark.sql.column.Column], replacement: Union[str, pyspark.sql.column.Column]) → pyspark.sql.column.Column 
+Replace all substrings of the specified string value that match regexp with replacement.
+
+New in version 1.5.0.
+
+Changed in version 3.4.0: Supports Spark Connect.
+
+Parameters
+stringColumn or str
+column name or column containing the string value
+
+patternColumn or str
+column object or str containing the regexp pattern
+
+replacementColumn or str
+column object or str containing the replacement
+
+Returns
+Column
+string with all substrings replaced.
+
+Examples
+
+df = spark.createDataFrame([("100-200", r"(\d+)", "--")], ["str", "pattern", "replacement"])
+df.select(regexp_replace('str', r'(\d+)', '--').alias('d')).show()
+[Row(d='-----')]
+df.select(regexp_replace("str", col("pattern"), col("replacement")).alias('d')).show()
+[Row(d='-----')]
+# ======================================================================================
+pyspark.sql.functions.regexp_substr
+# ======================================================================================
+pyspark.sql.functions.regexp_substr(str: ColumnOrName, regexp: ColumnOrName) → pyspark.sql.column.Column 
+Returns the substring that matches the Java regex regexp within the string str. If the regular expression is not found, the result is null.
+
+New in version 3.5.0.
+
+Parameters
+strColumn or str
+target column to work on.
+
+regexpColumn or str
+regex pattern to apply.
+
+Returns
+Column
+the substring that matches a Java regex within the string str.
+
+Examples
+
+df = spark.createDataFrame([("1a 2b 14m", r"\d+")], ["str", "regexp"])
+df.select(regexp_substr('str', lit(r'\d+')).alias('d')).show()
+[Row(d='1')]
+df.select(regexp_substr('str', lit(r'mmm')).alias('d')).show()
+[Row(d=None)]
+df.select(regexp_substr("str", col("regexp")).alias('d')).show()
+[Row(d='1')]
+# ======================================================================================
+pyspark.sql.functions.regexp_instr
+# ======================================================================================
+pyspark.sql.functions.regexp_instr(str: ColumnOrName, regexp: ColumnOrName, idx: Union[int, pyspark.sql.column.Column, None] = None) → pyspark.sql.column.Column 
+Extract all strings in the str that match the Java regex regexp and corresponding to the regex group index.
+
+New in version 3.5.0.
+
+Parameters
+strColumn or str
+target column to work on.
+
+regexpColumn or str
+regex pattern to apply.
+
+idxint
+matched group id.
+
+Returns
+Column
+all strings in the str that match a Java regex and corresponding to the regex group index.
+
+Examples
+
+df = spark.createDataFrame([("1a 2b 14m", r"\d+(a|b|m)")], ["str", "regexp"])
+df.select(regexp_instr('str', lit(r'\d+(a|b|m)')).alias('d')).show()
+[Row(d=1)]
+df.select(regexp_instr('str', lit(r'\d+(a|b|m)'), 1).alias('d')).show()
+[Row(d=1)]
+df.select(regexp_instr('str', lit(r'\d+(a|b|m)'), 2).alias('d')).show()
+[Row(d=1)]
+df.select(regexp_instr('str', col("regexp")).alias('d')).show()
+[Row(d=1)]
