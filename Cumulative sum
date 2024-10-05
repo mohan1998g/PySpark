@@ -1,0 +1,88 @@
+# Step 2: Define the schema
+schema = StructType([
+        StructField("Range", IntegerType(), True),
+        StructField("Number", IntegerType(), True)
+])
+
+# Step 3: Create the data
+data = [
+        (90, 2),
+        (60, 3),
+        (70, 5),
+        (80, 1)
+]
+
+# Step 4: Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Step 5: Show the DataFrame
+df.show()
+
+df2 = df.withColumn("total", sum("Number").over(Window.orderBy(col("Range").desc())))
+df2.show()
+
++-----+------+
+|Range|Number|
++-----+------+
+|   90|     2|
+|   60|     3|
+|   70|     5|
+|   80|     1|
++-----+------+
+
+
++-----+------+-----+
+|Range|Number|total|
++-----+------+-----+
+|   90|     2|    2|
+|   80|     1|    3|
+|   70|     5|    8|
+|   60|     3|   11|
++-----+------+-----+
+
+-------------------------------------------------------------------------------------
+
+# Step 2: Define the schema
+schema = StructType([
+        StructField("id", IntegerType(), True),
+        StructField("name", StringType(), True),
+        StructField("sal", IntegerType(), True)
+])
+
+# Step 3: Create the data
+data = [
+        (1, 'A', 1000),
+        (2, 'B', 2000),
+        (3, 'C', 3000),
+        (4, 'D', 4000)
+]
+
+# Step 4: Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Step 5: Show the DataFrame
+df.show()
+
+df2 = df.withColumn("total", sum("sal").over(Window.orderBy(col("id"))))
+df2.show()
+
++---+----+----+
+| id|name| sal|
++---+----+----+
+|  1|   A|1000|
+|  2|   B|2000|
+|  3|   C|3000|
+|  4|   D|4000|
++---+----+----+
+
+
+
++---+----+----+-----+
+| id|name| sal|total|
++---+----+----+-----+
+|  1|   A|1000| 1000|
+|  2|   B|2000| 3000|
+|  3|   C|3000| 6000|
+|  4|   D|4000|10000|
++---+----+----+-----+
+
