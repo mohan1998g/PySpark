@@ -1,0 +1,31 @@
+# write a sql query to find manager name with atleast 5 reporting employees
+# Define the schema
+schema = StructType([
+        StructField("id", IntegerType(), True),
+        StructField("Name", StringType(), True),
+        StructField("Dept", StringType(), True),
+        StructField("Manager", IntegerType(), True)
+])
+
+# Sample data
+data = [
+        (101, "John", "A", None),
+        (102, "Dan", "A", 101),
+        (103, "James", "A", 101),
+        (104, "Amy", "A", 101),
+        (105, "Anne", "A", 101),
+        (106, "Ron", "B", 101)
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show the DataFrame
+df.show()
+
+countdf = df.groupby("Manager").agg(count("Manager").alias("count"))
+
+countdf.show()
+
+result = df.join(countdf, df["id"] == countdf["Manager"], "inner").where("count > 4")
+result.show()
