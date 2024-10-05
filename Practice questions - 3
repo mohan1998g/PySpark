@@ -1,0 +1,68 @@
+# write a sql query to find manager name with atleast 5 reporting employees
+# Define the schema
+schema = StructType([
+        StructField("id", IntegerType(), True),
+        StructField("Name", StringType(), True),
+        StructField("Dept", StringType(), True),
+        StructField("Manager", IntegerType(), True)
+])
+
+# Sample data
+data = [
+        (101, "John", "A", None),
+        (102, "Dan", "A", 101),
+        (103, "James", "A", 101),
+        (104, "Amy", "A", 101),
+        (105, "Anne", "A", 101),
+        (106, "Ron", "B", 101)
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show the DataFrame
+df.show()
+
+countdf = df.groupby("Manager").agg(count("Manager").alias("count"))
+
+--------------------------------------------------------------
+# first given is input MNGID = EMPID ,we need to get only manager details MNGID
+# Define the schema
+schema = StructType([
+        StructField("EMPID", IntegerType(), True),
+        StructField("EMNAME", StringType(), True),
+        StructField("MNGID", IntegerType(), True)
+])
+# first given is input MNGID = EMPID ,we need to get only manager details MNGID
+# Sample data
+data = [
+        (101, "Mary", 102),
+        (102, "Ravi", None),
+        (103, "Raj", 102),
+        (104, "Pete", 103),
+        (105, "Prasad", 103),
+        (106, "Ben", 103)
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+df2 = df.select("MNGID").dropDuplicates()
+df2.show()
+
+# Show the DataFrame
+df.show()
+
+manager = df.join(df2, df["EMPID"] == df2["MNGID"], "inner").select("EMPID", "EMNAME")
+
+manager.show()
+
+countdf.show()
+
+result = df.join(countdf, df["id"] == countdf["Manager"], "inner").where("count > 4")
+result.show()
+
+--------------------------------------------------------------
+
+
+
