@@ -1,0 +1,21 @@
+# Sample data
+data = [
+        ("sree_ramesh", 100),
+        ("chiran_tan", 200),
+        ("ram_krish", 300),
+        ("john_stan", 400),
+        ("mar_jany", 200)
+]
+
+# Column names
+columns = ["name", "sal"]
+
+# Create DataFrame
+df = spark.createDataFrame(data, columns)
+
+# Split the 'name' column by '_' and take the second part (after the '_')
+df_sorted = df.withColumn("name_substring", split(df['name'], '_')[1]) \
+        .orderBy("name_substring")
+
+# Show the sorted DataFrame
+df_sorted.show()
