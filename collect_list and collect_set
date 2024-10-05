@@ -1,0 +1,54 @@
+# Step 2: Define the schema
+schema = StructType([
+        StructField("id", IntegerType(), True),
+        StructField("subject", StringType(), True)
+])
+
+# Step 3: Create the data
+data = [
+        (1, "Spark"),
+        (1, "Scala"),
+        (1, "Hive"),
+        (2, "Scala"),
+        (3, "Spark"),
+        (3, "Scala")
+]
+
+# Step 4: Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Step 5: Show the DataFrame
+df.show()
+
+df1 = df.groupby("id").agg(collect_set("subject").alias("list"))
+df1.show()
+
+df2 = df.groupby("id").agg(collect_list("subject").alias("list"))
+df2.show()
+
++---+-------+
+| id|subject|
++---+-------+
+|  1|  Spark|
+|  1|  Scala|
+|  1|   Hive|
+|  2|  Scala|
+|  3|  Spark|
+|  3|  Scala|
++---+-------+
+
++---+--------------------+
+| id|                list|
++---+--------------------+
+|  1|[Scala, Spark, Hive]|
+|  3|      [Scala, Spark]|
+|  2|             [Scala]|
++---+--------------------+
+
++---+--------------------+
+| id|                list|
++---+--------------------+
+|  1|[Spark, Scala, Hive]|
+|  3|      [Spark, Scala]|
+|  2|             [Scala]|
++---+--------------------+
