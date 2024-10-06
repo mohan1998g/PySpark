@@ -1,0 +1,43 @@
+stack(n, col1, val1, col2, val2, .....) 
+1. It is used with selectExpr 
+2. It is used to transform mltiple columns into rows essentially performing pivot and unpivot operations.
+3. This is useful when you want to restructure data from wide to long format, where multiple columns are stacked into rows
+
+----------------------------------------------------------------
+
+data = [("prod1", 100, 150, 200), ("prod2", 200, 250, 300), ("prod3", 300, 350, 400)]
+
+columns = ["product", "sales_Q1", "sales_Q2", "sales_Q3"]
+df = spark.createDataFrame(data, columns)
+
+# Unpivot the data using selectExpr
+unpivoted_df = df.selectExpr("product",
+                             "stack(3, 'sales_Q1', sales_Q1, 'sales_Q2', sales_Q2, 'sales_Q3', sales_Q3) as (quarter, sales)")
+
+# Show the result
+unpivoted_df.show()
+
+----------------------------------------------------------------
+
+data = [("12-17-2011",10,24),
+        ("02-14-2011",20,56),
+        ("10-28-2011",30,75),
+        ("07-14-2011",40,23),
+        ("01-17-2011",70,56),
+        ("05-17-2011",40,26),
+        ("05-29-2011",63,27),
+        ("06-18-2011",34,64),
+        ("02-08-2011",55,25),
+        ("03-13-2011",67,87),
+        ("02-25-2011",89,85),
+        ("10-20-2011",88,57),
+        ("05-28-2011",34,47),
+        ("10-18-2011",56,86),
+        ("11-18-2011",24,37)]
+
+df = spark.createDataFrame(data, ["date", "salesA", "salesB"])
+
+df.show()
+
+unpivot = df.selectExpr("date", "stack(2, 'A', salesA, 'B', salesB) as (sa, sb)")
+unpivot.show()
