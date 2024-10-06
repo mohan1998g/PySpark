@@ -1,0 +1,23 @@
+# Sample input data (from the image)
+data = [
+        ("E001", "John works at ABC Corp. Contact: 9876543210"),
+        ("E002", "Anna's email is anna.smith@gmail.com. Her phone number is 9123456789"),
+        ("E003", "No contact information available."),
+        ("E004", "Reach me at 9234567890 or via mail alice.johnson@xyz.co.uk")
+]
+
+# Define schema and create DataFrame
+columns = ["employee_id", "contact_details"]
+df = spark.createDataFrame(data, columns)
+
+# Define regex patterns for phone numbers and email addresses
+phone_pattern = r'(\d{10})'
+email_pattern = r'([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})'
+
+# Extract phone number and email address
+df1 = (df.withColumn("phone_number", regexp_extract(col("contact_details"), phone_pattern, 0)) \
+        .withColumn("email_id", regexp_extract(col("contact_details"), email_pattern, 0))
+       .drop("contact_details"))
+
+# Handle NULL values where no phone number or email was found
+df1.show()
