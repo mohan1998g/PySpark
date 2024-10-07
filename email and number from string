@@ -21,3 +21,7 @@ df1 = (df.withColumn("phone_number", regexp_extract(col("contact_details"), phon
 
 # Handle NULL values where no phone number or email was found
 df1.show()
+
+df2 = df1.replace("", 'None')
+df2.show()
+
