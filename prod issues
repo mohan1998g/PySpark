@@ -320,3 +320,50 @@ Resource Management: Optimize resource management through YARN configurations an
 Data Validation: Use checksums or row counts to validate data accuracy during and after transfers.
 
 
+Known Issues in Apache Spark
+Learn about the known issues in Spark, the impact or changes to the functionality, and the workaround.
+
+CDPD-60862: Rolling restart fails during ZDU when DDL operations are in progress
+During a Zero Downtime Upgrade (ZDU), the rolling restart of services that support Data Definition Language (DDL) statements might fail if DDL operations are in progress during the upgrade. As a result, ensure that you do not run DDL statements during ZDU.
+
+The following services support DDL statements:
+Impala
+Hive – using HiveQL
+Spark – using SparkSQL
+HBase
+Phoenix
+Kafka
+Data Manipulation Lanaguage (DML) statements are not impacted and can be used during ZDU. Following the successful upgrade, you can resume running DDL statements.
+
+None. Cloudera recommends modifying applications to not use DDL statements for the duration of the upgrade. If the upgrade is already in progress, and you have experienced a service failure, you can remove the DDLs in-flight and resume the upgrade from the point of failure.
+CDPD-67517: Spark3 tests are failing if /tmp is mounted as noexec.
+Map the tmpdir to a writable path in spark3-conf/spark-defaults.conf using the following steps:
+In the Cloudera Data Platform (CDP) Management Console, go to Data Hub Clusters.
+Find and select the cluster you want to configure.
+Click the link for the Cloudera Manager URL.
+Go to the Spark service.
+Click the Configuration tab.
+Select Scope > Gateway.
+Select Category > Advanced.
+Locate the Spark Client Advanced Configuration Snippet (Safety Valve) for spark3-conf/spark-defaults.conf_client_config_safety_valve property.
+Map the tmpdir to a writable path:
+spark.driver.extraJavaOptions=-Djava.io.tmpdir=/var/tmp
+spark.executor.extraJavaOptions=-Djava.io.tmpdir=/var/tmp
+Enter a Reason for change, and then click Save Changes to commit the changes.
+Deploy the client configuration.
+CDPD-23817: In the upgraded Cluster, the permission of /tmp/spark is restricted due to the HDP configuration hive.exec.scratchdir=/tmp/spark.
+If you are using the /tmp/spark directory in the CDP cluster, you must provide the required additional Policies/ACL permissions.
+CDPD-22670 and CDPD-23103: There are two configurations in Spark, "Atlas dependency" and "spark_lineage_enabled", which are conflicted. The issue is when Atlas dependency is turned off but spark_lineage_enabled is turned on.
+Run Spark application, Spark will log some error message and cannot continue. That can be restored by correcting the configurations and restarting Spark component with distributing client configurations.
+CDPD-23007: Mismatch in the Spark Default DB Location. In HDP 3.1.5, hive_db entities have one attribute - 'location' which is configured to the '/managed' path. In fresh install of CDP 7.1.7, hive_db entities now have 2 attributes 'location' configured to '/external' path and 'managedLocation' configured to '/managed' path. In. the AM2CM migration (HDP 3.1.5 -> CDP 7.1.7), the 'location' attribute from hive_db entities in HDP 3.1.5 comes unaltered to CDP 7.1.7 and hence maps to '/managed' path.
+This issue arises only if you are upgrading from HDP 3.1.5 to CDP 7.1.7. If you are performing a fresh install of CDP 7.1.7, you can ignore this issue.
+None
+CDPD-217: The Apache Spark connector is not supported
+The old Apache Spark - Apache HBase Connector (shc) is not supported in CDP releases.
+Use the new HBase-Spark connector shipped in CDP release.
+CDPD-3038: Launching pyspark displays several HiveConf warning messages
+When pyspark starts, several Hive configuration warning messages are displayed, similar to the following:
+23/08/02 08:37:26 WARN conf.HiveConf: HiveConf of name hive.metastore.runworker.in does not exist
+23/08/02 08:37:26 WARN conf.HiveConf: HiveConf of name hive.masking.algo does not exist
+23/08/02 08:37:34 WARN conf.HiveConf: HiveConf of name hive.metastore.runworker.in does not exist
+23/08/02 08:37:34 WARN conf.HiveConf: HiveConf of name hive.masking.algo does not exist
