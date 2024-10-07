@@ -1,0 +1,26 @@
+# Sample data from the image
+data = [
+        (1, "rama", 40),
+        (2, "ashok", None),
+        (3, None, None),
+        (4, "radha", 20)
+]
+
+# Define the schema (column names)
+columns = ["srno", "name", "age"]
+
+# Create the DataFrame
+df = spark.createDataFrame(data, columns)
+
+# Show the created DataFrame
+df.show()
+
+# 1. Display rows with no null values
+non_null_df = df.filter(F.col("srno").isNotNull() & F.col("name").isNotNull() & F.col("age").isNotNull())
+non_null_df.show()
+
+# 2. Display rows where at least two columns have non-null values
+two_non_null_df = df.filter((F.col("srno").isNotNull().cast("int") + F.col("name").isNotNull().cast("int") + F.col("age").isNotNull().cast("int")) >= 2)
+two_non_null_df.show()
+
+
