@@ -1,0 +1,42 @@
+# Sample data
+data = [
+        ("Gaurav", "Sales", 90000),
+        ("Balu", "Sales", 86000),
+        ("Nakul", "Sales", 81000),
+        ("Pavithra", "Finance", 90000),
+        ("Raman", "Finance", 83000),
+        ("Narendra", "Finance", 83000),
+        ("Sravan", "Marketing", 80000),
+        ("Kumar", "Marketing", 91000),
+        ("Sarah", "Marketing", 95000),
+        ("Raman", "Finance", 83000),  # Duplicate
+        ("Narendra", "Finance", 83000),  # Duplicate
+        ("Sravan", "Marketing", 80000),  # Duplicate
+        ("Kumar", "Marketing", 91000),  # Duplicate
+        ("Sarah", "Marketing", 95000)  # Duplicate
+]
+
+# Define the schema (column names)
+columns = ["employee", "department", "salary"]
+
+# Create the DataFrame
+df = spark.createDataFrame(data, columns)
+
+# Show the original DataFrame
+print("Original DataFrame:")
+df.show()
+
+# Method 1: Removing duplicates using SQL
+df.createOrReplaceTempView("employees")
+
+# SQL to select distinct rows
+distinct_df_sql = spark.sql("SELECT DISTINCT employee, department, salary FROM employees")
+
+print("DataFrame after removing duplicates using SQL:")
+distinct_df_sql.show()
+
+# Method 2: Removing duplicates using PySpark DSL
+distinct_df_dsl = df.dropDuplicates()
+
+print("DataFrame after removing duplicates using PySpark DSL:")
+distinct_df_dsl.show()
