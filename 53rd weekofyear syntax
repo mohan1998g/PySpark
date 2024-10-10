@@ -1,0 +1,9 @@
+df = spark.createDataFrame([(y, "04/01/"+str(y)+"") for y in range(1990, 2100)], ["id", "year"])
+
+df.show()
+
+datecol = (df.withColumn("date", to_date("year", "dd/mm/yyyy"))
+           .withColumn("week_number", weekofyear("date"))
+           .filter("week_number = 1").drop("year"))
+
+datecol.show()
