@@ -37,7 +37,7 @@ df = spark.createDataFrame(data, schema=schema)
 # Show the DataFrame
 df.show()
 df.cache()
-# To count the nulls
+# To count the nulls column wise
 
 # Method1
 countofnulls = df.select([count(when(col(i).isNull(), i)).alias(i) for i in df.columns])
@@ -71,3 +71,44 @@ for i in df.columns:
 25.0
 30.0
 20.0
+
+
+# Count the nulls row wise
+
+# Sum the number of non-null values in each row
+non_null_exprs = [when(col(c).isNotNull(), 1).otherwise(0) for c in df.columns]
+
+# Sum all the non-null counts using reduce and the `+` operator
+from functools import reduce
+
+df_with_non_null_count = df.withColumn(
+        "non_null_count",
+        reduce(lambda a, b: a + b, non_null_exprs)
+)
+
+df_with_non_null_count.show()
+
++-------+-------+-------+-------+-------+--------------+
+|Column1|Column2|Column3|Column4|Column5|non_null_count|
++-------+-------+-------+-------+-------+--------------+
+|    2.0|   10.0|  100.0|   NULL|10000.0|             4|
+|   NULL|   NULL|   NULL| 1000.0|10000.0|             2|
+|    2.0|   30.0|   NULL|   NULL|   NULL|             2|
+|    1.0|   20.0|   NULL|   NULL|30000.0|             3|
+|   NULL|   NULL|  100.0| 2000.0|10000.0|             3|
+|   NULL|   10.0|  200.0| 2000.0|30000.0|             4|
+|    3.0|   20.0|   NULL| 2000.0|20000.0|             4|
+|   NULL|   NULL|  200.0|   NULL|10000.0|             2|
+|    3.0|   20.0|  200.0| 3000.0|   NULL|             4|
+|   NULL|   20.0|  200.0| 2000.0|20000.0|             4|
+|    3.0|   30.0|  200.0| 1000.0|30000.0|             5|
+|   NULL|   10.0|  100.0| 2000.0|20000.0|             4|
+|    3.0|   20.0|  200.0| 2000.0|30000.0|             5|
+|   NULL|   30.0|   NULL| 2000.0|30000.0|             3|
+|   NULL|   20.0|  200.0|   NULL|   NULL|             2|
+|   NULL|   20.0|  100.0| 2000.0|20000.0|             4|
+|    1.0|   NULL|  300.0| 1000.0|   NULL|             3|
+|    1.0|   30.0|  200.0| 1000.0|30000.0|             5|
+|    3.0|   NULL|  300.0|   NULL|10000.0|             3|
+|    2.0|   10.0|  200.0| 2000.0|30000.0|             5|
++-------+-------+-------+-------+-------+--------------+
