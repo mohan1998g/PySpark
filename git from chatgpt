@@ -1,0 +1,235 @@
+What is Git?
+Git is a distributed version control system designed to handle everything from small to very large projects with speed and efficiency. Git allows multiple developers to work on a project simultaneously without overwriting each other’s work. It tracks changes, facilitates collaboration, and manages versions.
+
+Basic Git Concepts:
+Repository (Repo): A directory that contains all the project files and the history of all changes made to them.
+Commit: A saved state of files in the repository. Each commit has a unique ID (hash).
+Branch: A pointer to a commit. Branches allow multiple developers to work on separate parts of a project simultaneously.
+Merge: Combining changes from one branch into another.
+Remote Repository: A version of your project that is hosted on the internet or network (like GitHub, GitLab).
+Staging Area (Index): A middle area where you can stage changes before committing them.
+Git Configuration
+Before using Git, set up your identity.
+
+1. Set Your Username
+ 
+git config --global user.name "Your Name"
+2. Set Your Email
+ 
+git config --global user.email "you@example.com"
+3. Check Configuration
+ 
+git config --list
+Creating a Git Repository
+1. Initialize a Git Repository
+ 
+git init
+Creates a new Git repository in the current directory.
+
+2. Clone an Existing Repository
+ 
+git clone https://github.com/user/repo.git
+Clones the repository from a remote location to your local machine.
+
+Basic Commands
+1. Add Files to Staging
+ 
+git add <file>
+Adds files from the working directory to the staging area.
+
+To add all files:
+
+ 
+git add .
+2. Commit Changes
+ 
+git commit -m "Commit message"
+Commits changes from the staging area to the local repository.
+
+3. Check Status
+ 
+git status
+Shows the status of the working directory and staging area.
+
+4. View Commit History
+ 
+git log
+Displays the commit history for the repository.
+
+Branching and Merging
+1. Create a New Branch
+ 
+git branch <branch-name>
+Creates a new branch called <branch-name>.
+
+2. Switch to a Branch
+ 
+git checkout <branch-name>
+Switches to the specified branch.
+
+Alternatively, you can use:
+
+ 
+git switch <branch-name>
+3. Create and Switch to a Branch
+ 
+git checkout -b <branch-name>
+Creates and switches to the new branch.
+
+4. Merge Branches
+ 
+git merge <branch-name>
+Merges the specified branch into the current branch.
+
+5. Delete a Branch
+ 
+git branch -d <branch-name>
+Deletes a branch that has already been merged.
+
+To force delete:
+
+ 
+git branch -D <branch-name>
+Remote Repositories
+1. Add a Remote Repository
+ 
+git remote add origin <repository-URL>
+Associates a remote repository with the local one.
+
+2. Push Changes to Remote
+ 
+git push origin <branch-name>
+Pushes the committed changes from the local branch to the remote branch.
+
+3. Pull Changes from Remote
+ 
+git pull origin <branch-name>
+Fetches and merges changes from the remote branch to your local branch.
+
+4. View Remote Repositories
+ 
+git remote -v
+Lists all remote repositories associated with the local repository.
+
+Working with Tags
+1. Create a Tag
+ 
+git tag -a v1.0 -m "Version 1.0"
+Creates an annotated tag.
+
+2. Push Tags to Remote
+ 
+git push origin v1.0
+Pushes the tag to the remote repository.
+
+3. View Tags
+ 
+git tag
+Lists all tags in the repository.
+
+4. Delete a Tag
+ 
+git tag -d <tag-name>
+Deletes a local tag.
+
+To delete a remote tag:
+
+ 
+git push origin --delete <tag-name>
+Undoing Changes
+1. Discard Local Changes (Before Commit)
+ 
+git checkout -- <file>
+Reverts changes in the working directory to the last commit.
+
+2. Unstage a File
+ 
+git reset <file>
+Removes the file from the staging area.
+
+3. Amend Last Commit
+ 
+git commit --amend -m "New commit message"
+Allows you to modify the previous commit (useful for fixing commit messages or adding missed changes).
+
+4. Revert a Commit
+ 
+git revert <commit-hash>
+Creates a new commit that undoes the changes made by a previous commit.
+
+Rebasing
+1. Start a Rebase
+ 
+git rebase <branch-name>
+Re-applies commits on top of another base tip.
+
+2. Abort a Rebase
+ 
+git rebase --abort
+Cancels the rebase and restores the original branch state.
+
+3. Skip a Commit During Rebase
+ 
+git rebase --skip
+Skips the current commit during a rebase.
+
+Stashing
+1. Stash Changes
+ 
+git stash
+Temporarily saves your work and cleans your working directory.
+
+2. Apply Stash
+ 
+git stash apply
+Applies the stashed changes to the working directory.
+
+3. Drop Stash
+ 
+git stash drop
+Removes a stash from the stash list.
+
+Git Log and Aliases
+1. Pretty Log (Simple Format)
+ 
+git log --oneline --graph --decorate
+Displays a compact graphical log of your commits.
+
+2. Set Up Aliases
+ 
+git config --global alias.<alias-name> "<command>"
+For example:
+
+ 
+git config --global alias.st "status"
+Now you can use git st instead of git status.
+
+Git Collaboration Workflow Example
+1. Clone the repository:
+
+ 
+git clone <repository-URL>
+2. Create a new branch for your feature:
+
+ 
+git checkout -b feature-branch
+3. Add and commit your changes:
+
+ 
+git add .
+git commit -m "Added feature"
+4. Push your branch to the remote repository:
+
+ 
+git push origin feature-branch
+5. Open a pull request (PR) on GitHub/GitLab.
+
+6. After the code is reviewed, merge the branch:
+
+ 
+git checkout main
+git merge feature-branch
+7. Delete the feature branch:
+
+ 
+git branch -d feature-branch
