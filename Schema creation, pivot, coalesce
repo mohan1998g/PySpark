@@ -105,3 +105,11 @@ pivot = (pivot1.withColumn("Bounced", expr("coalesce(Bounced, 0)"))
          .withColumn("Open", expr("coalesce(open, 0)")))
 
 pivot.show()
+
+
+other = pivot1.fillna(0)
+other.show()
+
+other1 = pivot1.fillna(0, subset=['Bounced', 'Open', 'Sent'])
+other1.show()
+
