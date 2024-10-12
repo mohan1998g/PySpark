@@ -1,0 +1,24 @@
+# Define schema
+schema = StructType([
+        StructField("ID", StringType(), True),
+        StructField("Name", StringType(), True)
+])
+
+# Data
+data = [
+        ("A101", "John F Thomas"),
+        ("B234", "Tom Moody Smith"),
+        ("T564", "Micheal K Sean")
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show DataFrame
+df.show()
+
+split = (df.withColumn("First", split("Name", " ")[0])
+         .withColumn("Middle", split("Name", " ")[1])
+         .withColumn("Last", split("Name", " ")[2]))
+
+split.show()
