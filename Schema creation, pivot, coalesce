@@ -72,3 +72,36 @@ final.show()
 |          4|4000.0|
 +-----------+------+
 
+----------------------------------------------------------------------------------------------------
+
+# Define schema
+schema = StructType([
+        StructField("communication_code", StringType(), True),
+        StructField("event_type", StringType(), True)
+])
+
+# Data
+data = [
+        ("com1", "Sent"),
+        ("com2", "Open"),
+        ("com3", "Sent"),
+        ("com1", "Bounced"),
+        ("com3", "Bounced"),
+        ("com2", "Sent"),
+        ("com2", "Sent"),
+        ("com1", "Bounced")
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show DataFrame
+df.show()
+
+pivot1 = df.groupby("communication_code").pivot("event_type").agg(count("event_type"))
+
+pivot = (pivot1.withColumn("Bounced", expr("coalesce(Bounced, 0)"))
+         .withColumn("Sent", expr("coalesce(Sent, 0)"))
+         .withColumn("Open", expr("coalesce(open, 0)")))
+
+pivot.show()
