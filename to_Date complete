@@ -20,7 +20,9 @@ unique = df.withColumn('Date', to_date(df['Date'], "yyyy-mm-dd")).groupBy("Date"
 
 unique.show()
 
-# to_date(col("Date")) = to_date("Date") = col('Date').cast("Date") = to_date(df['Date'], "yyyy-mm-dd")
-# to_date(df['Date'], "YYYY-MM-DD")  != to_date(df['Date'], "yyyy-mm-dd") Capital letters will throw an error
+# to_date(col("Date")) = to_date("Date") = col('Date').cast("Date") = to_date(df['Date'], "yyyy-MM-dd")
+# to_date(df['Date'], "YYYY-MM-DD")  != to_date(df['Date'], "yyyy-MM-dd") Capital letters will throw an error
 
-# yyyy-mm-dd is based on the pattern of the date string, it might even be yyyymmdd or dddmmyyyy. It's the input format not the desired format
+# yyyy-MM-dd is based on the pattern of the date string, it might even be yyyyMMdd or dddMMyyyy. It's the input format not the desired format
+
+month has to be capital M. small m refers to minutes
