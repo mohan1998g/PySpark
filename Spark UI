@@ -1,0 +1,15 @@
+To view the Spark UI through IntelliJ
+
+add the below 3 lines to the end of the code in intellij
+
+import time
+time.sleep(600)
+spark.stop()
+
+This code will not kill the execution for 600sec.
+
+go to 
+
+localhost:4040
+
+You can see the spark UI there.
