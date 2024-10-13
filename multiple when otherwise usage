@@ -28,3 +28,24 @@ agegroup1.show()
 #                           .when("'age'>= 60", 'Senior').otherwise(("adult")))
 #
 # The error is [NOT_COLUMN] Argument `condition` should be a Column, got str.
+
+# Sample data
+data = [
+        (1, "Prateek", 45),
+        (2, "Vidya", 32),
+        (3, "Vikash", 17),
+        (4, "Srikanth", 48),
+        (5, "Jatin", 29),
+        (6, "Srinivas", 30)
+]
+
+# Create DataFrame
+columns = ["id", "Name", "Marks"]
+df = spark.createDataFrame(data, columns)
+
+# Show the DataFrame
+df.show()
+
+grade = df.withColumn("grade", when(df['Marks'] > 40, 'A').when(df['Marks']> 30, 'B').otherwise('C'))
+
+grade.show()
