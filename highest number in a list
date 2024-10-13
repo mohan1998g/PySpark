@@ -1,0 +1,45 @@
+a. Using reduce() Function in PySpark
+In PySpark, you can use the reduce() method of the RDD to find the highest number in a distributed fashion.
+
+python
+Copy code
+from pyspark.sql import SparkSession
+
+# Initialize Spark session
+spark = SparkSession.builder.appName("find_max_reduce").getOrCreate()
+
+# Create an RDD from the list of numbers
+numbers = [12, 45, 23, 67, 34, 89, 15, 78, 91, 56]
+rdd = spark.sparkContext.parallelize(numbers)
+
+# Use reduce to find the highest number
+max_number = rdd.reduce(lambda x, y: x if x > y else y)
+
+print("Highest number using reduce in PySpark:", max_number)
+Output:
+
+python
+Copy code
+Highest number using reduce in PySpark: 91
+b. Using a Loop in PySpark
+In PySpark, you can collect the RDD back to the driver and use a loop in Python to find the highest number.
+
+python
+Copy code
+# Collect the RDD to a list on the driver
+numbers_list = rdd.collect()
+
+# Initialize max_number with the first element
+max_number = numbers_list[0]
+
+# Loop through the list to find the highest number
+for number in numbers_list:
+    if number > max_number:
+        max_number = number
+
+print("Highest number using loop in PySpark:", max_number)
+Output:
+
+python
+Copy code
+Highest number using loop in PySpark: 91
