@@ -62,3 +62,23 @@ explodesplit.show()
 |   m1,m2,m3|
 |m1,m2,m3,m4|
 +-----------+
+
+------------------------------------------
+
+data = [
+    ("James,Smith",["Java","Scala","C++"],["Spark","Java"],"OH","CA"),
+    ("Michael,Rose,",["Spark","Java","C++"],["Spark","Java"],"NY","NJ"),
+    ("Robert,Williams",["CSharp","VB"],["Spark","Python"],"UT","NV")
+]
+
+columns = ['Name', 'Languages', 'Technology', 'City','State']
+
+df = spark.createDataFrame(data, columns)
+
+df.show()
+
+result = df.withColumn("Technology",expr("explode(Technology)")).drop('City', 'State', 'Languages')
+
+result.show()
+
+
