@@ -1,0 +1,69 @@
+In PySpark, date formats follow the patterns defined by Java's SimpleDateFormat. Here are some commonly used symbols for formatting dates:
+
+Date Formatting Symbols:
+Symbol	Meaning	Example
+y	Year	2024, 24
+M	Month in year (1-12)	1, 12
+d	Day in month (1-31)	1, 15
+E	Day name in week	Mon, Tuesday
+D	Day in year (1-366)	345
+w	Week in year	27
+W	Week in month	2
+F	Day of week in month	1 (1st Monday of the month)
+a	AM/PM marker	AM, PM
+H	Hour in day (0-23)	0, 15
+h	Hour in AM/PM (1-12)	1, 11
+m	Minute in hour	0, 30
+s	Second in minute	0, 55
+S	Millisecond	978
+Z	Time zone offset	+0530, -0800
+Common Date Format Examples:
+Year-Month-Day
+
+Format: "yyyy-MM-dd"
+Example: 2024-10-13
+Day/Month/Year
+
+Format: "dd/MM/yyyy"
+Example: 13/10/2024
+Month/Day/Year
+
+Format: "MM/dd/yyyy"
+Example: 10/13/2024
+Day-Month-Year (Short Year)
+
+Format: "dd-MM-yy"
+Example: 13-10-24
+Full Date with Day Name
+
+Format: "EEEE, MMMM dd, yyyy"
+Example: Sunday, October 13, 2024
+Date with Time (24-hour format)
+
+Format: "yyyy-MM-dd HH:mm:ss"
+Example: 2024-10-13 14:30:00
+Date with Time (12-hour format with AM/PM)
+
+Format: "yyyy-MM-dd hh:mm:ss a"
+Example: 2024-10-13 02:30:00 PM
+ISO 8601 Date Format
+
+Format: "yyyy-MM-dd'T'HH:mm:ss'Z'"
+Example: 2024-10-13T14:30:00Z
+Example Usage in PySpark:
+python
+Copy code
+from pyspark.sql.functions import to_date
+
+# Example of converting date string to PySpark date type with different formats
+df = spark.createDataFrame([
+    ("1/1/2022",),
+    ("10/13/2024",)
+], ["Date"])
+
+# Convert using MM/dd/yyyy format
+df_with_date = df.withColumn("FormattedDate", to_date(df["Date"], "MM/dd/yyyy"))
+
+df_with_date.show()
+Adjusting for Time Zones:
+If you need to handle time zones or convert to a specific time zone, PySpark also supports working with timestamps (to_timestamp()) and time zones.
