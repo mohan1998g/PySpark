@@ -54,3 +54,21 @@ df2.groupBy("sales.year").pivot("sales.course").agg(first("sales.earnings")).sho
 # pivot_col – Name of the column to pivot.
 # values – List of values that will be translated to columns in the output DataFrame.
 
+proddata = [
+        ("WIPRO", "BUY", 400, 10),
+        ("WIPRO", "SALE", 500, 10),
+        ("TCS", "BUY", 300, 10),
+        ("TCS", "SALE", 300, 10),
+        ("IBM", "BUY", 200, 10),
+        ("IBM", "SALE", 250, 10)
+]
+columns = ["product_name", "transaction_type", "quantity", "price"]
+df = spark.createDataFrame(proddata, columns)
+df.show()
+
+totaldf = df.withColumn("total", expr("quantity * price"))
+totaldf.show()
+pivot = totaldf.groupby("product_name").pivot("transaction_type").agg(first(col("total")))
+pivot.show()
+netdf = pivot.withColumn("net", expr("SALE - BUY"))
+netdf.show()
