@@ -27,3 +27,25 @@ finaldf.selectExpr(
         "Won",
         "loss"
 ).show()
+
+
+-----------------------------------------------
+
+df1 = df.groupby("Winner").agg(count("Winner").alias("cnt"))
+
+df2 = df.groupby("Team_1").agg(count("Team_1").alias("teamcnt"))
+
+df3 = df.groupby("Team_2").agg(count("Team_2").alias("teamcnt"))
+
+df4 = df2.union(df3).select(initcap("Team_1").alias("team"),"teamcnt").groupby("team").agg(sum("teamcnt").alias("cnt1"))
+
+df1 = df1.select(initcap("Winner").alias("Winner"), "cnt")
+
+df5 = df4.join(df1,df4.team == df1.Winner, "left").drop("Winner").withColumnRenamed("cnt1","Played").withColumnRenamed("cnt","won")
+
+df5 = df5.withColumn("won",expr("case when won is null then 0 else won end"))
+
+df5= df5.withColumn("loose", expr("played - won"))
+
+df5.show()
+
