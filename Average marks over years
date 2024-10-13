@@ -1,0 +1,33 @@
+# Analyze the trend of average marks for each subject over the years.
+# Define the schema for the DataFrame
+schema = StructType([
+        StructField("Id", IntegerType(), True),
+        StructField("subject", StringType(), True),
+        StructField("Marks", IntegerType(), True),
+        StructField("year", IntegerType(), True)
+])
+
+# Data for the DataFrame
+data = [
+        (1, "M", 75, 1990),
+        (1, "M", 80, 1991),
+        (1, "M", 82, 1992),
+        (1, "M", 75, 1993),
+        (2, "M", 78, 1990),
+        (2, "M", 70, 1991),
+        (2, "M", 80, 1992),
+        (2, "M", 85, 1993),
+        (1, "P", 68, 1990),
+        (1, "P", 70, 1991),
+        (1, "P", 80, 1992),
+        (1, "P", 82, 1993)
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show the DataFrame
+df.show()
+
+df1 = df.groupby("year", "subject").agg(avg("Marks"))
+df1.show()
