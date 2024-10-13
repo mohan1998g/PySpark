@@ -1,0 +1,15 @@
+
+# Create a DataFrame from the list
+a = [1, 1, 2, 2, 3, 3, 3, 3]
+df = spark.createDataFrame([(i,) for i in a], ["value"])
+
+# Group by 'value' and count occurrences
+df_counts = df.groupBy("value").count()
+
+# Show the result
+df_counts.show()
+
+# Optionally, convert the result to a Python dictionary
+dict_a = {row['value']: row['count'] for row in df_counts.collect()}
+
+print(dict_a)
