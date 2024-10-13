@@ -1,0 +1,29 @@
+data = [
+        ("Ind", "SL", "Ind"),
+        ("SL", "AUS", "AUS"),
+        ("SA", "Eng", "Eng"),
+        ("Eng", "NZ", "NZ"),
+        ("AUS", "Ind", "Ind")
+]
+df = spark.createDataFrame(data, ["Team_1", "Team_2", "Winner"])
+
+df.show()
+
+df1=(df.withColumn("team1_win",expr("case when team_1=winner then 1 else 0 end"))
+     .withColumn("team1_loss",expr("case when team_1!= winner then 1 else 0 end"))
+     .withColumn("team2_win",expr("case when team_2=winner then 1 else 0 end"))
+     .withColumn("team2_loss",expr("case when team_2!= winner then 1 else 0 end")))
+
+df1.show()
+
+finaldf = df1.groupby("team_1").agg(
+        count("team_1").alias("played"),
+        sum("team1_win").alias("Won"),
+        sum("team1_loss").alias("loss"))
+
+finaldf.selectExpr(
+        "team_1 as team",
+        "played",
+        "Won",
+        "loss"
+).show()
