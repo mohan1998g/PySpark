@@ -1,0 +1,50 @@
+The ACID properties are a set of principles that guarantee reliable transactions in a database system. 
+ACID stands for Atomicity, Consistency, Isolation, and Durability, and these properties apply to various data management systems like SQL databases, Hive, and PySpark. 
+Here's how they are interpreted and handled in these systems:
+
+ACID in PySpark
+PySpark, the Python API for Apache Spark, works with distributed data and supports some ACID-like properties, 
+but Spark itself does not natively support full ACID compliance. However, modern Delta Lake and Hudi introduce ACID transactions in Spark. 
+Here's how Spark handles ACID properties:
+
+Atomicity:
+Definition: PySpark doesn’t inherently ensure atomicity across transformations and actions on RDDs/DataFrames. However, with Delta Lake, you can achieve atomicity.
+Delta Lake: Delta Lake (which runs on top of Apache Spark) ensures that either all changes in a transaction are written to disk or none of them are.
+Example: A MERGE or UPDATE operation in Delta Lake is atomic.
+Consistency:
+Definition: Data remains consistent in PySpark and adheres to the schema and rules defined at the start.
+PySpark: PySpark allows transformations to be applied consistently, but schema enforcement isn't as strict as SQL databases. 
+With Delta Lake, schema enforcement and schema evolution ensure consistency during write operations.
+Isolation:
+Definition: PySpark transformations are executed lazily and only materialized upon action (e.g., count(), show()). Delta Lake supports isolation.
+Delta Lake: Delta Lake supports serializable isolation, ensuring that changes made in one transaction are not visible to other transactions until committed.
+Durability:
+Definition: Changes in a Spark job may not be durable unless committed to a persistent storage layer.
+Delta Lake: Delta Lake writes data to a durable storage medium (like HDFS, S3, or local file systems) and guarantees that the data is durable even in case of failures.
+Transactional Support:
+PySpark + Delta Lake/Hudi: Both Delta Lake and Apache Hudi offer ACID properties to handle transactions in a distributed environment, 
+allowing you to manage data at scale with consistency and atomicity guarantees.
+Delta Lake Example:
+# Example of Delta Lake Transactional Update
+from delta.tables import DeltaTable
+
+# Create a Delta Table
+delta_table = DeltaTable.forPath(spark, "/path/to/delta-table")
+
+# Perform an update operation atomically
+delta_table.update(
+    condition = "id == 1",
+    set = { "value": "'updated_value'" }
+)
+
+Property	        SQL (Traditional Databases)	                 Hive (With ACID Tables)	                    PySpark (With Delta Lake/Hudi)
+Atomicity        	Fully supported via transactions	           Supported for transactional tables	          Supported with Delta Lake/Hudi
+Consistency	      Ensured via constraints and integrity	       Ensured via ORC tables & checks	            Ensured with Delta Lake schema enforcement
+Isolation	        Supported with isolation levels	             Supported via locks and partitions	          Serializable isolation with Delta Lake/Hudi
+Durability	      Guaranteed with write-ahead logging	         Guaranteed via HDFS and logs	                Durable with storage layers like HDFS, S3
+
+
+Summary:
+SQL databases (like MySQL, PostgreSQL) natively support all ACID properties for reliable transaction management.
+Hive has limited support for ACID transactions, focusing on insert/update/delete operations with transactional tables (usually ORC-formatted).
+PySpark itself doesn’t fully implement ACID properties, but with Delta Lake or Apache Hudi, you can get ACID-compliant transactions in a distributed environment.
