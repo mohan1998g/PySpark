@@ -1,0 +1,34 @@
+# Sample input data
+data = [
+    (1, 101, 500),
+    (1, 101, 300),
+    (1, 102, 500),
+    (2, 101, 1000),
+    (2, 102, 900),
+    (3, 101, 1000),
+    (3, 102, 1000)
+]
+
+# Define column names
+columns = ["store_id", "customer_id", "purchase_amt"]
+
+# Create DataFrame
+df = spark.createDataFrame(data, columns)
+
+# Show the DataFrame
+df.show()
+
+# Step 1: Calculate total purchase amount for each customer in each store
+df_total_purchase = df.groupBy("store_id", "customer_id").agg(sum("purchase_amt").alias("total_purchase"))
+
+# Step 2: Define a window specification to partition by store_id and order by total_purchase descending
+window_spec = Window.partitionBy("store_id").orderBy(col("total_purchase").desc())
+
+# Step 3: Use row_number() to assign a rank to each customer in each store based on total_purchase
+df_ranked = df_total_purchase.withColumn("dense_rank", dense_rank().over(window_spec))
+
+# Step 4: Filter the top customer (rank = 1) for each store
+df_top_customers = df_ranked.filter("dense_rank = 1").drop("dense_rank")
+
+# Show the result
+df_top_customers.show()
