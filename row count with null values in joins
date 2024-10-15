@@ -1,0 +1,111 @@
+schema1 = StructType([
+    StructField("colA", IntegerType(), True),
+    StructField("colB", IntegerType(), True)
+])
+
+schema2 = StructType([
+    StructField("colC", IntegerType(), True),
+    StructField("colD", IntegerType(), True)
+])
+
+# Define the data with integers
+data = [
+    (1, 1),
+    (2, 3),
+    (3, 1),
+    (3, None),
+    (None, 5),
+    (4, 4)
+]
+
+# Create the DataFrame
+df1 = spark.createDataFrame(data, schema=schema1)
+df2 = spark.createDataFrame(data, schema=schema2)
+
+# Show the DataFrame
+df1.show()
+
++----+----+
+|colA|colB|
++----+----+
+|   1|   1|
+|   2|   3|
+|   3|   1|
+|   3|NULL|
+|NULL|   5|
+|   4|   4|
++----+----+
+
+df2.show()
+
++----+----+
+|colC|colD|
++----+----+
+|   1|   1|
+|   2|   3|
+|   3|   1|
+|   3|NULL|
+|NULL|   5|
+|   4|   4|
++----+----+
+
+print("=============inner==================")
+df1.join(df2, df1["colB"] == df2["colC"], "inner").select("colA", "colB", "colC", "colD").show()
+
++----+----+----+----+
+|colA|colB|colC|colD|
++----+----+----+----+
+|   1|   1|   1|   1|
+|   3|   1|   1|   1|
+|   2|   3|   3|   1|
+|   2|   3|   3|NULL|
+|   4|   4|   4|   4|
++----+----+----+----+
+
+
+print("=============outer==================")
+df1.join(df2, df1["colB"] == df2["colC"], "outer").select("colA", "colB", "colC", "colD").show()
+
++----+----+----+----+
+|colA|colB|colC|colD|
++----+----+----+----+
+|   3|NULL|NULL|NULL|
+|NULL|NULL|NULL|   5|
+|   1|   1|   1|   1|
+|   3|   1|   1|   1|
+|NULL|NULL|   2|   3|
+|   2|   3|   3|   1|
+|   2|   3|   3|NULL|
+|   4|   4|   4|   4|
+|NULL|   5|NULL|NULL|
++----+----+----+----+
+
+print("=============left==================")
+df1.join(df2, df1["colB"] == df2["colC"], "left").select("colA", "colB", "colC", "colD").show()
+
++----+----+----+----+
+|colA|colB|colC|colD|
++----+----+----+----+
+|   3|NULL|NULL|NULL|
+|   1|   1|   1|   1|
+|   3|   1|   1|   1|
+|   2|   3|   3|NULL|
+|   2|   3|   3|   1|
+|NULL|   5|NULL|NULL|
+|   4|   4|   4|   4|
++----+----+----+----+
+
+print("=============right==================")
+df1.join(df2, df1["colB"] == df2["colC"], "right").select("colA", "colB", "colC", "colD").show()
+
++----+----+----+----+
+|colA|colB|colC|colD|
++----+----+----+----+
+|NULL|NULL|NULL|   5|
+|   3|   1|   1|   1|
+|   1|   1|   1|   1|
+|   2|   3|   3|   1|
+|   2|   3|   3|NULL|
+|   4|   4|   4|   4|
+|NULL|NULL|   2|   3|
++----+----+----+----+
