@@ -1,0 +1,53 @@
+# we have prod, country, employeee data
+print("============print prod data========")
+proddata = [
+        ("1","a","01/01/2020","31/12/2020","1","IND","Y","10"),
+        ("11", "b", "01/01/2021", "31/12/2021", "1", "US", "Y", "10"),
+        ("1", "c", "01/01/2022", "31/12/2022", "1", "IND", "Y", "10"),
+        ("25", "d", "01/01/2023", "31/12/2023", "1", "UK", "Y", "10"),
+        ("45", "a", "01/01/2024", "31/12/2024", "1", "IND", "Y", None)
+]
+
+dfProd = spark.createDataFrame(proddata,["empid","projcode","startdate","enddate","status","contrycode","empstatus","pcost"],1)
+dfProd1 = dfProd.withColumn("pcost",when(dfProd["pcost"]=="45",None).otherwise(dfProd["pcost"]))
+dfProd.show()
+dfProd1.show()
+
+print("============print country data========")
+countrydata = [
+        ("1","1a","IND","IND1"),
+        ("2", "2b",  "US", "US1"),
+        ("3", "3c",  "RS", "RS1"),
+        ("4", "4d",  "UK", "UK1")
+]
+
+dfContry = spark.createDataFrame(countrydata,["regioncode","region","contrycode","contry"],1)
+dfContry.show()
+
+dfResult = dfProd.join(dfContry,"contrycode","inner")
+dfResult.show()
+
+
+print("============print employee data========")
+empdata = [
+        ("1", "1-first name","1-second name"),
+        ("11", "11-first name","11-second name"),
+        ("25", "25-first name","25-second name"),
+        ("45", "45-first name","45-second name"),
+]
+
+dfEmp = spark.createDataFrame(empdata,["empid","empname", "empsecondname"],1)
+dfEmp.show()
+
+
+print("============print joined data========")
+dfResult = ((dfProd.join(
+        dfContry,"contrycode","inner")
+             .join(dfEmp,"empid","inner")
+             ))
+dfResult.show()
+
+print("============print employee country wise used project ========")
+dfResult = (dfResult.groupby("empid","contrycode").agg(sum("pcost").alias("pcost")))
+dfResult = dfResult.withColumn("pcost",expr("case when pcost is null then 0 else pcost end as totao"))
+dfResult.show()
