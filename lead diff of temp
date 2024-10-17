@@ -20,3 +20,15 @@ resultdf = (leaddf.filter(col("nextvalues").isNotNull())
             .orderBy(col("sensorid")))
 
 resultdf.show()
+
+
+SELECT sensorid,
+       timestamp,
+       ( newvalues - values ) AS values
+FROM  (SELECT *,
+              Lead(values, 1, 0)
+                OVER(
+                  partition BY sensorid
+                  ORDER BY values) AS newvalues
+       FROM   timetab)
+WHERE  newvalues != 0
