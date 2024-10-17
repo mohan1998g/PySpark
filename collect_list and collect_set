@@ -1,3 +1,4 @@
+
 # Step 2: Define the schema
 schema = StructType([
         StructField("id", IntegerType(), True),
@@ -52,3 +53,35 @@ df2.show()
 |  3|      [Spark, Scala]|
 |  2|             [Scala]|
 +---+--------------------+
+
+
+---------------------------------------------------------
+# address list for each customer
+
+# Define the schema
+schema = StructType([
+    StructField("custid", IntegerType(), True),
+    StructField("custname", StringType(), True),
+    StructField("address", StringType(), True)
+])
+
+# Define the data
+data = [
+    (1, "Mark Ray", "AB"),
+    (2, "Peter Smith", "CD"),
+    (1, "Mark Ray", "EF"),
+    (2, "Peter Smith", "GH"),
+    (2, "Peter Smith", "CD"),
+    (3, "Kate", "IJ")
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show DataFrame
+df.show()
+
+result = df.groupby("custid", "custname").agg(collect_list("address"))
+result.show()
+
+spark.sql("select custid,custname,collect_set(address) as address from custtab group by custid,custname order by custid").show()
