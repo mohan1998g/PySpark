@@ -247,3 +247,29 @@ Semi Join	Returns rows from df1 that have matching rows in df2.	Only rows from d
 Anti Join	Returns rows from df1 that have no matching rows in df2.	Rows from df1 without a match in df2.
 Cross Join	Returns the Cartesian product of both DataFrames.	Every combination of rows from df1 and df2.
 These joins offer powerful ways to combine and manipulate data in PySpark for complex analytical tasks.
+
+
+
+______________________________________
+
+When we join 2 tables, all the columns will appear and there might be duplicates. We can remove the duplicates by writing them in join condition or we can use select condition
+
+data = [(1, "Tim", 24, "Kerala", "India"),
+        (2, "Asman", 26, "Kerala", "India")]
+df1 = spark.createDataFrame(data, ["emp_id", "name", "age", "state", "country"])
+df1.show()
+
+data2 = [(1, "Tim", 24, "Comcity"),
+         (2, "Asman", 26, "bimcity")]
+df2 = spark.createDataFrame(data2, ["emp_id", "name", "age", "address"])
+df2.show()
+
+findf = df1.join(df2, ["emp_id", "name", "age"], "outer")
+findf.show()
+
+this syntax doesn't work
+
+findf = df1.join(df2, "emp_id", "outer").select("emp_id", "name", "age", "state", "country", "address")
+findf.show()
+
+pyspark.errors.exceptions.captured.AnalysisException: [AMBIGUOUS_REFERENCE] Reference `name` is ambiguous, could be: [`name`, `name`].
