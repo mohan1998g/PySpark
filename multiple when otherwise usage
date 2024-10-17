@@ -49,3 +49,33 @@ df.show()
 grade = df.withColumn("grade", when(df['Marks'] > 40, 'A').when(df['Marks']> 30, 'B').otherwise('C'))
 
 grade.show()
+
+
+------------------------------------------------------------
+
+# Define the schema
+schema = StructType([
+        StructField("emp_id", IntegerType(), True),
+        StructField("emp_name", StringType(), True),
+        StructField("salary", IntegerType(), True)
+])
+
+# Define the data
+data = [
+        (1, "Jhon", 4000),
+        (2, "Tim David", 12000),
+        (3, "Json Bhrendroff", 7000),
+        (4, "Jordon", 8000),
+        (5, "Green", 14000),
+        (6, "Brewis", 6000)
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show DataFrame
+df.show()
+
+gradedf = df.withColumn("grade", when(col("salary")>10000, "A").when(col("salary") <5000, 'C').otherwise('B'))
+
+gradedf.show()
