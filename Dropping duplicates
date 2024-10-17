@@ -26,6 +26,7 @@ df = spark.createDataFrame(data, columns)
 print("Original DataFrame:")
 df.show()
 
+
 # Method 1: Removing duplicates using SQL
 df.createOrReplaceTempView("employees")
 
@@ -40,3 +41,32 @@ distinct_df_dsl = df.dropDuplicates()
 
 print("DataFrame after removing duplicates using PySpark DSL:")
 distinct_df_dsl.show()
+
+
+______________________________________________________
+
+# Define the schema
+schema = StructType([
+        StructField("id", IntegerType(), True),
+        StructField("name", StringType(), True),
+        StructField("dept", StringType(), True),
+        StructField("salary", IntegerType(), True)
+])
+
+# Define the data
+data = [
+        (1, "Jhon", "Testing", 5000),
+        (2, "Tim", "Development", 6000),
+        (3, "Jhon", "Development", 5000),
+        (3, "Jhon", "Development", 5000),
+        (4, "Sky", "Prodcution", 8000),
+        (4, "Sky", "Prodcution", 8000)
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show DataFrame
+df.show()
+
+df.dropDuplicates(["id"]).show()
