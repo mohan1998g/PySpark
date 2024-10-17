@@ -57,3 +57,29 @@ It renames the columns to Country1 and Country2 for clarity, so the resulting Da
 What This Code Does:
 It generates all possible pairs of different countries, where Country1 comes lexicographically before Country2.
 This prevents reverse duplicate pairs like ("India", "Srilanka") and ("Srilanka", "India") from appearing; only the lexicographically smaller combination will be retained.
+
+
+----------------------------------------------
+# Define the schema
+schema = StructType([
+    StructField("teams", StringType(), True)
+])
+
+# Define the data
+data = [
+    ("India",),
+    ("Pakistan",),
+    ("SriLanka",)
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show DataFrame
+df.show()
+
+joindf = (df.alias("t1").join(df.alias("t2"), col("t1.teams") > col("t2.teams"))
+          .select(col("t1.teams").alias("Country1"), col("t2.teams").alias("Country2"))
+          .withColumn("team", expr("concat(Country1,' ' ,'Vs',' ', Country2)"))
+          .select("team"))
+joindf.show()
