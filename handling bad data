@@ -1,0 +1,26 @@
+There are three modes available when reading a file in Spark:
+
+PERMISSIVE : This is the default mode. It attempts to parse all the rows in the file, and if it encounters any malformed data or parsing errors, it sets the problematic fields to null and adds a new column called _corrupt_record to store the entire problematic row as a string.
+
+DROPMALFORMED : This mode drops the rows that contain malformed data or cannot be parsed according to the specified schema. It only includes the rows that can be successfully parsed.
+
+FAILFAST : This mode throws an exception and fails immediately if it encounters any malformed data or parsing errors in the file. It does not process any further rows after the first encountered error.
+
+You can specify the desired mode using the mode option when reading a file, such as option("mode", "PERMISSIVE") or option("mode", "FAILFAST"). If the mode option is not explicitly set, it defaults to PERMISSIVE.
+
+
+emp_no,emp_name,dep
+101,Murugan,HealthCare
+Invalid Entry,Description: Bad Record Entry
+102,Kannan,Finance
+103,Mani,IT
+Connection lost,Description: Poor Connection
+104,Pavan,HR
+Bad Record,Description:Corrupt Record
+
+
+df = spark.read.format("csv").option("header", "true") \
+        .option("mode", "DROPMALFORMED") \
+        .load("file1.csv")
+df.show()
+  
