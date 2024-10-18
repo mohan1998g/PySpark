@@ -86,3 +86,35 @@ df2.show()
 |  4|   D|4000|10000|
 +---+----+----+-----+
 
+-----------------------------------------------------------------------------
+
+# Define the schema
+schema = StructType([
+    StructField("pid", IntegerType(), True),
+    StructField("date", StringType(), True),
+    StructField("price", IntegerType(), True)
+])
+
+# Define the data
+data = [
+    (1, "26-May", 100),
+    (1, "27-May", 200),
+    (1, "28-May", 300),
+    (2, "29-May", 400),
+    (3, "30-May", 500),
+    (3, "31-May", 600)
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show DataFrame
+df.show()
+
+wn = Window.partitionBy("pid").orderBy("price")
+finaldf = df.withColumn("new_price", sum("price").over(wn))
+finaldf.show()
+
+# Through SQL
+df.createOrReplaceTempView("ordertab")
+spark.sql("select pid,date,price, sum(price) over(partition by(pid) order by(price)) as new_price from ordertab").show()
