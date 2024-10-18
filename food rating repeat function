@@ -1,0 +1,51 @@
+# Define the schema for the item DataFrame
+item_schema = StructType([
+        StructField("food_id", IntegerType(), True),
+        StructField("food_item", StringType(), True)
+])
+
+# Define the item data
+item_data = [
+        (1, "Veg Biryani"),
+        (2, "Veg Fried Rice"),
+        (3, "Kaju Fried Rice"),
+        (4, "Chicken Biryani"),
+        (5, "Chicken Dum Biryani"),
+        (6, "Prawns Biryani"),
+        (7, "Fish Birayani")
+]
+
+# Create the item DataFrame
+item_df = spark.createDataFrame(item_data, item_schema)
+
+# Define the schema for the rating DataFrame
+rating_schema = StructType([
+        StructField("food_id", IntegerType(), True),
+        StructField("rating", IntegerType(), True)
+])
+
+# Define the rating data
+rating_data = [
+        (1, 5),
+        (2, 3),
+        (3, 4),
+        (4, 4),
+        (5, 5),
+        (6, 4),
+        (7, 4)
+]
+
+# Create the rating DataFrame
+rating_df = spark.createDataFrame(rating_data, rating_schema)
+
+# Show both DataFrames
+item_df.show()
+rating_df.show()
+
+joindf = item_df.join(rating_df, "food_id", "inner")
+joindf.show()
+
+# stardf = joindf.select("food_id", "food_item", "rating", repeat('*', "rating").alias("stars"))
+
+stardf = joindf.withColumn("stars", expr("repeat('*', rating)"))
+stardf.show()
