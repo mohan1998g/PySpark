@@ -1,3 +1,4 @@
+# The roundtrip distance should be calculated using spark or SQL
 data = [
     ("SEA", "SF", 300),
     ("CHI", "SEA", 2000),
