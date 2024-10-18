@@ -85,3 +85,36 @@ result = df.groupby("custid", "custname").agg(collect_list("address"))
 result.show()
 
 spark.sql("select custid,custname,collect_set(address) as address from custtab group by custid,custname order by custid").show()
+
+-------------------------------------------------------------
+
+# Define the schema
+schema = StructType([
+        StructField("userid", IntegerType(), True),
+        StructField("page", StringType(), True)
+])
+
+# Define the data
+data = [
+        (1, "home"),
+        (1, "products"),
+        (1, "checkout"),
+        (1, "confirmation"),
+        (2, "home"),
+        (2, "products"),
+        (2, "cart"),
+        (2, "checkout"),
+        (2, "confirmation"),
+        (2, "home"),
+        (2, "products")
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show DataFrame
+df.show()
+
+collectlist = df.groupby("userid").agg(collect_list("page"))
+
+collectlist.show(truncate=False)
