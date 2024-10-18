@@ -1,0 +1,67 @@
+# Define the schema for the people DataFrame
+people_schema = StructType([
+        StructField("id", StringType(), True),
+        StructField("name", StringType(), True),
+        StructField("family_size", IntegerType(), True)
+])
+
+# Define the people data
+people_data = [
+        ("c00dac11bde74750b...", "Alex Thomas", 9),
+        ("eb6f2d3426694667a...", "Chris Gray", 2),
+        ("3f7b5b8e835d4e1c8...", "Emily Johnson", 4),
+        ("9a345b079d9f4d3ca...", "Michael Brown", 6),
+        ("e0a5f57516024de2a...", "Jessica Wilson", 3)
+]
+
+# Create the people DataFrame
+people_df = spark.createDataFrame(people_data, people_schema)
+
+# Define the schema for the country DataFrame
+country_schema = StructType([
+        StructField("id", StringType(), True),
+        StructField("name", StringType(), True),
+        StructField("min_size", IntegerType(), True),
+        StructField("max_size", IntegerType(), True)
+])
+
+# Define the country data
+country_data = [
+        ("023fd23615bd4ff4b...", "Bolivia", 2, 4),
+        ("be247f73de0f4b2d8...", "Cook Islands", 4, 8),
+        ("3e85ab80a6f84ef3b...", "Brazil", 4, 7),
+        ("e571e164152c4f7c8...", "Australia", 5, 9),
+        ("f35a7bb7d44342f7a...", "Canada", 3, 5),
+        ("a1b5a4b5fc5f46f89...", "Japan", 10, 12)
+]
+
+# Create the country DataFrame
+country_df = spark.createDataFrame(country_data, country_schema)
+
+# Show both DataFrames
+# people_df.show()
+# country_df.show()
+
+people_df = people_df.withColumnRenamed("name", "pname")
+country_df = country_df.withColumnRenamed("name", "cname")
+
+joindf = people_df.crossJoin(country_df)
+joindf.show()
+
+filterdf = (joindf.filter("min_size <= family_size  and family_size<= max_size")
+            .select("pname", "cname"))
+filterdf.show()
+
+finaldf = filterdf.groupby("pname").agg(count("cname").alias("maximum"))
+finaldf.show()
+
+
+#another way 
+wn = Window.orderBy(desc("number_of_countries"))
+
+rankdf = groupdf.withColumn("rank",row_number().over(wn))
+rankdf.show()
+
+finaldf2 = rankdf.filter(col("rank")==1).drop("rank")
+finaldf2.show()
+     
