@@ -1,0 +1,8 @@
+User-Defined Functions (UDFs) allow you to create custom functions in PySpark. You can apply these functions to
+your DataFrame columns.
+Example:
+from pyspark.sql.functions import udf
+def multiply_by_two(x):
+return x * 2
+multiply_udf = udf(multiply_by_two)
+df.withColumn("new_col", multiply_udf(df["existing_col"])).show()
