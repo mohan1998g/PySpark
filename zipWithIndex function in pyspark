@@ -243,6 +243,10 @@ def add_index_to_df(df, index_col_name="index"):
         lambda row: Row(**{index_col_name: row[1], **row[0].asDict()})
     ).toDF()
 
+    # Cast the index column to integer (if needed)
+    df_with_index = df_with_index.withColumn(index_col_name, col(index_col_name).cast("int"))
+
+
     return df_with_index
 
 
@@ -269,4 +273,5 @@ df_with_index.show()
 def add_index_to_df(df, index_col_name="index"):
     df_with_index = df.rdd.zipWithIndex()
     df_with_index = df_with_index.map(lambda row: Row(**{index_col_name: row[1], **row[0].asDict()})).toDF()
+    df_with_index = df_with_index.withColumn(index_col_name, col(index_col_name).cast("int"))
     return df_with_index
