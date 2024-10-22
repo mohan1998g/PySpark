@@ -220,3 +220,53 @@ Not directly available in DataFrames: Since zipWithIndex() is a function on RDDs
 Repartitioning: When the data is repartitioned, it might affect the order and indexing. It’s crucial to be cautious when applying transformations that affect data distribution before using zipWithIndex().
 Conclusion:
 zipWithIndex() is a useful transformation when you need to add an index to an RDD or a DataFrame (after converting to an RDD). While powerful, it must be used carefully with large datasets due to potential performance issues. If you're working with DataFrames and need an index, consider whether using DataFrame functions like row_number() (in the SQL API) might suit your needs better in some cases.
+
+
+from pyspark.sql import Row
+
+def add_index_to_df(df, index_col_name="index"):
+    """
+    Function to add an index to a Spark DataFrame using zipWithIndex.
+    
+    Args:
+    df (DataFrame): Input Spark DataFrame.
+    index_col_name (str): Name for the new index column. Defaults to "index".
+    
+    Returns:
+    DataFrame: New DataFrame with an additional index column.
+    """
+    # Convert DataFrame to RDD and apply zipWithIndex
+    df_with_index = df.rdd.zipWithIndex()
+
+    # Convert RDD back to DataFrame with the new index column
+    df_with_index = df_with_index.map(
+        lambda row: Row(**{index_col_name: row[1], **row[0].asDict()})
+    ).toDF()
+
+    return df_with_index
+
+
+# Example usage
+from pyspark.sql import SparkSession
+
+# Initialize Spark session
+spark = SparkSession.builder.appName("ZipWithIndexExample").getOrCreate()
+
+# Create sample DataFrame
+data = [("John", 25), ("Alice", 30), ("Bob", 28)]
+columns = ["Name", "Age"]
+df = spark.createDataFrame(data, columns)
+
+# Add index to the DataFrame
+df_with_index = add_index_to_df(df, index_col_name="row_id")
+
+# Show the result
+df_with_index.show()
+
+
+# short version
+
+def add_index_to_df(df, index_col_name="index"):
+    df_with_index = df.rdd.zipWithIndex()
+    df_with_index = df_with_index.map(lambda row: Row(**{index_col_name: row[1], **row[0].asDict()})).toDF()
+    return df_with_index
