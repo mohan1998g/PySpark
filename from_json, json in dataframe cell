@@ -1,0 +1,34 @@
+# Define schema for the JSON data
+schema = StructType([
+    StructField("ID", IntegerType(), True),
+    StructField("DATETIME", StringType(), True),  # You can also use DateType if needed
+    StructField("JDATA", StringType(), True),
+    StructField("PROD", StringType(), True),
+    StructField("LOCATION", StringType(), True)
+])
+
+# Sample data
+data = [
+    (1, "2023-06-30", '{"name":"zeyo","Students":["rajesh","vishnu"]}', "Telecom", "Livingston"),
+    (2, "2023-06-30", '{"name":"rani","Students":["vijay","hema"]}', "Healthcare", "Anchorage"),
+    (3, "2023-08-30", '{"name":"vasi","Students":["harka","gowtham"]}', "Ecommerce", "Butler"),
+    (4, "2023-06-30", '{"name":"visu","Students":["shaan","ravi"]}', "Telecom", "Ashland")
+]
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema)
+
+# Show DataFrame
+df.show(truncate=False)
+
+jsonschema = StructType([
+    StructField("name", StringType(), True),
+    StructField("Students", ArrayType(StringType()), True)
+])
+
+jsondf = df.withColumn("JDATA", from_json(col("JDATA"), jsonschema))
+jsondf.show()
+
+exploded = jsondf.withColumn("name", expr("JDATA.name")).withColumn("Students", expr("explode(JDATA.Students)")).drop("JDATA")
+
+exploded.show()
