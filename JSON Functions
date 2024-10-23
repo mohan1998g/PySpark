@@ -1,0 +1,224 @@
+In PySpark, JSON functions are essential when working with JSON data. These functions allow you to parse, manipulate, and convert JSON data in your DataFrames.
+
+Here’s a comprehensive guide to the most commonly used JSON functions in PySpark:
+
+1. from_json()
+This function is used to parse a JSON string and convert it into a struct or map object based on a defined schema.
+
+Syntax:
+python
+Copy code
+from_json(col, schema, options=None)
+col: The column containing JSON strings.
+schema: The schema or structure of the JSON.
+Example:
+python
+Copy code
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import from_json, col
+from pyspark.sql.types import StructType, StructField, StringType, ArrayType
+
+# Initialize Spark session
+spark = SparkSession.builder.appName("JSON Functions Example").getOrCreate()
+
+# Sample JSON Data
+data = [
+    ('{"name":"John", "courses":["Math", "Science"]}',),
+    ('{"name":"Jane", "courses":["History", "Math"]}',)
+]
+
+# Define schema for JSON
+json_schema = StructType([
+    StructField("name", StringType(), True),
+    StructField("courses", ArrayType(StringType()), True)
+])
+
+# Create DataFrame
+df = spark.createDataFrame(data, StringType()).toDF("json_data")
+
+# Parse JSON
+df_parsed = df.withColumn("parsed_data", from_json(col("json_data"), json_schema))
+
+df_parsed.show(truncate=False)
+Output:
+lua
+Copy code
++------------------------------------+-----------------------+
+|json_data                           |parsed_data            |
++------------------------------------+-----------------------+
+|{"name":"John", "courses":["Math","Science"]}|{John, [Math, Science]}|
+|{"name":"Jane", "courses":["History","Math"]}|{Jane, [History, Math]}|
++------------------------------------+-----------------------+
+2. to_json()
+This function converts a struct or map column into a JSON string.
+
+Syntax:
+python
+Copy code
+to_json(col, options=None)
+col: The column to be converted to JSON.
+Example:
+python
+Copy code
+from pyspark.sql.functions import to_json
+
+# Convert struct column to JSON string
+df_json = df_parsed.withColumn("json_string", to_json(col("parsed_data")))
+
+df_json.show(truncate=False)
+Output:
+lua
+Copy code
++------------------------------------+-----------------------------+
+|json_data                           |json_string                  |
++------------------------------------+-----------------------------+
+|{"name":"John", "courses":["Math","Science"]}|{"name":"John","courses":["Math","Science"]}|
+|{"name":"Jane", "courses":["History","Math"]}|{"name":"Jane","courses":["History","Math"]}|
++------------------------------------+-----------------------------+
+3. get_json_object()
+This function extracts a specific field from a JSON string using a JSON path expression.
+
+Syntax:
+python
+Copy code
+get_json_object(col, path)
+col: The column containing JSON strings.
+path: The JSON path to extract data from (e.g., $.name for extracting the name field).
+Example:
+python
+Copy code
+from pyspark.sql.functions import get_json_object
+
+# Extract a specific field from JSON
+df_extracted = df.withColumn("name", get_json_object(col("json_data"), "$.name"))
+
+df_extracted.show(truncate=False)
+Output:
+lua
+Copy code
++------------------------------------+-----+
+|json_data                           |name |
++------------------------------------+-----+
+|{"name":"John", "courses":["Math","Science"]}|John |
+|{"name":"Jane", "courses":["History","Math"]}|Jane |
++------------------------------------+-----+
+4. json_tuple()
+This function extracts multiple fields from a JSON string. You can pass multiple JSON field paths to extract.
+
+Syntax:
+python
+Copy code
+json_tuple(col, *fields)
+col: The column containing JSON strings.
+fields: The list of field names to extract.
+Example:
+python
+Copy code
+from pyspark.sql.functions import json_tuple
+
+# Extract multiple fields from JSON
+df_tuple = df.withColumn("name_courses", json_tuple(col("json_data"), "name", "courses"))
+
+df_tuple.show(truncate=False)
+Output:
+lua
+Copy code
++------------------------------------+-------------------+
+|json_data                           |name_courses        |
++------------------------------------+-------------------+
+|{"name":"John", "courses":["Math","Science"]}|John, ["Math","Science"]|
+|{"name":"Jane", "courses":["History","Math"]}|Jane, ["History","Math"]|
++------------------------------------+-------------------+
+5. schema_of_json()
+This function infers the schema of a JSON string.
+
+Syntax:
+python
+Copy code
+schema_of_json(json, options=None)
+Example:
+python
+Copy code
+from pyspark.sql.functions import schema_of_json
+
+# Infer schema of a JSON string
+json_sample = '{"name":"John", "courses":["Math", "Science"]}'
+df_schema = spark.createDataFrame([(json_sample,)], ["json_data"])
+
+schema = df_schema.select(schema_of_json(col("json_data"))).first()[0]
+print(schema)
+Output:
+c
+Copy code
+struct<name:string,courses:array<string>>
+6. inline() for JSON-like Arrays
+This function is used to explode JSON arrays into separate rows.
+
+Example:
+python
+Copy code
+from pyspark.sql.functions import inline
+
+# Sample data with array in JSON
+data_with_array = [
+    ('{"name":"John", "courses":["Math", "Science"]}',),
+    ('{"name":"Jane", "courses":["History", "Math"]}',)
+]
+
+# Create DataFrame
+df_array = spark.createDataFrame(data_with_array, StringType()).toDF("json_data")
+
+# Define schema
+json_schema_array = StructType([
+    StructField("name", StringType(), True),
+    StructField("courses", ArrayType(StringType()), True)
+])
+
+# Parse JSON and inline array
+df_array_parsed = df_array.withColumn("parsed_data", from_json(col("json_data"), json_schema_array))
+
+df_exploded = df_array_parsed.select("parsed_data.*").select("name", inline(col("courses")))
+df_exploded.show(truncate=False)
+Output:
+diff
+Copy code
++-----+-------+
+|name |col    |
++-----+-------+
+|John |Math   |
+|John |Science|
+|Jane |History|
+|Jane |Math   |
++-----+-------+
+7. explode() for JSON Arrays
+The explode() function can be used on arrays within JSON objects to create individual rows for each element in the array.
+
+Example:
+python
+Copy code
+from pyspark.sql.functions import explode
+
+# Explode the 'courses' array
+df_exploded = df_parsed.select(col("parsed_data.name"), explode(col("parsed_data.courses")).alias("course"))
+
+df_exploded.show(truncate=False)
+Output:
+diff
+Copy code
++-----+-------+
+|name |course |
++-----+-------+
+|John |Math   |
+|John |Science|
+|Jane |History|
+|Jane |Math   |
++-----+-------+
+Summary of JSON Functions:
+from_json(): Parse JSON string into struct/map.
+to_json(): Convert struct/map to JSON string.
+get_json_object(): Extract a specific field from a JSON string.
+json_tuple(): Extract multiple fields from a JSON string.
+schema_of_json(): Infer the schema of a JSON string.
+inline(): Explode JSON arrays into separate rows.
+explode(): Explode arrays within JSON objects into individual rows.
+These functions allow you to manipulate JSON data efficiently in PySpark. Let me know if you need additional information or examples!
