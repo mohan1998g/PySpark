@@ -36,6 +36,15 @@ jsonschema = StructType([
 jsondf = df.withColumn("JDATA", from_json(col("JDATA"), jsonschema))
 jsondf.show()
 
+jsondf can also be written as
+
+# from_json column must be a string like "{  }" but not a disctionary like {  }
+jsondf = df.withColumn("JDATA", from_json(col("JDATA"), StructType([
+    StructField("name", StringType(), True),
+    StructField("Students", ArrayType(StringType()), True)
+])))
+jsondf.show()
+
 exploded = jsondf.withColumn("name", expr("JDATA.name")).withColumn("Students", expr("explode(JDATA.Students)")).drop("JDATA")
 
 exploded.show()
