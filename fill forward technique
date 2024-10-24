@@ -1,0 +1,62 @@
+Problem statement: 
+I have data in a table where the first column, first row contains 1 value and untill the next date comes, all the above rows belong to that starting value. 
+When I created a dataframe for this data, the first columns has many nulls. how to fill it with values which are above to the rows
+
+You can use the fill forward technique, which means filling the null values with the last non-null value that appeared above them in the column.
+
+In PySpark, you can achieve this by using window functions and last with ignoreNulls=True to fill forward the missing date values.
+
+Here's an example of how to do it:
+
+# Sample data
+data = [
+    ("2024-03-21", "Value1"),
+    (None, "Value2"),
+    ("2024-01-01", "Value3"),
+    (None, "Value4"),
+    (None, "Value5"),
+    ("2024-02-01", "Value6"),
+    (None, "Value7")
+]
+
+columns = ["Date", "Value"]
+
+# Create a DataFrame
+df = spark.createDataFrame(data, columns)
+
+# Applying the Fill Forward Technique:
+# You can use a window function to fill the null values with the last known non-null date
+
+# Create a unique identifier for each row to preserve the row order
+df = df.withColumn("row_id", monotonically_increasing_id())
+
+# Define a window specification based on row_id to keep the original order
+window_spec = Window.orderBy("row_id").rowsBetween(Window.unboundedPreceding, Window.currentRow)
+
+# Apply the fill forward technique to fill null dates
+df_filled = df.withColumn("FilledDate", last("Date", ignorenulls=True).over(window_spec))
+
+# Drop the row_id column if no longer needed
+df_final = df_filled.drop("row_id")
+
+# Show the final DataFrame
+df_final.show()
+
++----------+-------+----------+
+|      Date|  Value|FilledDate|
++----------+-------+----------+
+|      null| Value1|2024-03-21|
+|      null| Value2|2024-03-21|
+|2024-01-01| Value3|2024-01-01|
+|      null| Value4|2024-01-01|
+|      null| Value5|2024-01-01|
+|2024-02-01| Value6|2024-02-01|
+|      null| Value7|2024-02-01|
++----------+-------+----------+
+Explanation:
+Window.unboundedPreceding ensures that the window spans from the start of the partition (i.e., the first row) up to the current row.
+last() with ignorenulls=True fetches the last non-null value in the window.
+This technique fills the null values with the last non-null date value found above in the DataFrame.
+
+last: Aggregate function: returns the last value in a group.
+The function by default returns the last values it sees. It will return the last non-null value it sees when ignoreNulls is set to true. If all values are null, then null is returned.
