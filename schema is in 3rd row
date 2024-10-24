@@ -1,0 +1,43 @@
+df = spark.read.csv("df.csv")
+
+df.show()
+
+schema = df.filter("_c0 = 'id'").first()
+
+print(schema)
+
+rdd = df.filter("_c0 != 'id'").rdd
+
+schemadf = rdd.toDF(schema)
+
+schemadf.show()
+
++---+----------+------+-------------+--------------+-------+
+|_c0|       _c1|   _c2|          _c3|           _c4|    _c5|
++---+----------+------+-------------+--------------+-------+
+|  0|06-26-2011| 300.4|     Exercise| GymnasticsPro|   cash|
+|  1|05-26-2011| 200.0|Exercise Band| Weightlifting| credit|
+|  2|06-01-2011| 300.4|     Exercise|Gymnastics Pro|   cash|
+| id|     tdate|amount|     category|       product|spendby|
+|  3|06-05-2011| 100.0|   Gymnastics|         Rings| credit|
+|  4|12-17-2011| 300.0|  Team Sports|         Field|   cash|
+|  5|02-14-2011| 200.0|   Gymnastics|          NULL|   cash|
+|  6|06-05-2011| 100.0|     Exercise|         Rings| credit|
+|  7|12-17-2011| 300.0|  Team Sports|         Field|   cash|
+|  8|02-14-2011| 200.0|   Gymnastics|          NULL|   cash|
++---+----------+------+-------------+--------------+-------+
+
+Row(_c0='id', _c1='tdate', _c2='amount', _c3='category', _c4='product', _c5='spendby')
++---+----------+------+-------------+--------------+-------+
+| id|     tdate|amount|     category|       product|spendby|
++---+----------+------+-------------+--------------+-------+
+|  0|06-26-2011| 300.4|     Exercise| GymnasticsPro|   cash|
+|  1|05-26-2011| 200.0|Exercise Band| Weightlifting| credit|
+|  2|06-01-2011| 300.4|     Exercise|Gymnastics Pro|   cash|
+|  3|06-05-2011| 100.0|   Gymnastics|         Rings| credit|
+|  4|12-17-2011| 300.0|  Team Sports|         Field|   cash|
+|  5|02-14-2011| 200.0|   Gymnastics|          NULL|   cash|
+|  6|06-05-2011| 100.0|     Exercise|         Rings| credit|
+|  7|12-17-2011| 300.0|  Team Sports|         Field|   cash|
+|  8|02-14-2011| 200.0|   Gymnastics|          NULL|   cash|
++---+----------+------+-------------+--------------+-------+
