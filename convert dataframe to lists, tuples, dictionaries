@@ -1,0 +1,62 @@
+
+df = spark.read.option("header", "true").csv("df.csv")
+
+df.persist()
+
+print("---------------rows as list of rows------------")
+
+list_of_rows = df.collect()
+print(list_of_rows)
+
+print("---------------rows as list of lists------------")
+
+list_of_lists = [list(row) for row in df.collect()]
+print(list_of_lists)
+
+print("---------------rows as set of rows------------")
+
+set_of_rows = set(df.collect())
+print(set_of_rows)
+
+print("---------------rows as set of sets------------")
+
+set_of_sets = set([tuple(row) for row in df.collect()])
+print(set_of_sets)
+
+print("---------------rows as tuple of rows------------")
+
+tuple_of_rows = tuple(df.collect())
+print(tuple_of_rows)
+
+print("---------------rows as tuple of tuples------------")
+
+tuple_of_tuples = tuple([tuple(row) for row in df.collect()])
+print(tuple_of_tuples)
+
+
+print(df.first())  # gives the output as Row object
+
+print(df.rdd.first())  # gives the output as Row object
+
+
+---------------rows as list of rows------------
+[Row(id='0', tdate='06-26-2011', amount='300.4', category='Exercise', product='GymnasticsPro', spendby='cash'), Row(id='1', tdate='05-26-2011', amount='200.0', category='Exercise Band', product='Weightlifting', spendby='credit'), Row(id='2', tdate='06-01-2011', amount='300.4', category='Exercise', product='Gymnastics Pro', spendby='cash'), Row(id='3', tdate='06-05-2011', amount='100.0', category='Gymnastics', product='Rings', spendby='credit'), Row(id='4', tdate='12-17-2011', amount='300.0', category='Team Sports', product='Field', spendby='cash'), Row(id='5', tdate='02-14-2011', amount='200.0', category='Gymnastics', product=None, spendby='cash'), Row(id='6', tdate='06-05-2011', amount='100.0', category='Exercise', product='Rings', spendby='credit'), Row(id='7', tdate='12-17-2011', amount='300.0', category='Team Sports', product='Field', spendby='cash'), Row(id='8', tdate='02-14-2011', amount='200.0', category='Gymnastics', product=None, spendby='cash')]
+
+---------------rows as list of lists------------
+[['0', '06-26-2011', '300.4', 'Exercise', 'GymnasticsPro', 'cash'], ['1', '05-26-2011', '200.0', 'Exercise Band', 'Weightlifting', 'credit'], ['2', '06-01-2011', '300.4', 'Exercise', 'Gymnastics Pro', 'cash'], ['3', '06-05-2011', '100.0', 'Gymnastics', 'Rings', 'credit'], ['4', '12-17-2011', '300.0', 'Team Sports', 'Field', 'cash'], ['5', '02-14-2011', '200.0', 'Gymnastics', None, 'cash'], ['6', '06-05-2011', '100.0', 'Exercise', 'Rings', 'credit'], ['7', '12-17-2011', '300.0', 'Team Sports', 'Field', 'cash'], ['8', '02-14-2011', '200.0', 'Gymnastics', None, 'cash']]
+
+---------------rows as set of rows------------
+{Row(id='8', tdate='02-14-2011', amount='200.0', category='Gymnastics', product=None, spendby='cash'), Row(id='2', tdate='06-01-2011', amount='300.4', category='Exercise', product='Gymnastics Pro', spendby='cash'), Row(id='4', tdate='12-17-2011', amount='300.0', category='Team Sports', product='Field', spendby='cash'), Row(id='3', tdate='06-05-2011', amount='100.0', category='Gymnastics', product='Rings', spendby='credit'), Row(id='7', tdate='12-17-2011', amount='300.0', category='Team Sports', product='Field', spendby='cash'), Row(id='1', tdate='05-26-2011', amount='200.0', category='Exercise Band', product='Weightlifting', spendby='credit'), Row(id='0', tdate='06-26-2011', amount='300.4', category='Exercise', product='GymnasticsPro', spendby='cash'), Row(id='5', tdate='02-14-2011', amount='200.0', category='Gymnastics', product=None, spendby='cash'), Row(id='6', tdate='06-05-2011', amount='100.0', category='Exercise', product='Rings', spendby='credit')}
+
+---------------rows as set of sets------------
+{('8', '02-14-2011', '200.0', 'Gymnastics', None, 'cash'), ('2', '06-01-2011', '300.4', 'Exercise', 'Gymnastics Pro', 'cash'), ('4', '12-17-2011', '300.0', 'Team Sports', 'Field', 'cash'), ('3', '06-05-2011', '100.0', 'Gymnastics', 'Rings', 'credit'), ('7', '12-17-2011', '300.0', 'Team Sports', 'Field', 'cash'), ('1', '05-26-2011', '200.0', 'Exercise Band', 'Weightlifting', 'credit'), ('0', '06-26-2011', '300.4', 'Exercise', 'GymnasticsPro', 'cash'), ('5', '02-14-2011', '200.0', 'Gymnastics', None, 'cash'), ('6', '06-05-2011', '100.0', 'Exercise', 'Rings', 'credit')}
+
+---------------rows as tuple of rows------------
+(Row(id='0', tdate='06-26-2011', amount='300.4', category='Exercise', product='GymnasticsPro', spendby='cash'), Row(id='1', tdate='05-26-2011', amount='200.0', category='Exercise Band', product='Weightlifting', spendby='credit'), Row(id='2', tdate='06-01-2011', amount='300.4', category='Exercise', product='Gymnastics Pro', spendby='cash'), Row(id='3', tdate='06-05-2011', amount='100.0', category='Gymnastics', product='Rings', spendby='credit'), Row(id='4', tdate='12-17-2011', amount='300.0', category='Team Sports', product='Field', spendby='cash'), Row(id='5', tdate='02-14-2011', amount='200.0', category='Gymnastics', product=None, spendby='cash'), Row(id='6', tdate='06-05-2011', amount='100.0', category='Exercise', product='Rings', spendby='credit'), Row(id='7', tdate='12-17-2011', amount='300.0', category='Team Sports', product='Field', spendby='cash'), Row(id='8', tdate='02-14-2011', amount='200.0', category='Gymnastics', product=None, spendby='cash'))
+
+---------------rows as tuple of tuples------------
+(('0', '06-26-2011', '300.4', 'Exercise', 'GymnasticsPro', 'cash'), ('1', '05-26-2011', '200.0', 'Exercise Band', 'Weightlifting', 'credit'), ('2', '06-01-2011', '300.4', 'Exercise', 'Gymnastics Pro', 'cash'), ('3', '06-05-2011', '100.0', 'Gymnastics', 'Rings', 'credit'), ('4', '12-17-2011', '300.0', 'Team Sports', 'Field', 'cash'), ('5', '02-14-2011', '200.0', 'Gymnastics', None, 'cash'), ('6', '06-05-2011', '100.0', 'Exercise', 'Rings', 'credit'), ('7', '12-17-2011', '300.0', 'Team Sports', 'Field', 'cash'), ('8', '02-14-2011', '200.0', 'Gymnastics', None, 'cash'))
+
+Row(id='0', tdate='06-26-2011', amount='300.4', category='Exercise', product='GymnasticsPro', spendby='cash')
+
+Row(id='0', tdate='06-26-2011', amount='300.4', category='Exercise', product='GymnasticsPro', spendby='cash')
