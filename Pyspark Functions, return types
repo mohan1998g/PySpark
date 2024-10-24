@@ -1,233 +1,467 @@
 Normal Functions	
 	
-col(col)	Returns a Column based on the given column name.
-column(col)	Returns a Column based on the given column name.
-lit(col)	Creates a Column of literal value.
-broadcast(df)	Marks a DataFrame as small enough for use in broadcast joins.
-coalesce(*cols)	Returns the first column that is not null.
-input_file_name()	Creates a string column for the file name of the current Spark task.
-isnan(col)	An expression that returns true if the column is NaN.
-isnull(col)	An expression that returns true if the column is null.
-monotonically_increasing_id()	A column that generates monotonically increasing 64-bit integers.
-named_struct(*cols)	Creates a struct with the given field names and values.
-nanvl(col1, col2)	Returns col1 if it is not NaN, or col2 if col1 is NaN.
-rand([seed])	Generates a random column with independent and identically distributed (i.i.d.) samples uniformly distributed in [0.0, 1.0).
-randn([seed])	Generates a column with independent and identically distributed (i.i.d.) samples from the standard normal distribution.
-spark_partition_id()	A column for partition ID.
-when(condition, value)	Evaluates a list of conditions and returns one of multiple possible result expressions.
-bitwise_not(col)	Computes bitwise not.
-bitwiseNOT(col)	Computes bitwise not.
-expr(str)	Parses the expression string into the column that it represents
-greatest(*cols)	Returns the greatest value of the list of column names, skipping null values.
-least(*cols)	Returns the least value of the list of column names, skipping null values.
-	
+col(col)					Returns a Column based on the given column name.
+
+column(col)					Returns a Column based on the given column name.
+
+lit(col)					Creates a Column of literal value.
+
+broadcast(df)					Marks a DataFrame as small enough for use in broadcast joins.
+
+coalesce(*cols)					Returns the first column that is not null.
+
+input_file_name()				Creates a string column for the file name of the current Spark task.
+
+isnan(col)					An expression that returns true if the column is NaN.
+
+isnull(col)					An expression that returns true if the column is null.
+
+monotonically_increasing_id()			A column that generates monotonically increasing 64-bit integers.
+
+named_struct(*cols)				Creates a struct with the given field names and values.
+
+nanvl(col1, col2)				Returns col1 if it is not NaN, or col2 if col1 is NaN.
+
+rand([seed])					Generates a random column with independent and identically distributed (i.i.d.) 
+						samples uniformly distributed in [0.0, 1.0).
+
+randn([seed])					Generates a column with independent and identically distributed (i.i.d.) 
+						samples from the standard normal distribution.
+
+spark_partition_id()				A column for partition ID.
+
+when(condition, value)				Evaluates a list of conditions and returns one of multiple possible result expressions.
+
+bitwise_not(col)				Computes bitwise not.
+
+bitwiseNOT(col)					Computes bitwise not.
+
+expr(str)					Parses the expression string into the column that it represents
+
+greatest(*cols)					Returns the greatest value of the list of column names, skipping null values.
+
+least(*cols)					Returns the least value of the list of column names, skipping null values.
+
+
+
 Math Functions	
 	
-sqrt(col)	Computes the square root of the specified float value.
-abs(col)	Computes the absolute value.
-acos(col)	Computes inverse cosine of the input column.
-acosh(col)	Computes inverse hyperbolic cosine of the input column.
-asin(col)	Computes inverse sine of the input column.
-asinh(col)	Computes inverse hyperbolic sine of the input column.
-atan(col)	Compute inverse tangent of the input column.
-atanh(col)	Computes inverse hyperbolic tangent of the input column.
-atan2(col1, col2)	New in version 1.4.0.
-bin(col)	Returns the string representation of the binary value of the given column.
-cbrt(col)	Computes the cube-root of the given value.
-ceil(col)	Computes the ceiling of the given value.
-ceiling(col)	Computes the ceiling of the given value.
-conv(col, fromBase, toBase)	Convert a number in a string column from one base to another.
-cos(col)	Computes cosine of the input column.
-cosh(col)	Computes hyperbolic cosine of the input column.
-cot(col)	Computes cotangent of the input column.
-csc(col)	Computes cosecant of the input column.
-e()	Returns Euler’s number.
-exp(col)	Computes the exponential of the given value.
-expm1(col)	Computes the exponential of the given value minus one.
-factorial(col)	Computes the factorial of the given value.
-floor(col)	Computes the floor of the given value.
-hex(col)	Computes hex value of the given column, which could be pyspark.sql.types.StringType, pyspark.sql.types.BinaryType, pyspark.sql.types.IntegerType or pyspark.sql.types.LongType.
-unhex(col)	Inverse of hex.
-hypot(col1, col2)	Computes sqrt(a^2 + b^2) without intermediate overflow or underflow.
-ln(col)	Returns the natural logarithm of the argument.
-log(arg1[, arg2])	Returns the first argument-based logarithm of the second argument.
-log10(col)	Computes the logarithm of the given value in Base 10.
-log1p(col)	Computes the natural logarithm of the “given value plus one”.
-log2(col)	Returns the base-2 logarithm of the argument.
-negate(col)	Returns the negative value.
-negative(col)	Returns the negative value.
-pi()	Returns Pi.
-pmod(dividend, divisor)	Returns the positive value of dividend mod divisor.
-positive(col)	Returns the value.
-pow(col1, col2)	Returns the value of the first argument raised to the power of the second argument.
-power(col1, col2)	Returns the value of the first argument raised to the power of the second argument.
-rint(col)	Returns the double value that is closest in value to the argument and is equal to a mathematical integer.
-round(col[, scale])	Round the given value to scale decimal places using HALF_UP rounding mode if scale >= 0 or at integral part when scale < 0.
-bround(col[, scale])	Round the given value to scale decimal places using HALF_EVEN rounding mode if scale >= 0 or at integral part when scale < 0.
-sec(col)	Computes secant of the input column.
-shiftleft(col, numBits)	Shift the given value numBits left.
-shiftright(col, numBits)	(Signed) shift the given value numBits right.
-shiftrightunsigned(col, numBits)	Unsigned shift the given value numBits right.
-sign(col)	Computes the signum of the given value.
-signum(col)	Computes the signum of the given value.
-sin(col)	Computes sine of the input column.
-sinh(col)	Computes hyperbolic sine of the input column.
-tan(col)	Computes tangent of the input column.
-tanh(col)	Computes hyperbolic tangent of the input column.
-toDegrees(col)	New in version 1.4.0.
-try_add(left, right)	Returns the sum of left`and `right and the result is null on overflow.
-try_avg(col)	Returns the mean calculated from values of a group and the result is null on overflow.
-try_divide(left, right)	Returns dividend/divisor.
-try_multiply(left, right)	Returns left`*`right and the result is null on overflow.
-try_subtract(left, right)	Returns left-right and the result is null on overflow.
-try_sum(col)	Returns the sum calculated from values of a group and the result is null on overflow.
-try_to_binary(col[, format])	This is a special version of to_binary that performs the same operation, but returns a NULL value instead of raising an error if the conversion cannot be performed.
-try_to_number(col, format)	Convert string ‘col’ to a number based on the string format format.
-degrees(col)	Converts an angle measured in radians to an approximately equivalent angle measured in degrees.
-toRadians(col)	New in version 1.4.0.
-radians(col)	Converts an angle measured in degrees to an approximately equivalent angle measured in radians.
-width_bucket(v, min, max, numBucket)	Returns the bucket number into which the value of this expression would fall after being evaluated.
-	
+
+sqrt(col)					Computes the square root of the specified float value.
+
+abs(col)					Computes the absolute value.
+
+acos(col)					Computes inverse cosine of the input column.
+
+acosh(col)					Computes inverse hyperbolic cosine of the input column.
+
+asin(col)					Computes inverse sine of the input column.
+
+asinh(col)					Computes inverse hyperbolic sine of the input column.
+
+atan(col)					Compute inverse tangent of the input column.
+
+atanh(col)					Computes inverse hyperbolic tangent of the input column.
+
+atan2(col1, col2)				New in version 1.4.0.
+
+bin(col)					Returns the string representation of the binary value of the given column.
+
+cbrt(col)					Computes the cube-root of the given value.
+
+ceil(col)					Computes the ceiling of the given value.
+
+ceiling(col)					Computes the ceiling of the given value.
+
+conv(col, fromBase, toBase)			Convert a number in a string column from one base to another.
+
+cos(col)					Computes cosine of the input column.
+
+cosh(col)					Computes hyperbolic cosine of the input column.
+
+cot(col)					Computes cotangent of the input column.
+
+csc(col)					Computes cosecant of the input column.
+
+e()						Returns Euler’s number.
+
+exp(col)					Computes the exponential of the given value.
+
+expm1(col)					Computes the exponential of the given value minus one.
+
+factorial(col)					Computes the factorial of the given value.
+
+floor(col)					Computes the floor of the given value.
+
+hex(col)					Computes hex value of the given column, which could be pyspark.sql.types.StringType, 
+						pyspark.sql.types.BinaryType, pyspark.sql.types.IntegerType or pyspark.sql.types.LongType.
+
+unhex(col)					Inverse of hex.
+
+hypot(col1, col2)				Computes sqrt(a^2 + b^2) without intermediate overflow or underflow.
+
+ln(col)						Returns the natural logarithm of the argument.
+
+log(arg1[, arg2])				Returns the first argument-based logarithm of the second argument.
+
+log10(col)					Computes the logarithm of the given value in Base 10.
+
+log1p(col)					Computes the natural logarithm of the “given value plus one”.
+
+log2(col)					Returns the base-2 logarithm of the argument.
+
+negate(col)					Returns the negative value.
+
+negative(col)					Returns the negative value.
+
+pi()						Returns Pi.
+
+pmod(dividend, divisor)				Returns the positive value of dividend mod divisor.
+
+positive(col)					Returns the value.
+
+pow(col1, col2)					Returns the value of the first argument raised to the power of the second argument.
+
+power(col1, col2)				Returns the value of the first argument raised to the power of the second argument.
+
+rint(col)					Returns the double value that is closest in value to the argument and is equal to a mathematical integer.
+
+round(col[, scale])				Round the given value to scale decimal places using HALF_UP rounding mode if scale >= 0 
+						or at integral part when scale < 0.
+
+bround(col[, scale])				Round the given value to scale decimal places using HALF_EVEN rounding mode if scale >= 0 
+						or at integral part when scale < 0.
+
+sec(col)					Computes secant of the input column.
+
+shiftleft(col, numBits)				Shift the given value numBits left.
+
+shiftright(col, numBits)			(Signed) shift the given value numBits right.
+
+shiftrightunsigned(col, numBits)		Unsigned shift the given value numBits right.
+
+sign(col)					Computes the signum of the given value.
+
+signum(col)					Computes the signum of the given value.
+
+sin(col)					Computes sine of the input column.
+
+sinh(col)					Computes hyperbolic sine of the input column.
+
+tan(col)					Computes tangent of the input column.
+
+tanh(col)					Computes hyperbolic tangent of the input column.
+
+toDegrees(col)					New in version 1.4.0.
+
+try_add(left, right)				Returns the sum of left`and `right and the result is null on overflow.
+
+try_avg(col)					Returns the mean calculated from values of a group and the result is null on overflow.
+
+try_divide(left, right)				Returns dividend/divisor.
+
+try_multiply(left, right)			Returns left`*`right and the result is null on overflow.
+
+try_subtract(left, right)			Returns left-right and the result is null on overflow.
+
+try_sum(col)					Returns the sum calculated from values of a group and the result is null on overflow.
+
+try_to_binary(col[, format])			This is a special version of to_binary that performs the same operation, but returns a NULL value 
+						instead of raising an error if the conversion cannot be performed.
+
+try_to_number(col, format)			Convert string ‘col’ to a number based on the string format format.
+
+degrees(col)					Converts an angle measured in radians to an approximately equivalent angle measured in degrees.
+
+toRadians(col)					New in version 1.4.0.
+
+radians(col)					Converts an angle measured in degrees to an approximately equivalent angle measured in radians.
+
+width_bucket(v, min, max, numBucket)		Returns the bucket number into which the value of this expression would fall after being evaluated.
+
+
 Datetime Functions	
 	
-add_months(start, months)	Returns the date that is months months after start.
+
+add_months(start, months)			Returns the date that is months months after start.
+
 convert_timezone(sourceTz, targetTz, sourceTs)	Converts the timestamp without time zone sourceTs from the sourceTz time zone to targetTz.
-curdate()	Returns the current date at the start of query evaluation as a DateType column.
-current_date()	Returns the current date at the start of query evaluation as a DateType column.
-current_timestamp()	Returns the current timestamp at the start of query evaluation as a TimestampType column.
-current_timezone()	Returns the current session local timezone.
-date_add(start, days)	Returns the date that is days days after start.
-date_diff(end, start)	Returns the number of days from start to end.
-date_format(date, format)	Converts a date/timestamp/string to a value of string in the format specified by the date format given by the second argument.
-date_from_unix_date(days)	Create date from the number of days since 1970-01-01.
-date_sub(start, days)	Returns the date that is days days before start.
-date_trunc(format, timestamp)	Returns timestamp truncated to the unit specified by the format.
-dateadd(start, days)	Returns the date that is days days after start.
-datediff(end, start)	Returns the number of days from start to end.
-day(col)	Extract the day of the month of a given date/timestamp as integer.
-date_part(field, source)	Extracts a part of the date/timestamp or interval source.
-datepart(field, source)	Extracts a part of the date/timestamp or interval source.
-dayofmonth(col)	Extract the day of the month of a given date/timestamp as integer.
-dayofweek(col)	Extract the day of the week of a given date/timestamp as integer.
-dayofyear(col)	Extract the day of the year of a given date/timestamp as integer.
-extract(field, source)	Extracts a part of the date/timestamp or interval source.
-second(col)	Extract the seconds of a given date as integer.
-weekofyear(col)	Extract the week number of a given date as integer.
-year(col)	Extract the year of a given date/timestamp as integer.
-quarter(col)	Extract the quarter of a given date/timestamp as integer.
-month(col)	Extract the month of a given date/timestamp as integer.
-last_day(date)	Returns the last day of the month which the given date belongs to.
-localtimestamp()	Returns the current timestamp without time zone at the start of query evaluation as a timestamp without time zone column.
+
+curdate()					Returns the current date at the start of query evaluation as a DateType column.
+
+current_date()					Returns the current date at the start of query evaluation as a DateType column.
+
+current_timestamp()				Returns the current timestamp at the start of query evaluation as a TimestampType column.
+
+current_timezone()				Returns the current session local timezone.
+
+date_add(start, days)				Returns the date that is days days after start.
+
+date_diff(end, start)				Returns the number of days from start to end.
+
+date_format(date, format)			Converts a date/timestamp/string to a value of string in the format specified by the date format 
+						given by the second argument.
+
+date_from_unix_date(days)			Create date from the number of days since 1970-01-01.
+
+date_sub(start, days)				Returns the date that is days days before start.
+
+date_trunc(format, timestamp)			Returns timestamp truncated to the unit specified by the format.
+
+dateadd(start, days)				Returns the date that is days days after start.
+
+datediff(end, start)				Returns the number of days from start to end.
+
+day(col)					Extract the day of the month of a given date/timestamp as integer.
+
+date_part(field, source)			Extracts a part of the date/timestamp or interval source.
+
+datepart(field, source)				Extracts a part of the date/timestamp or interval source.
+
+dayofmonth(col)					Extract the day of the month of a given date/timestamp as integer.
+
+dayofweek(col)					Extract the day of the week of a given date/timestamp as integer.
+
+dayofyear(col)					Extract the day of the year of a given date/timestamp as integer.
+
+extract(field, source)				Extracts a part of the date/timestamp or interval source.
+
+second(col)					Extract the seconds of a given date as integer.
+
+weekofyear(col)					Extract the week number of a given date as integer.
+
+year(col)					Extract the year of a given date/timestamp as integer.
+
+quarter(col)					Extract the quarter of a given date/timestamp as integer.
+
+month(col)					Extract the month of a given date/timestamp as integer.
+
+last_day(date)					Returns the last day of the month which the given date belongs to.
+
+localtimestamp()				Returns the current timestamp without time zone at the start of query evaluation as a 
+						timestamp without time zone column.
+
 make_dt_interval([days, hours, mins, secs])	Make DayTimeIntervalType duration from days, hours, mins and secs.
+
 make_interval([years, months, weeks, days, …])	Make interval from years, months, weeks, days, hours, mins and secs.
+
 make_timestamp(years, months, days, hours, …)	Create timestamp from years, months, days, hours, mins, secs and timezone fields.
+
 make_timestamp_ltz(years, months, days, …)	Create the current timestamp with local time zone from years, months, days, hours, mins, secs and timezone fields.
+
 make_timestamp_ntz(years, months, days, …)	Create local date-time from years, months, days, hours, mins, secs fields.
-make_ym_interval([years, months])	Make year-month interval from years, months.
-minute(col)	Extract the minutes of a given timestamp as integer.
+
+make_ym_interval([years, months])		Make year-month interval from years, months.
+
+minute(col)					Extract the minutes of a given timestamp as integer.
+
 months_between(date1, date2[, roundOff])	Returns number of months between dates date1 and date2.
-next_day(date, dayOfWeek)	Returns the first date which is later than the value of the date column based on second week day argument.
-hour(col)	Extract the hours of a given timestamp as integer.
-make_date(year, month, day)	Returns a column with a date built from the year, month and day columns.
-now()	Returns the current timestamp at the start of query evaluation.
-from_unixtime(timestamp[, format])	Converts the number of seconds from unix epoch (1970-01-01 00:00:00 UTC) to a string representing the timestamp of that moment in the current system time zone in the given format.
-unix_timestamp([timestamp, format])	Convert time string with given pattern (‘yyyy-MM-dd HH:mm:ss’, by default) to Unix time stamp (in seconds), using the default timezone and the default locale, returns null if failed.
-to_unix_timestamp(timestamp[, format])	Returns the UNIX timestamp of the given time.
-to_timestamp(col[, format])	Converts a Column into pyspark.sql.types.TimestampType using the optionally specified format.
-to_timestamp_ltz(timestamp[, format])	Parses the timestamp with the format to a timestamp without time zone.
-to_timestamp_ntz(timestamp[, format])	Parses the timestamp with the format to a timestamp without time zone.
-to_date(col[, format])	Converts a Column into pyspark.sql.types.DateType using the optionally specified format.
-trunc(date, format)	Returns date truncated to the unit specified by the format.
-from_utc_timestamp(timestamp, tz)	This is a common function for databases supporting TIMESTAMP WITHOUT TIMEZONE.
-to_utc_timestamp(timestamp, tz)	This is a common function for databases supporting TIMESTAMP WITHOUT TIMEZONE.
-weekday(col)	Returns the day of the week for date/timestamp (0 = Monday, 1 = Tuesday, …, 6 = Sunday).
-window(timeColumn, windowDuration[, …])	Bucketize rows into one or more time windows given a timestamp specifying column.
-session_window(timeColumn, gapDuration)	Generates session window given a timestamp specifying column.
-timestamp_micros(col)	Creates timestamp from the number of microseconds since UTC epoch.
-timestamp_millis(col)	Creates timestamp from the number of milliseconds since UTC epoch.
-timestamp_seconds(col)	Converts the number of seconds from the Unix epoch (1970-01-01T00:00:00Z) to a timestamp.
-try_to_timestamp(col[, format])	Parses the col with the format to a timestamp.
-unix_date(col)	Returns the number of days since 1970-01-01.
-unix_micros(col)	Returns the number of microseconds since 1970-01-01 00:00:00 UTC.
-unix_millis(col)	Returns the number of milliseconds since 1970-01-01 00:00:00 UTC.
-unix_seconds(col)	Returns the number of seconds since 1970-01-01 00:00:00 UTC.
-window_time(windowColumn)	Computes the event time from a window column.
-	
+
+next_day(date, dayOfWeek)			Returns the first date which is later than the value of the date column based on second week day argument.
+
+hour(col)					Extract the hours of a given timestamp as integer.
+
+make_date(year, month, day)			Returns a column with a date built from the year, month and day columns.
+
+now()						Returns the current timestamp at the start of query evaluation.
+
+from_unixtime(timestamp[, format])		Converts the number of seconds from unix epoch (1970-01-01 00:00:00 UTC) to a string representing the timestamp of that moment in the current system time zone in the given format.
+
+unix_timestamp([timestamp, format])		Convert time string with given pattern (‘yyyy-MM-dd HH:mm:ss’, by default) to Unix time stamp (in seconds), using the default timezone and the default locale, returns null if failed.
+
+to_unix_timestamp(timestamp[, format])		Returns the UNIX timestamp of the given time.
+
+to_timestamp(col[, format])			Converts a Column into pyspark.sql.types.TimestampType using the optionally specified format.
+
+to_timestamp_ltz(timestamp[, format])		Parses the timestamp with the format to a timestamp without time zone.
+
+to_timestamp_ntz(timestamp[, format])		Parses the timestamp with the format to a timestamp without time zone.
+
+to_date(col[, format])				Converts a Column into pyspark.sql.types.DateType using the optionally specified format.
+
+trunc(date, format)				Returns date truncated to the unit specified by the format.
+
+from_utc_timestamp(timestamp, tz)		This is a common function for databases supporting TIMESTAMP WITHOUT TIMEZONE.
+
+to_utc_timestamp(timestamp, tz)			This is a common function for databases supporting TIMESTAMP WITHOUT TIMEZONE.
+
+weekday(col)					Returns the day of the week for date/timestamp (0 = Monday, 1 = Tuesday, …, 6 = Sunday).
+
+window(timeColumn, windowDuration[, …])		Bucketize rows into one or more time windows given a timestamp specifying column.
+
+session_window(timeColumn, gapDuration)		Generates session window given a timestamp specifying column.
+
+timestamp_micros(col)				Creates timestamp from the number of microseconds since UTC epoch.
+
+timestamp_millis(col)				Creates timestamp from the number of milliseconds since UTC epoch.
+
+timestamp_seconds(col)				Converts the number of seconds from the Unix epoch (1970-01-01T00:00:00Z) to a timestamp.
+
+try_to_timestamp(col[, format])			Parses the col with the format to a timestamp.
+
+unix_date(col)					Returns the number of days since 1970-01-01.
+
+unix_micros(col)				Returns the number of microseconds since 1970-01-01 00:00:00 UTC.
+
+unix_millis(col)				Returns the number of milliseconds since 1970-01-01 00:00:00 UTC.
+
+unix_seconds(col)				Returns the number of seconds since 1970-01-01 00:00:00 UTC.
+
+window_time(windowColumn)			Computes the event time from a window column.
+
+
 Collection Functions	
 	
-array(*cols)	Creates a new array column.
-array_contains(col, value)	Collection function: returns null if the array is null, true if the array contains the given value, and false otherwise.
-arrays_overlap(a1, a2)	Collection function: returns true if the arrays contain any common non-null element; if not, returns null if both the arrays are non-empty and any of them contains a null element; returns false otherwise.
+array(*cols)					Creates a new array column.
+
+array_contains(col, value)			Collection function: returns null if the array is null, true if the array contains the given value, 
+						and false otherwise.
+
+arrays_overlap(a1, a2)				Collection function: returns true if the arrays contain any common non-null element; if not, 
+						returns null if both the arrays are non-empty and any of them contains a null element; returns false otherwise.
+
 array_join(col, delimiter[, null_replacement])	Concatenates the elements of column using the delimiter.
-create_map(*cols)	Creates a new map column.
-slice(x, start, length)	Collection function: returns an array containing all the elements in x from index start (array indices start at 1, or from the end if start is negative) with the specified length.
-concat(*cols)	Concatenates multiple input columns together into a single column.
-array_position(col, value)	Collection function: Locates the position of the first occurrence of the given value in the given array.
-element_at(col, extraction)	Collection function: Returns element of array at given index in extraction if col is array.
-array_append(col, value)	Collection function: returns an array of the elements in col1 along with the added element in col2 at the last of the array.
-array_size(col)	Returns the total number of elements in the array.
-array_sort(col[, comparator])	Collection function: sorts the input array in ascending order.
+
+create_map(*cols)				Creates a new map column.
+
+slice(x, start, length)				Collection function: returns an array containing all the elements in x from index start 
+						(array indices start at 1, or from the end if start is negative) with the specified length.
+
+concat(*cols)					Concatenates multiple input columns together into a single column.
+
+array_position(col, value)			Collection function: Locates the position of the first occurrence of the given value in the given array.
+
+element_at(col, extraction)			Collection function: Returns element of array at given index in extraction if col is array.
+
+array_append(col, value)			Collection function: returns an array of the elements in col1 along with the added element in col2 at 
+						the last of the array.
+
+array_size(col)					Returns the total number of elements in the array.
+
+array_sort(col[, comparator])			Collection function: sorts the input array in ascending order.
+
 array_insert(arr, pos, value)	Collection function: adds an item into a given array at a specified array index.
+
 array_remove(col, element)	Collection function: Remove all elements that equal to element from the given array.
+
 array_prepend(col, value)	Collection function: Returns an array containing element as well as all elements from array.
+
 array_distinct(col)	Collection function: removes duplicate values from the array.
+
 array_intersect(col1, col2)	Collection function: returns an array of the elements in the intersection of col1 and col2, without duplicates.
+
 array_union(col1, col2)	Collection function: returns an array of the elements in the union of col1 and col2, without duplicates.
+
 array_except(col1, col2)	Collection function: returns an array of the elements in col1 but not in col2, without duplicates.
+
 array_compact(col)	Collection function: removes null values from the array.
+
 transform(col, f)	Returns an array of elements after applying a transformation to each element in the input array.
+
 exists(col, f)	Returns whether a predicate holds for one or more elements in the array.
+
 forall(col, f)	Returns whether a predicate holds for every element in the array.
+
 filter(col, f)	Returns an array of elements for which a predicate holds in a given array.
+
 aggregate(col, initialValue, merge[, finish])	Applies a binary operator to an initial state and all elements in the array, and reduces this to a single state.
+
 zip_with(left, right, f)	Merge two given arrays, element-wise, into a single array using a function.
+
 transform_keys(col, f)	Applies a function to every key-value pair in a map and returns a map with the results of those applications as the new keys for the pairs.
+
 transform_values(col, f)	Applies a function to every key-value pair in a map and returns a map with the results of those applications as the new values for the pairs.
+
 map_filter(col, f)	Returns a map whose key-value pairs satisfy a predicate.
+
 map_from_arrays(col1, col2)	Creates a new map from two arrays.
+
 map_zip_with(col1, col2, f)	Merge two given maps, key-wise into a single map using a function.
+
 explode(col)	Returns a new row for each element in the given array or map.
+
 explode_outer(col)	Returns a new row for each element in the given array or map.
+
 posexplode(col)	Returns a new row for each element with position in the given array or map.
+
 posexplode_outer(col)	Returns a new row for each element with position in the given array or map.
+
 inline(col)	Explodes an array of structs into a table.
+
 inline_outer(col)	Explodes an array of structs into a table.
+
 get(col, index)	Collection function: Returns element of array at given (0-based) index.
+
 get_json_object(col, path)	Extracts json object from a json string based on json path specified, and returns json string of the extracted json object.
+
 json_tuple(col, *fields)	Creates a new row for a json column according to the given field names.
+
 from_json(col, schema[, options])	Parses a column containing a JSON string into a MapType with StringType as keys type, StructType or ArrayType with the specified schema.
+
 schema_of_json(json[, options])	Parses a JSON string and infers its schema in DDL format.
+
 to_json(col[, options])	Converts a column containing a StructType, ArrayType or a MapType into a JSON string.
+
 json_array_length(col)	Returns the number of elements in the outermost JSON array.
+
 json_object_keys(col)	Returns all the keys of the outermost JSON object as an array.
+
 size(col)	Collection function: returns the length of the array or map stored in the column.
+
 cardinality(col)	Collection function: returns the length of the array or map stored in the column.
+
 struct(*cols)	Creates a new struct column.
+
 sort_array(col[, asc])	Collection function: sorts the input array in ascending or descending order according to the natural ordering of the array elements.
+
 array_max(col)	Collection function: returns the maximum value of the array.
+
 array_min(col)	Collection function: returns the minimum value of the array.
+
 shuffle(col)	Collection function: Generates a random permutation of the given array.
+
 reverse(col)	Collection function: returns a reversed string or an array with reverse order of elements.
+
 flatten(col)	Collection function: creates a single array from an array of arrays.
+
 sequence(start, stop[, step])	Generate a sequence of integers from start to stop, incrementing by step.
+
 array_repeat(col, count)	Collection function: creates an array containing a column repeated count times.
+
 map_contains_key(col, value)	Returns true if the map contains the key.
+
 map_keys(col)	Collection function: Returns an unordered array containing the keys of the map.
+
 map_values(col)	Collection function: Returns an unordered array containing the values of the map.
+
 map_entries(col)	Collection function: Returns an unordered array of all entries in the given map.
+
 map_from_entries(col)	Collection function: Converts an array of entries (key value struct types) to a map of values.
+
 arrays_zip(*cols)	Collection function: Returns a merged array of structs in which the N-th struct contains all N-th values of input arrays.
+
 map_concat(*cols)	Returns the union of all the given maps.
+
 from_csv(col, schema[, options])	Parses a column containing a CSV string to a row with the specified schema.
+
 schema_of_csv(csv[, options])	Parses a CSV string and infers its schema in DDL format.
+
 str_to_map(text[, pairDelim, keyValueDelim])	Creates a map after splitting the text into key/value pairs using delimiters.
+
 to_csv(col[, options])	Converts a column containing a StructType into a CSV string.
+
 try_element_at(col, extraction)	(array, index) - Returns element of array at given (1-based) index.
-	
+
+
+
 Partition Transformation Functions	
-	
+
+
+
 years(col)	Partition transform function: A transform for timestamps and dates to partition data into years.
+
 months(col)	Partition transform function: A transform for timestamps and dates to partition data into months.
+
 days(col)	Partition transform function: A transform for timestamps and dates to partition data into days.
 hours(col)	Partition transform function: A transform for timestamps to partition data into hours.
 bucket(numBuckets, col)	Partition transform function: A transform for any type that partitions by a hash of the input column.
