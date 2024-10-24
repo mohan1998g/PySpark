@@ -1,0 +1,13 @@
+df = spark.read.option("header", "true").csv("file3.txt")
+
+df.show()
+
+print(df.rdd.getNumPartitions())
+
+df.repartition(4)
+
+print(df.rdd.getNumPartitions())
+
+df2 = df.withColumn("partitionid", spark_partition_id()).groupby("Partitionid").count()
+
+df2.show()
