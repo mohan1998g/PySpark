@@ -1,0 +1,164 @@
+PySpark, the Python API for Apache Spark, has several packages (modules), each containing a variety of methods to work with distributed data processing. The most commonly used packages in PySpark include methods for handling SQL, DataFrames, machine learning (MLlib), streaming, and more.
+
+Here's an overview of the major PySpark packages and some of the common methods in each package:
+
+1. pyspark.sql
+This module is used for working with structured data and DataFrames, which are the core abstraction in PySpark for data manipulation.
+
+Common Methods in pyspark.sql:
+SparkSession: Entry point for DataFrame and SQL functionalities.
+
+createDataFrame(): Create a DataFrame from an RDD, list, or Pandas DataFrame.
+read(): Returns a DataFrameReader for loading data from various sources like Parquet, CSV, etc.
+sql(): Run a SQL query on Spark data.
+DataFrame: A distributed collection of data organized into named columns.
+
+select(): Select specific columns.
+filter() / where(): Filter rows based on a condition.
+groupBy(): Group the DataFrame based on column(s).
+join(): Perform SQL-like joins between DataFrames.
+agg(): Aggregate data.
+show(): Display the content of the DataFrame.
+withColumn(): Add or modify a column.
+drop(): Drop specified columns.
+collect(): Return all rows as a list.
+DataFrameReader: For reading data.
+
+csv(): Load a CSV file.
+parquet(): Load a Parquet file.
+json(): Load a JSON file.
+jdbc(): Load data from a JDBC source.
+DataFrameWriter: For writing data.
+
+write(): Save the DataFrame to storage.
+save(): Save DataFrame to a file.
+mode(): Specifies how to handle existing data (e.g., overwrite, append).
+format(): Specify the file format (e.g., "parquet", "csv").
+Column: Expression for a column in a DataFrame.
+
+alias(): Give a column a new name.
+cast(): Convert a column to a different type.
+isin(): Check if a value is in a given list.
+2. pyspark.sql.functions
+This module provides functions that can be used to perform operations on DataFrame columns.
+
+Common Functions in pyspark.sql.functions:
+Aggregation Functions:
+
+sum(): Sum values in a column.
+avg(): Compute the average.
+count(): Count the number of non-null values.
+min(): Get the minimum value.
+max(): Get the maximum value.
+Column Functions:
+
+col(): Select a column from a DataFrame.
+lit(): Create a column of literal values.
+when(): Create a conditional column.
+regexp_replace(): Replace values in a column using regular expressions.
+concat(): Concatenate two or more columns.
+split(): Split a string column into an array based on a delimiter.
+Date/Time Functions:
+
+current_date(): Get the current date.
+date_format(): Format a date column into a specified format.
+datediff(): Calculate the difference between two dates.
+JSON Functions:
+
+from_json(): Parse a JSON string and return a struct.
+to_json(): Convert a struct to a JSON string.
+3. pyspark.sql.types
+This module provides classes for defining the schema of a DataFrame.
+
+Common Classes in pyspark.sql.types:
+StructType: Represents the schema of a DataFrame.
+StructField: Defines a field in a StructType.
+StringType, IntegerType, DoubleType, etc.: Represent data types for DataFrame columns.
+ArrayType: Represents an array column.
+MapType: Represents a map column (key-value pairs).
+4. pyspark.rdd
+This module is used for working with RDDs (Resilient Distributed Datasets), which are the low-level API in PySpark.
+
+Common Methods in pyspark.rdd.RDD:
+Transformation Methods:
+
+map(): Apply a function to each element of the RDD.
+flatMap(): Apply a function that returns a list of values and flattens the result.
+filter(): Filter elements based on a condition.
+distinct(): Remove duplicates.
+union(): Combine two RDDs.
+reduceByKey(): Apply a function to the values of the same key.
+groupByKey(): Group values by key.
+Action Methods:
+
+collect(): Return all elements of the RDD.
+take(): Return the first N elements.
+count(): Count the number of elements in the RDD.
+reduce(): Reduce the elements of an RDD using a function.
+saveAsTextFile(): Save RDD data to a text file.
+foreach(): Apply a function to each element without returning a result.
+5. pyspark.streaming
+This module is for working with Spark Streaming, used to process real-time data.
+
+Common Methods in pyspark.streaming:
+StreamingContext: The main entry point for Spark Streaming.
+
+start(): Start the execution of streaming data.
+stop(): Stop the streaming context.
+awaitTermination(): Wait for the streaming to finish.
+DStream Methods (Discretized Stream):
+
+map(): Apply a function to each element of the DStream.
+filter(): Filter elements of the DStream.
+window(): Apply windowing on a DStream to compute results over time.
+6. pyspark.ml (Machine Learning)
+This module is used for building machine learning pipelines in PySpark.
+
+Common Methods in pyspark.ml:
+Pipeline: A sequence of data processing steps.
+
+fit(): Fit the pipeline on training data.
+transform(): Transform the data.
+Feature Engineering:
+
+StringIndexer(): Index string columns to numeric values.
+OneHotEncoder(): Convert categorical values to one-hot encoded vectors.
+VectorAssembler(): Assemble multiple columns into a single vector column.
+Machine Learning Models:
+
+LogisticRegression(): Logistic regression model.
+RandomForestClassifier(): Random forest classifier.
+DecisionTreeClassifier(): Decision tree classifier.
+7. pyspark.mllib (MLlib)
+This is the original machine learning library in PySpark (before pyspark.ml was introduced).
+
+Common Methods in pyspark.mllib:
+ALS: Alternating Least Squares model for collaborative filtering.
+KMeans: K-Means clustering.
+GradientBoostedTrees: Gradient-boosted trees for regression and classification.
+8. pyspark.accumulators
+Accumulators are variables that can be added to across tasks and workers in Spark.
+
+Common Methods in pyspark.accumulators:
+Accumulator: Shared variable that can be added to by all workers but read-only for tasks.
+add(): Add a value to the accumulator.
+value: Retrieve the current value of the accumulator.
+9. pyspark.broadcast
+Broadcast variables allow you to cache a read-only variable on each machine rather than sending a copy of it with tasks.
+
+Common Methods in pyspark.broadcast:
+Broadcast: The broadcast variable type.
+value: Retrieve the broadcasted value.
+unpersist(): Remove the broadcasted data from memory.
+10. pyspark.storagelevel
+This module controls how RDDs and DataFrames are stored in memory.
+
+Common Storage Levels in pyspark.storagelevel:
+StorageLevel:
+MEMORY_ONLY: Store the RDD in memory only.
+MEMORY_AND_DISK: Store the RDD in memory and spill to disk if needed.
+DISK_ONLY: Store the RDD on disk.
+Conclusion:
+PySpark provides a rich set of packages and methods to handle distributed data processing, machine learning, streaming, and more. The key distinction between DataFrame-based methods (under pyspark.sql) and RDD-based methods (pyspark.rdd) is that DataFrames offer high-level, optimized SQL-like abstractions, while RDDs provide more control and flexibility for lower-level transformations.
+
+Each module has specialized functions, and it is essential to use the correct one based on the operations you are performing.
