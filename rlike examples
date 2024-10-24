@@ -1,0 +1,3 @@
+valid mobile numbers only
+
+df.select(*).filter(col('mob').rlike("^[0-9]*$")).show
