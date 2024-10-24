@@ -1,0 +1,112 @@
+PySpark provides several functions for working with JSON data in a DataFrame, mainly using functions from the pyspark.sql.functions module. Below are the most commonly used JSON functions in PySpark, along with three examples for each:
+
+1. from_json()
+This function parses a JSON string column and converts it into a struct or map.
+
+Syntax:
+
+python
+Copy code
+from_json(col, schema, options={})
+col: Column containing JSON strings.
+schema: StructType or MapType defining the expected schema of the JSON data.
+Example 1: Parse a JSON string column into a struct
+python
+Copy code
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import from_json, col
+from pyspark.sql.types import StructType, StructField, StringType, IntegerType
+
+# Sample JSON data
+data = [("1", '{"name":"Alice","age":30}'), ("2", '{"name":"Bob","age":35}')]
+df = spark.createDataFrame(data, ["id", "json_str"])
+
+# Define schema
+schema = StructType([
+    StructField("name", StringType(), True),
+    StructField("age", IntegerType(), True)
+])
+
+# Apply from_json function
+df_parsed = df.withColumn("json_data", from_json(col("json_str"), schema))
+df_parsed.show(truncate=False)
+Example 2: Parse JSON into a map
+python
+Copy code
+from pyspark.sql.types import MapType
+
+# Using MapType instead of StructType
+df_parsed_map = df.withColumn("json_data", from_json(col("json_str"), MapType(StringType(), StringType())))
+df_parsed_map.show(truncate=False)
+Example 3: Handling malformed JSON data
+python
+Copy code
+df_with_invalid = spark.createDataFrame([("1", '{"name":"Alice","age":30}'), ("2", 'invalid_json')], ["id", "json_str"])
+df_parsed_invalid = df_with_invalid.withColumn("json_data", from_json(col("json_str"), schema))
+df_parsed_invalid.show(truncate=False)
+2. to_json()
+This function converts a struct or map column back to a JSON string.
+
+Syntax:
+
+python
+Copy code
+to_json(col, options={})
+Example 1: Convert a struct column to JSON
+python
+Copy code
+from pyspark.sql.functions import to_json, struct
+
+# Create a DataFrame with struct column
+df_struct = df_parsed.select(col("id"), struct("json_data.name", "json_data.age").alias("struct_col"))
+df_json = df_struct.withColumn("json_str", to_json(col("struct_col")))
+df_json.show(truncate=False)
+Example 2: Convert a map column to JSON
+python
+Copy code
+df_json_map = df_parsed_map.withColumn("json_str", to_json(col("json_data")))
+df_json_map.show(truncate=False)
+Example 3: Convert selected fields of a struct to JSON
+python
+Copy code
+df_selected_json = df_parsed.withColumn("name_json", to_json(struct("json_data.name")))
+df_selected_json.show(truncate=False)
+3. json_tuple()
+This function extracts multiple values from a JSON string column into new columns based on the provided field names.
+
+Syntax:
+
+python
+Copy code
+json_tuple(col, *fields)
+Example 1: Extract multiple fields from a JSON string
+python
+Copy code
+from pyspark.sql.functions import json_tuple
+
+# Extract fields 'name' and 'age' from JSON string
+df_extracted = df.withColumn("name", json_tuple(col("json_str"), "name", "age")[0]) \
+                 .withColumn("age", json_tuple(col("json_str"), "name", "age")[1])
+df_extracted.show(truncate=False)
+Example 2: Extract fields into separate columns directly
+python
+Copy code
+df_extracted_direct = df.withColumn("name", json_tuple(col("json_str"), "name")) \
+                        .withColumn("age", json_tuple(col("json_str"), "age"))
+df_extracted_direct.show(truncate=False)
+Example 3: Handling missing or invalid JSON fields
+python
+Copy code
+df_invalid_field = df.withColumn("non_existent", json_tuple(col("json_str"), "non_existent"))
+df_invalid_field.show(truncate=False)
+Summary
+from_json(): Parses JSON strings into structured data (structs, maps).
+to_json(): Converts struct or map columns back to JSON strings.
+json_tuple(): Extracts specific fields from a JSON string into new columns.
+These functions are extremely helpful when dealing with nested or complex JSON data within Spark DataFrames.
+
+
+
+
+
+
