@@ -1,3 +1,9 @@
+There are 2 variations
+1. JDATA is string
+2. JDATA is not string
+
+--------------------------------------------------------------------------------------------------------------------------
+# JDATA is string - example1
 # Define schema for the JSON data
 schema = StructType([
     StructField("ID", IntegerType(), True),
@@ -26,9 +32,72 @@ jsonschema = StructType([
     StructField("Students", ArrayType(StringType()), True)
 ])
 
+# from_json column must be a string like "{  }" but not a disctionary like {  }
 jsondf = df.withColumn("JDATA", from_json(col("JDATA"), jsonschema))
 jsondf.show()
 
 exploded = jsondf.withColumn("name", expr("JDATA.name")).withColumn("Students", expr("explode(JDATA.Students)")).drop("JDATA")
 
 exploded.show()
+
+
+--------------------------------------------------------------------------------------------------------------------------
+# JDATA is not string
+
+# Define schema for 'details' column
+details_schema = StructType([
+    StructField("name", StringType(), True),
+    StructField("Students", ArrayType(StringType()), True)
+])
+
+# Sample data
+data = [
+    (1, "2023-06-30", {"name":"zeyo","Students":["rajesh","vishnu"]}, "Telecom", "Livingston"),
+    (2, "2023-06-30", {"name":"rani","Students":["vijay","hema"]}, "Healthcare", "Anchorage"),
+    (3, "2023-08-30", {"name":"vasi","Students":["harka","gowtham"]}, "Ecommerce", "Butler"),
+    (4, "2023-06-30", {"name":"visu","Students":["shaan","ravi"]}, "Telecom", "Ashland")
+]
+
+# Create DataFrame with schema
+columns = ["id", "date", "details", "industry", "location"]
+df = spark.createDataFrame(data, schema=StructType([
+    StructField("id", IntegerType(), True),
+    StructField("date", StringType(), True),
+    StructField("details", details_schema, True),
+    StructField("industry", StringType(), True),
+    StructField("location", StringType(), True)
+]))
+
+# Flatten the array of students using explode()
+df_flattened = df.withColumn("student", explode(col("details.Students"))) \
+    .withColumn("name", col("details.name")) \
+    .drop("details")
+
+# Show the flattened data
+df_flattened.show(truncate=False)
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------------------------------------------------
+ Your existing data
+data = [('John', {'Street': '123 Maria street', 'city': 'LA'}),
+        ('sid', {'Street': '345 fghj street', 'city': 'KA'}),
+        ('moh', {'Street': '4567 rtyhv street', 'city': 'TN'})]
+
+columns = ['name', 'address']
+
+# Create DataFrame
+df = spark.createDataFrame(data, columns)
+
+df.show(truncate=False)
+
+df.printSchema()
+
+# Extract fields directly from the struct without using from_json
+df2 = (df.withColumn("street", col("address").Street)
+       .withColumn("city", col("address").city)
+       .drop("address"))
+
+df2.show(truncate=False)
