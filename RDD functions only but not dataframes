@@ -108,6 +108,13 @@ python
 Copy code
 rdd = sc.parallelize([1, 2, 3, 4, 5])
 rdd.sample(False, 0.5).collect()  # Random subset
+
+16. getNumPartitions()
+# Repartition the DataFrame to a specific number of partitions
+df_repartitioned = df.repartition(2)
+num_partitions_repartitioned = df_repartitioned.rdd.getNumPartitions()
+print(f"Number of partitions after repartitioning: {num_partitions_repartitioned}")
+
 Summary:
 The functions listed above are RDD-specific because RDDs offer lower-level, functional-style APIs, while DataFrames operate at a higher, declarative level with SQL-like operations. DataFrames are optimized for performance and provide a more structured approach to working with data, while RDDs are more flexible but less optimized for SQL-like operations.
 
