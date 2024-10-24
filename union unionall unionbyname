@@ -1,0 +1,37 @@
+f = spark.read.option("header", "true").csv("file3.txt")
+
+df.show()
+
+df1 = df.filter("txnno < 00047939")
+print("------------df1-------------")
+df1.show()
+
+df2 = df.filter("txnno > 00047939 and txnno < 00047949")
+print("------------df2-------------")
+df2.show()
+
+uniondf = df1.union(df2)
+print("-------------df1.union(df2)--------------")
+uniondf.show()
+
+df3 = df2.withColumn("rowno", monotonically_increasing_id())
+
+print("------------df3---------------")
+df3.show()
+# print("------------df3.union(df1)-------------")
+# union1df = df3.union(df1)
+# union1df.show()
+# UNION can only be performed on inputs with the same number of columns,
+# but the first input has 10 columns and the second input has 9 columns.;
+
+# print("------------df3.unionByName(df1)-------------")
+# union2df = df3.unionByName(df1)
+# union2df.show()
+# Cannot resolve column name "rowno" among (txnno, txndate, custno, amount, category, product, city, state, spendby).
+
+
+# print("------------df3.unionAll(df1)-------------")
+# union3df = df3.unionAll(df1)
+# union3df.show()
+# UNION can only be performed on inputs with the same number of columns, 
+# but the first input has 10 columns and the second input has 9 columns.;
