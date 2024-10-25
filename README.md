@@ -17,5 +17,3 @@ sc = SparkContext(conf=conf)
 spark = SparkSession.builder.getOrCreate()
 
 If you truly want to learn Big data tools like Hadoop, Sqoop, Hive, Spark and Cloud counterparts of them. Please ping me on whatsapp 9490716829.
-
-https://github.com/user-attachments/assets/b73bda8c-2233-4660-8678-1bea82d4736f
