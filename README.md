@@ -4,7 +4,7 @@ All I know about PySpark
 For all the code executions above, Please put the below code at the begining
 import sys
 from pyspark import SparkConf, SparkContext
-from pyspark.sql import *
+from pyspark.sql import SparkSession
 import os
 from pyspark.sql.functions import *
 
