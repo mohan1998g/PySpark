@@ -1,0 +1,26 @@
+In PySpark, transformations on DataFrames (or RDDs) can be classified as narrow or wide based on whether they require data shuffling across the cluster.
+
+1. Narrow Transformations
+In narrow transformations, the data required to compute a single output partition resides in a single input partition. This means each partition of the parent RDD/DataFrame contributes to only one partition in the child RDD/DataFrame. Narrow transformations do not require data to be shuffled between nodes, making them faster and more efficient.
+
+Examples of narrow transformations:
+
+map(): Applies a function to each element, resulting in a new RDD/DataFrame.
+filter(): Filters elements based on a condition.
+flatMap(): Similar to map, but allows for returning multiple items from a single input.
+mapPartitions(): Applies a function to each partition (more efficient than map for larger transformations).
+union(): Combines two RDDs/DataFrames with the same schema.
+sample(): Returns a random sample of the data.
+coalesce(): Reduces the number of partitions without a full shuffle, useful for reducing partition count in a narrow way.
+2. Wide Transformations
+Wide transformations require data from multiple partitions to compute a single output partition, leading to a shuffle operation. During a shuffle, data is redistributed across the nodes, which can be resource-intensive and slower compared to narrow transformations.
+
+Examples of wide transformations:
+
+groupByKey(): Groups data by a key, requiring data with the same key to be brought together.
+reduceByKey(): Similar to groupByKey, but performs aggregation on the grouped data, like summing values.
+aggregateByKey(): Aggregates values by key, similar to reduceByKey but more flexible in combining results.
+join(): Joins two DataFrames/RDDs based on a key, requiring data to be shuffled to match keys across partitions.
+distinct(): Removes duplicate elements, which requires a shuffle to ensure uniqueness.
+repartition(): Increases or decreases the number of partitions by shuffling the data.
+cogroup(): Groups data from multiple RDDs by a common key, resulting in shuffling.
