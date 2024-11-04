@@ -1,16 +1,20 @@
 To compare two JSON files or JSON structures in PySpark, you would typically follow these steps:
 
 Load the JSON data into Spark DataFrames.
+
 Identify common keys between the two DataFrames (if applicable).
+
 Perform comparisons based on row-by-row values or across the entire structure (depending on whether you're comparing the JSON structure or specific data).
+
 Handle differences—such as finding missing rows, columns, or differing values.
+
 Below is a detailed breakdown of how to compare two JSON files in PySpark:
+
+-------------------------------------------------------------------------------------------------------------------------------
 
 1. Loading JSON Files into Spark DataFrames
 You can load both JSON files into PySpark DataFrames using the spark.read.json() function.
 
-python
-Copy code
 # Load JSON files into DataFrames
 df1 = spark.read.json("path/to/json_file1.json")
 df2 = spark.read.json("path/to/json_file2.json")
@@ -18,14 +22,16 @@ df2 = spark.read.json("path/to/json_file2.json")
 # Show the loaded data (optional)
 df1.show(truncate=False)
 df2.show(truncate=False)
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 2. Compare Entire DataFrames (Structural Comparison)
-If the two JSONs have the same structure (same columns), you can directly compare them using DataFrame operations. If they don’t, you can normalize or flatten the structure to make it comparable.
+If the two JSONs have the same structure (same columns), you can directly compare them using DataFrame operations. 
+If they don’t, you can normalize or flatten the structure to make it comparable.
 
 a. Find Rows that Differ (Row-by-Row Comparison)
 You can find rows that are present in one DataFrame but not in the other using the subtract() function.
 
-python
-Copy code
 # Find rows in df1 that are not in df2
 df1_not_in_df2 = df1.subtract(df2)
 
@@ -38,6 +44,7 @@ df1_not_in_df2.show(truncate=False)
 
 print("Rows in df2 not in df1:")
 df2_not_in_df1.show(truncate=False)
+
 b. Find Matching Rows (Intersection of DataFrames)
 You can find rows that are common to both DataFrames using the intersect() function.
 
@@ -49,11 +56,11 @@ common_rows = df1.intersect(df2)
 # Show the matching rows
 print("Common rows between df1 and df2:")
 common_rows.show(truncate=False)
-c. Find Differences in Specific Columns
-If you want to compare specific fields/columns in the JSON, you can perform column-wise comparisons. You can select columns and filter out rows where the values are different.
 
-python
-Copy code
+c. Find Differences in Specific Columns
+If you want to compare specific fields/columns in the JSON, you can perform column-wise comparisons. 
+You can select columns and filter out rows where the values are different.
+
 # Compare two specific columns (assuming both DataFrames have a "name" and "age" column)
 df_diff = df1.join(df2, on="id", how="outer") \
     .select(df1["id"], df1["name"].alias("df1_name"), df2["name"].alias("df2_name"), df1["age"].alias("df1_age"), df2["age"].alias("df2_age")) \
@@ -61,11 +68,13 @@ df_diff = df1.join(df2, on="id", how="outer") \
 
 # Show differences in the selected columns
 df_diff.show(truncate=False)
-3. Compare Two DataFrames with Different Structures
-Sometimes, JSON structures can differ, which means the number of keys (columns) may not be the same. In such cases, you can align the DataFrames first by selecting the common columns before comparing them.
 
-python
-Copy code
+-------------------------------------------------------------------------------------------------------------------------------
+
+3. Compare Two DataFrames with Different Structures
+Sometimes, JSON structures can differ, which means the number of keys (columns) may not be the same. 
+In such cases, you can align the DataFrames first by selecting the common columns before comparing them.
+
 # Find the common columns in both DataFrames
 common_columns = set(df1.columns).intersection(set(df2.columns))
 
@@ -76,12 +85,15 @@ df2_common = df2.select(*common_columns)
 # Now you can compare these two DataFrames as shown earlier
 df_diff = df1_common.subtract(df2_common)
 df_diff.show(truncate=False)
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 4. Advanced Comparison for Nested JSON Structures
-For deeply nested JSON structures, you might need to flatten the structure before comparison. You can use the withColumn function along with explode() to handle nested fields.
+For deeply nested JSON structures, you might need to flatten the structure before comparison. 
+You can use the withColumn function along with explode() to handle nested fields.
 
 Example: Flatten Nested JSONs
-python
-Copy code
+
 from pyspark.sql.functions import explode
 
 # Flatten the nested JSON structure (assuming there's a nested field called "data")
@@ -91,11 +103,12 @@ df2_flat = df2.withColumn("data", explode("data"))
 # Now compare the flattened DataFrames
 df_diff_flat = df1_flat.subtract(df2_flat)
 df_diff_flat.show(truncate=False)
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 5. Handling Null or Missing Data
 You can handle null values during comparison using .na.fill() or .na.drop() to either fill or remove null values before comparing the DataFrames.
 
-python
-Copy code
 # Fill null values with a default value before comparison
 df1_filled = df1.na.fill("N/A")
 df2_filled = df2.na.fill("N/A")
@@ -103,10 +116,18 @@ df2_filled = df2.na.fill("N/A")
 # Compare filled DataFrames
 df_diff = df1_filled.subtract(df2_filled)
 df_diff.show(truncate=False)
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 Summary of Steps:
 Load JSON into Spark DataFrames using spark.read.json().
+
 Perform structural comparison using subtract() or intersect().
+
 Column-wise comparison: Compare specific columns with DataFrame operations like .select() and .filter().
+
 Handle nested structures by flattening the JSON using explode() and then comparing.
+
 Handle nulls and missing data using .na.fill() or .na.drop().
+
 This approach allows for flexible comparison of JSONs based on various factors like structure, specific columns, or row-by-row data.
