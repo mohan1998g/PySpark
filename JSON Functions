@@ -2,18 +2,18 @@ In PySpark, JSON functions are essential when working with JSON data. These func
 
 Here’s a comprehensive guide to the most commonly used JSON functions in PySpark:
 
+-------------------------------------------------------------------------------------------------------------------------------
+
 1. from_json()
+
 This function is used to parse a JSON string and convert it into a struct or map object based on a defined schema.
 
-Syntax:
-python
-Copy code
 from_json(col, schema, options=None)
 col: The column containing JSON strings.
 schema: The schema or structure of the JSON.
+
 Example:
-python
-Copy code
+
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_json, col
 from pyspark.sql.types import StructType, StructField, StringType, ArrayType
@@ -40,15 +40,18 @@ df = spark.createDataFrame(data, StringType()).toDF("json_data")
 df_parsed = df.withColumn("parsed_data", from_json(col("json_data"), json_schema))
 
 df_parsed.show(truncate=False)
+
 Output:
-lua
-Copy code
+
 +------------------------------------+-----------------------+
 |json_data                           |parsed_data            |
 +------------------------------------+-----------------------+
 |{"name":"John", "courses":["Math","Science"]}|{John, [Math, Science]}|
 |{"name":"Jane", "courses":["History","Math"]}|{Jane, [History, Math]}|
 +------------------------------------+-----------------------+
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 2. to_json()
 This function converts a struct or map column into a JSON string.
 
