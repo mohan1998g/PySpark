@@ -4,17 +4,25 @@ print(df1.schema) ---->  name, age
 print(df2.schema) ---->  name, age
 print(df3.schema) ---->  name, age, gender
 
+-------------------------------------------------------------------------------------------------------------------------------
+
 method1: It works only when the schema matches
       Syntax: df1.union(df2)
+
+-------------------------------------------------------------------------------------------------------------------------------
 
 method2: since the schema of df1 and df3 are different. We can insert a new column into df1 to make schema same
 
       df4 = df1.withColumn("Gender", lit("null"))
       df4.union(df3)
 
+-------------------------------------------------------------------------------------------------------------------------------
+
 method3: we can use outer join here
 
       df1.join(df2, ["name", "age"], "outer")
+
+-------------------------------------------------------------------------------------------------------------------------------
 
 method4: Sometimes dataframes has 1000's of columns, at that time it will be useful
 
