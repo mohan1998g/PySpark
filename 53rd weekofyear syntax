@@ -8,7 +8,7 @@ df.show()
 
 datecol = (df.withColumn("date", to_date("year", "dd/mm/yyyy"))
            .withColumn("week_number", weekofyear("date"))
-           .filter("week_number = 53").drop("year"))
+           .filter("week_number = 53").drop("year").withColumn("id", expr("id - 1")))
 
 datecol.show()
 
