@@ -1,3 +1,9 @@
+# Cretae a column named "ageGroup" with below details
+
+age>=19 and age<=35 then '19-35' 
+age>=36 and age<=50 then '36-50'
+age>50 then '51+'
+
 # Define the schema for the customer DataFrame
 customer_schema = StructType([
         StructField("customer_id", IntegerType(), True),
