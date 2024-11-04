@@ -1,10 +1,11 @@
-=============================================================================================
 empRDD1 = sc.parallelize([(1001, 'Big Data'), (1002, 'Java'), (1003, 'SQL')])
 
 result1 = empRDD1.collectAsMap()
 
 print(result1)  #  {1001: 'Big Data', 1002: 'Java', 1003: 'SQL'}
+
 =============================================================================================
+
 empRDD2 = sc.parallelize(["1001, John", "1002, Jai", "1003, Sam", "1003, Kim"])
 
 result2 = empRDD2.map(lambda x: int(x.split(',')[0]))  #  [1001, 1002, 1003, 1003]
@@ -13,20 +14,25 @@ result2 = empRDD2.map(lambda x: int(x.split(',')[0]))  #  [1001, 1002, 1003, 100
 print(result2)  #  [1001, 1002, 1003]
 
 result2 = empRDD2.map(lambda x: x.split(',')).collect() #[['1001', ' John'], ['1002', ' Jai'], ['1003', ' Sam'], ['1003', ' Kim']]
+
 =============================================================================================
+
 dataRDD = (sc.parallelize(["C, 29", "B, 9", "A, 18"])
              .map(lambda x: x.split(',')).sortBy(lambda x: x[1])
              .collect())
 
 print(dataRDD)  #  [['A', ' 18'], ['C', ' 29'], ['B', ' 9']]
 
+=============================================================================================
 
 rdd = sc.parallelize(["user1,password1","user2,password2", "user2,password2","user4,password1","user1,password1"])
 
 finalrdd = rdd.map(lambda x: x.split(',')[0]).map(lambda x: (x, 1)).reduceByKey(lambda x,y: x+y).collect()
 
 print(finalrdd)  #  [('user1', 2), ('user2', 2), ('user4', 1)]
+
 =============================================================================================
+
 rdd = sc.parallelize(["hello","welcome","all","sudheer"])
 
 print(rdd.first())  # hello
@@ -38,7 +44,9 @@ print(rdd.take(1))  # ['hello']
 print(rdd.collect()) # prints entire rdd
 
 print(rdd.filter(lambda x:x[0] == 'H').collect()) # []
+
 =============================================================================================
+
 def fun(x):
     return x.split(",")
 
@@ -47,7 +55,9 @@ rdd = sc.parallelize(["1,s,d","2,3,r","3,f,5","4,d,5"])
 newrdd = rdd.map(fun)
 
 print(newrdd.first()) #  ['1', 's', 'd']
+
 =============================================================================================
+
 rdd = sc.parallelize([
     ("1001", "John", "Finance", "20000"),
     ("1002", "Harry", "Finance", ""),
@@ -66,7 +76,9 @@ print(msal1)
 # print(msal2)
 print(msal3)
 print(msal4)
+
 =============================================================================================
+
 rdd = sc.parallelize([
     ("USA", 8000, "EAST"),
     ("USA", 3000, "WEST"),
@@ -81,7 +93,9 @@ from operator import add
 total_sales_east = rdd.filter(lambda x: x[2] == "EAST").map(lambda x: x[1]).reduce(add)
 
 print(total_sales_east)
+
 =============================================================================================
+
 rdd = sc.textFile("file1.txt")
 #  count of records in a file
 print(rdd.countByKey()) # defaultdict(<class 'int'>, {'0': 21035})
@@ -104,7 +118,9 @@ result.show()
 
 result1 = df.groupBy("location").sum("profit").withColumnRenamed("sum(profit)","profit_margin")
 result1.show()
+
 =============================================================================================
+
 dataset = [("John", "Williams", "India", 5000),
            ("Sah", "Roy", "USA", 8000),
            ("Harry", "Williams", "India", 4000),
@@ -117,7 +133,9 @@ df = spark.createDataFrame(data=dataset, schema=salesschema)
 df.select("employee_name", "employee_surname").show()
 
 df.drop("location", "profit").show()
+
 =============================================================================================
+
 rdd = sc.parallelize(range(5, 7)).map(lambda x: (x, x*x*x))
 
 df = spark.createDataFrame(rdd).toDF("Key", "Cube")
@@ -130,7 +148,9 @@ df.show()
 |  5| 125|
 |  6| 216|
 +---+----+
+
 =============================================================================================
+
 dataset = [("Harry", "Williams", "India", 5000),
            ("Sam", "Roy", "USA", 8000),
            ("Jones", "Williams", "India", 4000),
@@ -156,4 +176,3 @@ result1 = df.groupBy("location").sum("salary").count()
 result1.show()
 
 'int' object has no attribute 'show'
-=============================================================================================
