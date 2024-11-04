@@ -1,8 +1,13 @@
 ------------------print(df.schema)---------------
+
 StructType([StructField('id', StringType(), True), StructField('tdate', StringType(), True), StructField('amount', StringType(), True), StructField('category', StringType(), True), StructField('product', StringType(), True), StructField('spendby', StringType(), True)])
+
 ------------------print(df.columns)--------------
+
 ['id', 'tdate', 'amount', 'category', 'product', 'spendby']
+
 ----------------df.printSchema()------------------
+
 root
  |-- id: string (nullable = true)
  |-- tdate: string (nullable = true)
@@ -11,9 +16,13 @@ root
  |-- product: string (nullable = true)
  |-- spendby: string (nullable = true)
 
+
 -----------------print(df.first)------------
+
 <bound method DataFrame.first of DataFrame[id: string, tdate: string, amount: string, category: string, product: string, spendby: string]>
+
 ----------------------print(df.dtypes)--------------
+
 [('id', 'string'), ('tdate', 'string'), ('amount', 'string'), ('category', 'string'), ('product', 'string'), ('spendby', 'string')]
 ['id', 'tdate', 'amount', 'category', 'product', 'spendby']
 ['string', 'string', 'string', 'string', 'string', 'string']
@@ -21,10 +30,15 @@ root
 
 
 ------------------print(df.schema)---------------
+
 StructType([StructField('id', StringType(), True), StructField('tdate', StringType(), True), StructField('amount', StringType(), True), StructField('category', StringType(), True), StructField('product', StringType(), True), StructField('spendby', StringType(), True)])
+
 ------------------print(df.columns)--------------
+
 ['id', 'tdate', 'amount', 'category', 'product', 'spendby']
+
 ----------------df.printSchema()------------------
+
 root
  |-- id: string (nullable = true)
  |-- tdate: string (nullable = true)
@@ -34,8 +48,11 @@ root
  |-- spendby: string (nullable = true)
 
 -----------------print(df.first)------------
+
 <bound method DataFrame.first of DataFrame[id: string, tdate: string, amount: string, category: string, product: string, spendby: string]>
+
 ----------------------print(df.dtypes)--------------
+
 [('id', 'string'), ('tdate', 'string'), ('amount', 'string'), ('category', 'string'), ('product', 'string'), ('spendby', 'string')]
 ['id', 'tdate', 'amount', 'category', 'product', 'spendby']
 ['string', 'string', 'string', 'string', 'string', 'string']
