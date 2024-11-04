@@ -31,3 +31,20 @@ df.show()
 
 df1 = df.groupby("year", "subject").agg(avg("Marks"))
 df1.show()
+
+avgdf = df.groupby("year", "subject").avg("Marks")
+avgdf.show()
+
++----+-------+----------+
+|year|subject|avg(Marks)|
++----+-------+----------+
+|1990|      P|      68.0|
+|1992|      M|      81.0|
+|1991|      M|      75.0|
+|1991|      P|      70.0|
+|1992|      P|      80.0|
+|1993|      P|      82.0|
+|1990|      M|      76.5|
+|1993|      M|      80.0|
++----+-------+----------+
+
