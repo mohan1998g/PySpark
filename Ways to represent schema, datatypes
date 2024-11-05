@@ -5,11 +5,15 @@ Example: INT or INTEGER for integers.
 
 df_int = spark.createDataFrame([2, 5], "INT")
 df_int.show()
+
+
 2. String Type
 Example: STRING for string data.
 
 df_string = spark.createDataFrame(["hello", "world"], "STRING")
 df_string.show()
+
+
 3. Float Types
 Example: FLOAT for single-precision floats.
 
@@ -19,11 +23,15 @@ Example: DOUBLE for double-precision floats.
 
 df_double = spark.createDataFrame([3.14, 2.71], "DOUBLE")
 df_double.show()
+
+
 4. Boolean Type
 Example: BOOLEAN for true/false values.
 
 df_bool = spark.createDataFrame([True, False], "BOOLEAN")
 df_bool.show()
+
+
 5. Date and Timestamp Types
 Example: DATE for dates.
 
@@ -35,6 +43,8 @@ Example: TIMESTAMP for date and time.
 from datetime import datetime
 df_timestamp = spark.createDataFrame([datetime(2023, 1, 1, 12, 0), datetime(2023, 1, 2, 12, 0)], "TIMESTAMP")
 df_timestamp.show()
+
+
 6. Array Type
 For array data, you need to specify a schema using ArrayType.
 Example: ARRAY<INT> for an array of integers.
@@ -42,6 +52,8 @@ Example: ARRAY<INT> for an array of integers.
 from pyspark.sql.types import ArrayType, IntegerType
 df_array = spark.createDataFrame([([1, 2, 3],), ([4, 5],)], ArrayType(IntegerType()))
 df_array.show()
+
+
 7. Struct Type
 For complex data structures, use StructType and StructField.
 Example: STRUCT<name: STRING, age: INT> for a structure with two fields.
@@ -53,4 +65,6 @@ schema = StructType([
 ])
 df_struct = spark.createDataFrame([("Alice", 30), ("Bob", 25)], schema)
 df_struct.show()
+
+
 Each data type provides flexibility in creating DataFrames tailored to your specific data requirements.
