@@ -1,29 +1,38 @@
-User-Defined Functions (UDFs) allow you to create custom functions in PySpark. You can apply these functions to
-your DataFrame columns.
+User-Defined Functions (UDFs) allow you to create custom functions in PySpark. You can apply these functions to your DataFrame columns.
+
 Example:
+
 from pyspark.sql.functions import udf
+
 def multiply_by_two(x):
-return x * 2
+        return x * 2
+
 multiply_udf = udf(multiply_by_two)
 df.withColumn("new_col", multiply_udf(df["existing_col"])).show()
 
 PySpark UDFs (User Defined Functions) Overview
-In PySpark, UDFs (User Defined Functions) are a way to extend PySpark's built-in functionality by allowing you to apply your own Python functions to DataFrames. They are primarily used when you need custom transformations or computations that are not covered by PySpark's built-in operations. However, UDFs introduce overhead, so they should be used judiciously in performance-critical applications.
+In PySpark, UDFs (User Defined Functions) are a way to extend PySpark's built-in functionality by allowing you to apply your own Python functions to DataFrames. 
+They are primarily used when you need custom transformations or computations that are not covered by PySpark's built-in operations. 
+However, UDFs introduce overhead, so they should be used judiciously in performance-critical applications.
 
 Table of Contents
-What is a PySpark UDF?
-When to Use UDFs in PySpark
-Defining and Registering UDFs
-UDFs with Built-in Data Types
-UDFs with Complex Data Types (Lists, Arrays, Structs, etc.)
-Performance Considerations
-Best Practices
-PySpark Pandas UDFs (Vectorized UDFs)
-Example: Writing, Registering, and Applying UDFs
-1. What is a PySpark UDF?
-A User Defined Function (UDF) in PySpark is a custom Python function that you can apply to a PySpark DataFrame. You define a Python function, register it as a UDF, and apply it to DataFrame columns, enabling operations on your data that PySpark might not natively support.
+        What is a PySpark UDF?
+        When to Use UDFs in PySpark
+        Defining and Registering UDFs
+        UDFs with Built-in Data Types
+        UDFs with Complex Data Types (Lists, Arrays, Structs, etc.)
+        Performance Considerations
+        Best Practices
+        Example: Writing, Registering, and Applying UDFs
 
-A UDF in PySpark works on row-level, meaning that the function is applied to each individual row in the DataFrame. You can pass in multiple columns to a UDF and return one or more values.
+
+1. What is a PySpark UDF?
+A User Defined Function (UDF) in PySpark is a custom Python function that you can apply to a PySpark DataFrame.
+You define a Python function, register it as a UDF, and apply it to DataFrame columns, enabling operations on your data that PySpark might not natively support.
+
+A UDF in PySpark works on row-level, meaning that the function is applied to each individual row in the DataFrame.
+You can pass in multiple columns to a UDF and return one or more values.
+
 
 2. When to Use UDFs in PySpark
 UDFs should be used when:
@@ -31,20 +40,22 @@ UDFs should be used when:
 There’s a transformation or computation you need that cannot be achieved through built-in PySpark functions.
 You have legacy Python code that you want to integrate into your Spark workflow.
 You need custom logic for feature engineering in data science or machine learning workflows.
+
 Avoid UDFs when:
 
 You can achieve the same results using PySpark’s built-in functions (pyspark.sql.functions), as these are optimized for distributed execution.
 You’re dealing with performance-sensitive applications since UDFs are less efficient due to serialization/deserialization of data between Python and JVM.
+
+
 3. Defining and Registering UDFs
 To create a UDF in PySpark, you:
 
 Define a regular Python function.
 Register it as a UDF using udf() and specify the return type (optional but recommended).
 Apply the UDF to a DataFrame column using the .withColumn() or .select() methods.
+
 Example 1: Simple UDF
 
-python
-Copy code
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf
 from pyspark.sql.types import StringType
@@ -71,6 +82,7 @@ df_with_upper = df.withColumn("Upper_Name", make_upper_udf(df["Name"]))
 df_with_upper.show()
 In this example, the make_upper UDF converts names to uppercase.
 
+
 4. UDFs with Built-in Data Types
 You can define UDFs with PySpark's built-in data types such as:
 
@@ -80,10 +92,9 @@ DoubleType
 BooleanType
 ArrayType
 StructType
+
 Example 2: UDF Returning IntegerType
 
-python
-Copy code
 from pyspark.sql.types import IntegerType
 
 # Define a Python function
@@ -100,18 +111,17 @@ df_with_length = df.withColumn("Name_Length", string_length_udf(df["Name"]))
 df_with_length.show()
 In this example, the UDF returns the length of each name, and IntegerType() is used to specify the return type.
 
+
 5. UDFs with Complex Data Types (Lists, Arrays, Structs, etc.)
 UDFs can also handle more complex data types like ArrayType, MapType, or StructType.
 
 Example 3: UDF Returning ArrayType
 
-python
-Copy code
 from pyspark.sql.types import ArrayType, StringType
 
 # Define a Python function that splits a name into characters
 def split_name(name):
-    return list(name)
+        return list(name)
 
 # Register the UDF
 split_name_udf = udf(split_name, ArrayType(StringType()))
@@ -123,28 +133,38 @@ df_with_split_name = df.withColumn("Name_Split", split_name_udf(df["Name"]))
 df_with_split_name.show(truncate=False)
 Here, the UDF splits a string (name) into a list of characters, and ArrayType(StringType()) is used to specify the return type.
 
+
 6. Performance Considerations
-Serialization Overhead: PySpark operates on the JVM, while UDFs are executed in Python. Each time a UDF is called, data is serialized and deserialized between JVM and Python. This creates significant overhead compared to native PySpark functions.
+Serialization Overhead: PySpark operates on the JVM, while UDFs are executed in Python. 
+                        Each time a UDF is called, data is serialized and deserialized between JVM and Python. 
+                        This creates significant overhead compared to native PySpark functions.
 
-Broadcast Variables: If your UDF relies on static data, you can broadcast variables to make them available to all worker nodes without repeatedly sending them across the network. Use sc.broadcast() to share read-only variables with all nodes.
+Broadcast Variables: If your UDF relies on static data, you can broadcast variables to make them available to all worker nodes without repeatedly 
+                     sending them across the network. Use sc.broadcast() to share read-only variables with all nodes.
 
-Using Pandas UDFs: PySpark provides optimized UDFs, called Pandas UDFs (also known as Vectorized UDFs), which perform much better than regular UDFs. Pandas UDFs work by utilizing Apache Arrow, which allows efficient data exchange between PySpark and Python.
+Using Pandas UDFs: PySpark provides optimized UDFs, called Pandas UDFs (also known as Vectorized UDFs), which perform much better than regular UDFs. 
+                   Pandas UDFs work by utilizing Apache Arrow, which allows efficient data exchange between PySpark and Python.
+
 
 7. Best Practices
 Avoid UDFs if possible: PySpark has a large set of built-in functions that are highly optimized and should be preferred over UDFs.
+
 Specify Data Types: Always specify the return data type when defining UDFs. It helps PySpark optimize query execution.
+
 Use Pandas UDFs for Performance: Use Pandas UDFs (Vectorized UDFs) whenever possible for better performance.
+
+
 8. PySpark Pandas UDFs (Vectorized UDFs)
-Pandas UDFs, introduced in PySpark 2.3, allow for better performance and are especially useful for complex transformations. They operate on entire Pandas series (a column in a DataFrame) at a time, instead of row-by-row.
+Pandas UDFs, introduced in PySpark 2.3, allow for better performance and are especially useful for complex transformations. 
+They operate on entire Pandas series (a column in a DataFrame) at a time, instead of row-by-row.
 
 To create a Pandas UDF:
 
 Import the decorator pandas_udf.
 Use pandas.Series as input and output, which will allow PySpark to process data more efficiently using Apache Arrow.
+
 Example 4: Pandas UDF
 
-python
-Copy code
 from pyspark.sql.functions import pandas_udf
 import pandas as pd
 from pyspark.sql.types import StringType
@@ -161,11 +181,10 @@ df_with_upper_pandas = df.withColumn("Upper_Name", make_upper_pandas(df["Name"])
 df_with_upper_pandas.show()
 Pandas UDFs operate much faster than regular UDFs since they can process entire columns (Pandas Series) instead of row by row.
 
+
 9. Example: Writing, Registering, and Applying UDFs
 Here’s a complete example that demonstrates how to define a UDF, register it, and apply it to a PySpark DataFrame.
 
-python
-Copy code
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf
 from pyspark.sql.types import StringType, IntegerType
@@ -196,9 +215,17 @@ df_with_length = df_with_upper.withColumn("Name_Length", string_length_udf(df["N
 
 # Show results
 df_with_length.show()
+
+
 Conclusion
+
 UDFs allow you to extend PySpark's capabilities with custom Python code.
-Performance: UDFs come with overhead due to serialization between Python and the JVM, so they should be avoided in performance-sensitive tasks where PySpark’s built-in functions are available.
+
+Performance: UDFs come with overhead due to serialization between Python and the JVM, so they should be avoided in performance-sensitive tasks where 
+PySpark’s built-in functions are available.
+
 Pandas UDFs (Vectorized UDFs) offer better performance by processing data at a column-level instead of row-by-row.
+
 Always specify data types when registering UDFs for better optimization.
-Use UDFs wisely to balance flexibility and performance in your PySpark applications! Let me know if you need more specific examples or details.
+
+Use UDFs wisely to balance flexibility and performance in your PySpark applications
