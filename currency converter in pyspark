@@ -1,6 +1,7 @@
 When working with currency conversion in PySpark, especially in cases where you need to convert amounts from multiple currencies to a single target currency like USD, there are a few approaches depending on the data source and requirements. One popular option is to use a Python library such as currencyconverter or an API that provides live or historical exchange rates. However, since PySpark operates in a distributed environment, it's essential to ensure that currency conversion logic is efficiently handled across your cluster.
 
 Key Concepts for Currency Conversion in PySpark
+
 Python UDFs for Currency Conversion: In PySpark, we can define a User Defined Function (UDF) to apply a Python function to each row of a DataFrame. The function would handle the currency conversion for the amount field based on the currency column.
 
 The currencyconverter Package: The currencyconverter Python package provides a convenient way to convert currencies, and it supports live as well as historical exchange rates. It works offline by using exchange rate data from the European Central Bank.
@@ -11,18 +12,17 @@ Steps to Perform Currency Conversion in PySpark
 Here’s a detailed guide to performing currency conversion in PySpark:
 
 Step 1: Install the currencyconverter Package
+
 First, install the currencyconverter package to handle conversions:
 
-bash
-Copy code
 pip install currencyconverter
+
 If you're using a cluster or distributed environment, ensure that this package is available on all worker nodes, or you can package it with your PySpark job.
 
 Step 2: Initialize PySpark and Sample Data
+
 Let’s assume we have a PySpark DataFrame with amounts in different currencies, and we want to convert all amounts to USD.
 
-python
-Copy code
 from pyspark.sql import SparkSession
 
 # Initialize Spark session
@@ -42,13 +42,13 @@ df = spark.createDataFrame(data, columns)
 
 # Show initial DataFrame
 df.show()
+
 Step 3: Define UDF for Currency Conversion
+
 The currencyconverter package provides an offline mode, which means you don’t need to worry about making API calls for every row, making it suitable for batch processing in PySpark.
 
 Define a UDF to perform the conversion:
 
-python
-Copy code
 from pyspark.sql.functions import udf
 from pyspark.sql.types import DoubleType
 from currency_converter import CurrencyConverter
@@ -66,13 +66,12 @@ def convert_to_usd(amount, currency):
 
 # Register the UDF
 convert_to_usd_udf = udf(convert_to_usd, DoubleType())
+
 In this UDF, CurrencyConverter.convert() is used to convert the amount based on the currency and target currency ('USD' in this case). The function handles exceptions to ensure that errors during conversion (e.g., unsupported currencies) do not break the code.
 
 Step 4: Apply UDF to the DataFrame
 Now apply the UDF to convert all amounts to USD:
 
-python
-Copy code
 # Add a new column "amount_in_usd" by applying the UDF
 df_with_usd = df.withColumn("amount_in_usd", convert_to_usd_udf(df["amount"], df["currency"]))
 
@@ -85,8 +84,6 @@ If you are dealing with a very large dataset, it’s important to reduce overhea
 
 Here’s how you can broadcast the CurrencyConverter instance:
 
-python
-Copy code
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf
 from pyspark.sql.types import DoubleType
@@ -116,20 +113,18 @@ df_with_usd = df.withColumn("amount_in_usd", convert_to_usd_udf(df["amount"], df
 
 # Show the results
 df_with_usd.select("Userid", "Date", "amount", "currency", "amount_in_usd").show()
+
 Step 6: Historical Rates
 The currencyconverter package also supports historical rates. To convert amounts using rates from a specific date, you can pass the date as an additional argument to the convert function.
 
 Example:
 
-python
-Copy code
 # Convert using historical rates (for example, January 1st, 2017)
 c.convert(50, 'GBP', 'USD', date='2017-01-01')
 You can modify the UDF to accept a date column from the DataFrame and use it to perform historical conversions.
 
 Full Example Code:
-python
-Copy code
+
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf
 from pyspark.sql.types import DoubleType
@@ -171,6 +166,7 @@ df_with_usd = df.withColumn("amount_in_usd", convert_to_usd_udf(df["amount"], df
 
 # Show the results
 df_with_usd.select("Userid", "Date", "amount", "currency", "amount_in_usd").show()
+
 Conclusion
 UDF and Broadcast: By using a UDF and broadcasting the CurrencyConverter, we can efficiently convert currency amounts in a distributed PySpark environment.
 Offline vs. Online: The currencyconverter package works offline by default, which avoids the need for API calls for each row. If you need real-time data, you might need to use an external API and manage API rate limits.
