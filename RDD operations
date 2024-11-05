@@ -4,6 +4,7 @@ b = a+1
 print(b)
 c = "zeyobron"
 print(c)
+
 d = [1, 2, 3, 4]
 rdd = sc.parallelize(d)
 d_proc1 = rdd.map(lambda x: x+2)  # 1st x is accumulator and 2nd x is iterator map is do
@@ -16,6 +17,7 @@ d_proc7 = rdd.filter(lambda x: x < 2)
 d_proc8 = rdd.filter(lambda x: x <= 2)
 d_proc9 = rdd.filter(lambda x: x >= 2)
 d_proc10 = rdd.filter(lambda x: x != 2)
+
 print(d_proc1.collect())#  added 2 to every element in d
 print(d_proc2.collect())
 print(d_proc3.collect())
@@ -26,97 +28,118 @@ print(d_proc7.collect())
 print(d_proc8.collect())
 print(d_proc9.collect())
 print(d_proc10.collect())
+
 d = [1, 2, 3]
 print()
+
 print("========= RAW INT LIST========")
 print()
 print(d)
 print()
+
 print("========= RDD INT LIST========")
 print()
 rddint = sc.parallelize(d)
 print(rddint.collect())
 print()
+
 print("========= ADD INT LIST========")
 print()
 add = rddint.map(lambda x: x + 2)
 print(add.collect())
 print()
+
 print("========= Mul INT LIST========")
 print()
 mul = rddint.map(lambda x: x * 10)
 print(mul.collect())
 print()
+
 print("========= fil INT LIST========")
 print()
 fillist = rddint.filter(lambda x: x > 2)
 print(fillist.collect())
 print()
+
 print("===========RAW STRING LIST=========")
 print()
 lisstr = ["zeyobron", "zeyo", "analytics" ]
 print(lisstr)
 print()
+
 print("===========RDD STRING LIST=========")
 print()
 rddstr=sc.parallelize(lisstr)
 print(rddstr.collect())
 print()
+
 print("===========ADD STRING LIST=========")
 print()
 addlis = rddstr.map(lambda x: x + " pvt")
 print(addlis.collect())
 print()
+
 print("===========REPLACE STRING LIST=========")
 print()
 reprdd = rddstr.map(lambda x: x.replace("zeyo","tera"))
 print(reprdd.collect())
 print()
+
 print("===========fil LIST=========")
 print()
 fillis = rddstr.filter(lambda x: 'zeyo' in x)
 print(fillis.collect())
 print()
+
 print("===========RAW STRING LIST=========")
 print()
 lisstr = ["A~B", "C~D"]
 print(lisstr)
 print()
+
 print("===========RDD STRING LIST=========")
 print()
 rddstr = sc.parallelize(lisstr)
 print(rddstr.collect())
 print()
+
 print("===========FlatMap STRING LIST=========")
 print()
 flat = rddstr.flatMap(lambda x: x.split("~")) #  ['A', 'B', 'C', 'D']
 print(flat.collect())
 # Usecase Full Code
 print()
+
 print("===== RAW LIST======")
 rawlist = ["State->TN~City->Chennai", "State->Kerala~City->Trivandrum"]
 print(rawlist)
 print()
 print("===== RDD LIST======")
+
 rddlist = sc.parallelize(rawlist)
 print(rddlist.collect())
 print()
 print("===== flat RDD LIST======")
+
 flat= rddlist.flatMap(lambda x : x.split("~"))
 print(flat.collect())
 print()
 print("===== state rdd list======")
+
 state = flat.filter(lambda x : 'State' in x)
 print(state.collect())
 print()
 print("===== state replace======")
+
 staterep = state.map(lambda x : x.replace("State->",""))
 print(staterep.collect())
 print()
 print("===== City rdd list======")
+
 city = flat.filter(lambda x : 'City' in x )
 print(city.collect())
 print("===== City replace list======")
+
 cityrep = city.map(lambda x : x.replace("City->",""))
 print(cityrep.collect())
 print()
