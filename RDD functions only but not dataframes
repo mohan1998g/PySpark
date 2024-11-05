@@ -3,6 +3,7 @@ RDDs are the fundamental building blocks of PySpark, and they provide a lower-le
 Below is a list of PySpark functions that work specifically for RDDs but are not applicable to DataFrames:
 
 -----------------------------------------------------------------------------------------------
+
 1. map()
 
 RDD: Transforms each element of the RDD by applying a given function.
