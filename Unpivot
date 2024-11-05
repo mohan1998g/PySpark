@@ -1,6 +1,6 @@
 stack(n, col1, val1, col2, val2, .....) 
 1. It is used with selectExpr 
-2. It is used to transform mltiple columns into rows essentially performing pivot and unpivot operations.
+2. It is used to transform multiple columns into rows essentially performing pivot and unpivot operations.
 3. This is useful when you want to restructure data from wide to long format, where multiple columns are stacked into rows
 
 ----------------------------------------------------------------
