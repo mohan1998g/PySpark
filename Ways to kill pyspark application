@@ -6,7 +6,6 @@ If you're running the PySpark application locally or on a driver node (in cluste
 Find the PID:
 On Linux/Unix:
 
- 
 ps aux | grep pyspark
 This will give you the process ID of the running PySpark application.
 
@@ -17,6 +16,8 @@ On Windows: Use the Task Manager to find and kill the PySpark-related process.
 Kill the Process: Once you have the PID, kill the process using:
  
 kill -9 <PID>
+
+
 2. Kill the Spark Job via Resource Manager (YARN)
 If the PySpark job is running on a cluster managed by YARN (Hadoop), you can kill the application using the YARN Resource Manager.
 
@@ -30,12 +31,15 @@ Identify the application ID from the list, and kill the application:
 yarn application -kill <application_id>
 You can also navigate to the YARN Resource Manager UI and kill the application manually through the interface by finding the application and selecting the "Kill" option.
 
+
 3. Kill the Spark Job via Spark Web UI
 If you're running the PySpark job on a Spark cluster, you can use the Spark Web UI to kill the job.
 
 Navigate to the Spark UI (usually available at http://<driver-host>:4040 for local jobs, or the Spark Master/Resource Manager URL for cluster jobs).
 Under the "Jobs" tab, find the running job.
 Click on the "Kill" button next to the job to terminate it.
+
+
 4. Terminate EC2 Instances (if running on AWS EMR)
 If you're running the PySpark job on AWS EMR or EC2, and the job refuses to stop, you can forcefully terminate the EC2 instances that are running the job.
 
@@ -51,6 +55,8 @@ If the job is running on standalone EC2 instances, you can stop the EC2 instance
 
  
 aws ec2 stop-instances --instance-ids <instance-id>
+
+
 5. Use kill -9 on the Executor Nodes (for Spark on Kubernetes or Standalone Mode)
 If you're running a PySpark job on Kubernetes or in standalone Spark mode, you may need to kill the individual executor processes.
 
@@ -59,6 +65,7 @@ On Kubernetes: Use kubectl to delete the pods that are running the Spark executo
  
 kubectl delete pod <executor-pod-name>
 On Standalone Spark: Identify the executor processes and kill them using kill -9 on each worker node.
+
 
 6. Terminate Spark Session via REST API
 Spark provides a REST API to manage and control jobs and applications. You can use this API to programmatically kill jobs.
@@ -71,6 +78,8 @@ Then, kill the application using the following API call:
 
  
 curl -X DELETE http://<spark-master-host>:8080/api/v1/applications/<app-id>/kill
+
+
 7. Terminate via Cloud Management Console
 If your PySpark job is running on a cloud-managed service like AWS Glue, Databricks, or Google Cloud Dataproc, you can stop the job through their respective cloud management consoles.
 
@@ -84,6 +93,8 @@ If the PySpark job is running on a cluster that uses resource management systems
 For Mesos:
  
 mesos terminate <task-id>
+
+
 9. Check for System Resource Issues
 If the kill command is not working due to system issues (like the system running out of memory or disk), try rebooting the machine or instance to ensure the job is fully terminated.
 
