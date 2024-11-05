@@ -1,11 +1,10 @@
-
-# Step 2: Define the schema
+# Step : Define the schema
 schema = StructType([
         StructField("id", IntegerType(), True),
         StructField("subject", StringType(), True)
 ])
 
-# Step 3: Create the data
+# Step : Create the data
 data = [
         (1, "Spark"),
         (1, "Scala"),
@@ -15,10 +14,10 @@ data = [
         (3, "Scala")
 ]
 
-# Step 4: Create DataFrame
+# Step : Create DataFrame
 df = spark.createDataFrame(data, schema)
 
-# Step 5: Show the DataFrame
+# Step : Show the DataFrame
 df.show()
 
 df1 = df.groupby("id").agg(collect_set("subject").alias("list"))
