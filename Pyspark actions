@@ -1,0 +1,156 @@
+In PySpark, actions are operations that trigger the execution of transformations and return a result to the driver or write data to an external storage. 
+Actions do not create new DataFrames; they finalize computations and usually return values like numbers, lists, or strings.
+
+Here's a list of commonly used PySpark actions with examples:
+
+1. collect()
+Description: Returns all the elements in the DataFrame as a list to the driver.
+Use case: Use when the dataset is small enough to fit into memory.
+Example:
+data = df.collect()
+for row in data:
+    print(row)
+
+-----------------------------------------------------------------------------------------------
+
+2. count()
+Description: Counts the number of rows in the DataFrame.
+Use case: Useful for getting the total row count in a dataset.
+Example:
+row_count = df.count()
+print("Row count:", row_count)
+
+-----------------------------------------------------------------------------------------------
+
+3. first()
+Description: Returns the first row of the DataFrame.
+Use case: Quickly preview the first row of data.
+Example:
+first_row = df.first()
+print(first_row)
+
+-----------------------------------------------------------------------------------------------
+
+4. head(n)
+Description: Returns the first n rows as a list.
+Use case: Useful for sampling a few rows to preview data.
+Example:
+top_rows = df.head(5)
+for row in top_rows:
+    print(row)
+
+-----------------------------------------------------------------------------------------------
+
+5. take(n)
+Description: Similar to head(n), returns the first n rows but is slightly faster.
+Use case: Can be used instead of collect() when you only need a few rows.
+Example:
+sample_rows = df.take(5)
+for row in sample_rows:
+    print(row)
+
+-----------------------------------------------------------------------------------------------
+
+6. show(n)
+Description: Displays the first n rows in a formatted table.
+Use case: Quickly view data in a readable table format.
+Example:
+df.show(5)
+
+-----------------------------------------------------------------------------------------------
+
+7. reduce(func)
+Description: Combines elements of an RDD (Resilient Distributed Dataset) using a function, often used for summing or other aggregations.
+Use case: Useful for aggregation operations.
+Example:
+from operator import add
+total = df.rdd.map(lambda row: row['value']).reduce(add)
+print("Total sum:", total)
+
+-----------------------------------------------------------------------------------------------
+
+8. foreach(func)
+Description: Applies a function to each row in the DataFrame.
+Use case: Useful for applying functions with side effects, such as saving or logging data.
+Example:
+def print_row(row):
+    print(row)
+df.foreach(print_row)
+
+-----------------------------------------------------------------------------------------------
+
+9. foreachPartition(func)
+Description: Similar to foreach but works on each partition of the DataFrame.
+Use case: Useful for actions that can operate on partitions for efficiency, like batch writes.
+Example:
+def save_partition(partition):
+    for row in partition:
+        print(row)
+df.foreachPartition(save_partition)
+
+-----------------------------------------------------------------------------------------------
+
+10. countByValue()
+Description: Returns a map of unique values and their counts in an RDD.
+Use case: Use for frequency counts of elements.
+Example:
+rdd = df.select("column").rdd.flatMap(lambda x: x)
+value_counts = rdd.countByValue()
+print(value_counts)
+
+-----------------------------------------------------------------------------------------------
+
+11. saveAsTextFile(path)
+Description: Saves the data to a text file at the specified path.
+Use case: Exporting data to a plain-text file format.
+Example:
+df.rdd.saveAsTextFile("/path/to/output")
+
+-----------------------------------------------------------------------------------------------
+
+12. saveAsSequenceFile(path)
+Description: Saves the data to a Hadoop SequenceFile (RDD only).
+Use case: Suitable for Hadoop-based storage systems.
+Example:
+df.rdd.saveAsSequenceFile("/path/to/output")
+
+-----------------------------------------------------------------------------------------------
+
+13. saveAsObjectFile(path)
+Description: Stores the RDD in serialized Java objects.
+Use case: Useful when working with Java-based Spark APIs.
+Example:
+df.rdd.saveAsObjectFile("/path/to/output")
+
+-----------------------------------------------------------------------------------------------
+
+14. toLocalIterator()
+Description: Returns an iterator to iterate through the rows of the DataFrame in the driver.
+Use case: Allows processing of large data one row at a time to avoid memory issues.
+Example:
+for row in df.toLocalIterator():
+    print(row)
+
+-----------------------------------------------------------------------------------------------
+
+15. write().format().save(path)
+Description: Saves the DataFrame to an external storage in a specific format (e.g., Parquet, JSON).
+Use case: Commonly used to save transformed data back to storage systems.
+Example:
+df.write.format("parquet").save("/path/to/output")
+
+-----------------------------------------------------------------------------------------------
+
+16. describe()
+Description: Calculates basic statistics for numeric columns.
+Use case: Useful for data profiling.
+Example:
+df.describe().show()
+
+-----------------------------------------------------------------------------------------------
+
+Summary of Key Differences Between Actions and Transformations
+
+Transformations are lazy, meaning they are not computed until an action is called. Examples include select, filter, map.
+
+Actions trigger the execution of the entire computation plan built by transformations.
