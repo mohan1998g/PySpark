@@ -1,0 +1,31 @@
+In PySpark, both distinct and dropDuplicates are used to remove duplicate rows from a DataFrame, but they are designed for slightly different use cases. Here’s a comparison to help decide which is better suited to your needs:
+
+1. Functionality
+distinct(): Removes duplicate rows across the entire DataFrame, considering all columns.
+dropDuplicates(): Allows you to remove duplicates based on specific columns, not necessarily all columns in the DataFrame.
+
+  
+2. Use Cases
+Use distinct(): When you want to remove duplicates based on the entire row. It’s ideal if you want unique rows across all columns.
+Use dropDuplicates(): When you want to remove duplicates based on a subset of columns. For example, if you have multiple columns and only want unique values based on one or two specific columns while ignoring others, dropDuplicates is more flexible.
+
+# Example of using dropDuplicates to remove duplicates based on specific columns
+df.dropDuplicates(["column1", "column2"])
+
+  
+3. Performance
+Both distinct and dropDuplicates are wide transformations because they require shuffling to group rows based on specified columns to detect duplicates.
+Performance Similarity: Since both are wide transformations, they generally have similar performance. However, dropDuplicates can be slightly more efficient when used on a subset of columns, as it has fewer columns to process during shuffling.
+
+  
+4. Readability and Intent
+distinct() makes the intent clear when you want a fully unique set of rows across all columns.
+dropDuplicates() makes it clear when you only want to consider duplicates within certain columns, allowing more control and flexibility.
+
+Which is Better?
+        Use distinct() if you want uniqueness across the entire DataFrame, as it’s concise and straightforward.
+
+        Use dropDuplicates() if you need to deduplicate based on specific columns, which offers more flexibility and can reduce processing overhead when only a subset of columns is considered.
+
+  
+In summary, choose dropDuplicates() if you need flexibility or are concerned with performance on specific columns; otherwise, distinct() is a good choice for full row uniqueness.
