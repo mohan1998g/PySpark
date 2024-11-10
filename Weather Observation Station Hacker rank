@@ -240,7 +240,36 @@ df1.show()
 finaldf = df.join(df1, "LAT_N", "inner").select(round("LONG_W", 4))
 finaldf.show()
 
-spark.sql("select round(LONG_W, 4) from station where LAT_N IN (select max(LAT_N) from station)").show()
+spark.sql("select round(LONG_W, 4) from station where LAT_N IN (select max(LAT_N) from station where LAT_N < 137.2345)").show()
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 
+Query the smallest Northern Latitude (LAT_N) from STATION that is greater than 38.7780 Round your answer to  4 decimal places.
+
+df = spark.read.option("header", "true").option("sep", "\t").csv("STATION_data.csv")
+df.show()
+
+df.createOrReplaceTempView("station")
+
+df1 = df.filter("LAT_N < 38.7780").agg(min("LAT_N").alias("LAT_N"))
+df1.show()
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Consider P1(a,b) and P2(c, d)  to be two points on a 2D plane.
+
+a happens to equal the minimum value in Northern Latitude (LAT_N in STATION).
+b happens to equal the minimum value in Western Longitude (LONG_W in STATION).
+c happens to equal the maximum value in Northern Latitude (LAT_N in STATION).
+d happens to equal the maximum value in Western Longitude (LONG_W in STATION).
+Query the Manhattan Distance between points P1  and P2 and round it to a scale of 4 decimal places.
+
+
+df = spark.read.option("header", "true").option("sep", "\t").csv("STATION_data.csv")
+df.show()
+
+df.createOrReplaceTempView("station")
+
+spark.sql("select round((max(lat_n)-min(lat_n)) + (max(long_w)-min(long_w)), 4) from station").show()
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
