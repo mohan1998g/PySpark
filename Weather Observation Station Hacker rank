@@ -227,4 +227,20 @@ spark.sql("select round(max(LAT_N), 4) from station where LAT_N < 137.2345").sho
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 
+Query the Western Longitude (LONG_W) for the largest Northern Latitude (LAT_N) in STATION that is less than . Round your answer to  decimal places.(15)
+
+df = spark.read.option("header", "true").option("sep", "\t").csv("STATION_data.csv")
+df.show()
+
+df.createOrReplaceTempView("station")
+
+df1 = df.filter("LAT_N < 137.2345").agg(max("LAT_N").alias("LAT_N"))
+df1.show()
+
+finaldf = df.join(df1, "LAT_N", "inner").select(round("LONG_W", 4))
+finaldf.show()
+
+spark.sql("select round(LONG_W, 4) from station where LAT_N IN (select max(LAT_N) from station)").show()
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
 
