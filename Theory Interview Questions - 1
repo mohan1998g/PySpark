@@ -77,3 +77,72 @@ Explanation:
 Loading Data: pd.read_csv("sales_data.csv") reads the CSV into a DataFrame.
 Calculating Total Sales: df['Total Sales'] = df['Quantity'] * df['Price'] computes the total sales for each row, and groupby('Product').sum() aggregates total sales by product.
 Saving Output: to_csv("total_sales.csv", index=False) writes the results to a new CSV file without the index.
+
+
+Wipro interview 
+
+* Your one of source is S3 , what happen if one day you found that there is no data in the s3 , how will you overcome this ? Will you get any error? Do we have any prior plan for this ?
+
+I will implement the code in such a way first we validate the whether I have today's Folder or not
+
+
+import boto3
+import botocore
+
+s3 = boto3.resource('s3')
+
+try:
+    s3.Object('zeyodev', 'src/2024-11-10').load()
+except botocore.exceptions.ClientError as e:
+    if e.response['Error']['Code'] == "404":
+        # The object does not exist.
+        {PUT LOGIC IF THAT DOES NOT EXIST}
+    else:
+        # Something else has gone wrong.
+        raise
+else:
+    # The object does exist.
+
+
+
+
+* From where you were getting the wep api data?
+
+
+For our customers we have developed a Customer portal(mobile app,webapp) when ever they make an entry -- JAVA API produce the data which we would consume
+
+We have an upstream java team who take care of pushing the customer api data
+
+
+
+* If you have Table in Hive and everyday you fetch data from hive using spark,  but today you do not want that data from hive table having employee ID > 1000.How Will you do that?
+
+
+We can maintain a config file in Production. We have to implement in such a way that if i have  config file then hive would first read that config file with content inside it (1000) and apply the filter
+
+If the config does not exist at all -- its a normal process
+
+
+* From hive suddenly a column get updated ( new column added). How will you fix this ?
+
+
+If its avro.. its easy . Maintaining AVSC file(ADD COLUMN)
+
+If its not avro --- if its external table -- Drop and re create
+
+If its not avro and not external table --- IMPOSSIBLE
+
+
+* Integration of hive with Spark write the code.
+
+
+df.write.saveAsTable("db.table")
+
+
+* saveAsTable vs save
+
+saveAsTable -- to write to hive table
+save -- to write to file system
+
+
+* After that all about deployment .
