@@ -1,0 +1,47 @@
+data = [
+        (1, 'Alice', 85),
+        (2, 'Bob', 90),
+        (3, 'Charlie', 78),
+        (4, 'David', 92),
+        (5, 'Eve', 88),
+        (6, 'Frank', 75),
+        (7, 'Grace', 95),
+        (8, 'Heidi', 80),
+        (9, 'Ivan', 84),
+        (10, 'Judy', 91),
+        (11, 'Kevin', 76),
+        (12, 'Laura', 89),
+        (13, 'Mallory', 79),
+        (14, 'Niaj', 93),
+        (15, 'Olivia', 82),
+        (16, 'Peggy', 87),
+        (17, 'Quentin', 77),
+        (18, 'Rupert', 94),
+        (19, 'Sybil', 83),
+        (20, 'Trent', 85),
+        (21, 'Uma', 90),
+        (22, 'Victor', 88),
+        (23, 'Walter', 81),
+        (24, 'Xander', 89),
+        (25, 'Yvonne', 78),
+        (26, 'Zack', 92),
+        (27, 'Amber', 84),
+        (28, 'Brian', 86),
+        (29, 'Catherine', 77),
+        (30, 'Diana', 90)
+]
+
+columns = ['id', 'name', 'marks']
+df = spark.createDataFrame(data, columns)
+df.show()
+
+# Create a new column with the last two letters of the name 
+df = df.withColumn('last_two', substring(col('name'), -2, 2)) 
+
+# Sort the DataFrame by the new column 
+df_sorted = df.orderBy('last_two') 
+
+# Drop the temporary column 
+df_sorted = df_sorted.drop('last_two')
+
+df_sorted.show()
