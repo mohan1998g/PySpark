@@ -14,6 +14,57 @@ spark.sql("select city, state from station").show()
 df.select("city", "state").show()
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Query the following two values from the STATION table:(2)
+
+The sum of all values in LAT_N rounded to a scale of  2 decimal places.
+The sum of all values in LONG_W rounded to a scale of  2 decimal places.
+
+df = spark.read.option("header", "true").option("sep", "\t").csv("STATION_data.csv")
+df.show()
+
+df.createOrReplaceTempView("station")
+
+df.agg(sum("LAT_N").alias("totalLat"), sum("LONG_W").alias("totalLong")).select(round('totalLat', 2), round('totalLong', 2)).show()
+
+spark.sql("select round(sum(LAT_N),2) , round(sum(LONG_W), 2) from station").show()
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Query a list of CITY names from STATION for cities that have an even ID number. Print the results in any order, but exclude duplicates from the answer.(3)
+
+df = spark.read.option("header", "true").option("sep", "\t").csv("STATION_data.csv")
+df.show()
+
+df.createOrReplaceTempView("station")
+
+df.filter("id % 2 ==0").select("city").dropDuplicates().show()
+
+spark.sql("select distinct city from station where id%2 ==0").show()
+
+spark.sql("select distinct city from station where id%2 =0").show()
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Find the difference between the total number of CITY entries in the table and the number of distinct CITY entries in the table.(4)
+
+df = spark.read.option("header", "true").option("sep", "\t").csv("STATION_data.csv")
+# df.show()
+
+df.createOrReplaceTempView("station")
+
+total_city_count = df.count()
+distinct_city_count = df.select('CITY').distinct().count()
+
+# Calculate the difference
+difference = total_city_count - distinct_city_count
+
+print(difference)
+
+spark.sql("SELECT (COUNT(CITY) - COUNT(DISTINCT CITY)) AS difference FROM station;").show()
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
 Query the two cities in STATION with the shortest and longest CITY names, as well as their respective lengths (i.e.: number of characters in the name). 
 If there is more than one smallest or largest city, choose the one that comes first when ordered alphabetically.(5)
 
@@ -43,18 +94,29 @@ UNION
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 
-Query a list of CITY names from STATION for cities that have an even ID number. Print the results in any order, but exclude duplicates from the answer.(3)
+Query the list of CITY names starting with vowels (i.e., a, e, i, o, or u) from STATION. Your result cannot contain duplicates.(6)
 
 df = spark.read.option("header", "true").option("sep", "\t").csv("STATION_data.csv")
 df.show()
 
 df.createOrReplaceTempView("station")
 
-df.filter("id % 2 ==0").select("city").dropDuplicates().show()
+df.filter(col('city').rlike(r'^[AEIOUaeiou]')).select("city").distinct().show()
 
-spark.sql("select distinct city from station where id%2 ==0").show()
+spark.sql("select distinct city from station where city rlike '^[AEIOUaeiou]'").show()
 
-spark.sql("select distinct city from station where id%2 =0").show()
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Query the list of CITY names ending with vowels (a, e, i, o, u) from STATION. Your result cannot contain duplicates.(7)
+
+df = spark.read.option("header", "true").option("sep", "\t").csv("STATION_data.csv")
+df.show()
+
+df.createOrReplaceTempView("station")
+
+df.filter(col('city').rlike(r'[AEIOUaeiou]$')).select("city").distinct().show()
+
+spark.sql("select city from station where city rlike '[AEIOUaeiou]$'").show()
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -109,3 +171,60 @@ df.filter(~col('city').rlike(r'^[AEIOUaeiou].*[AEIOUaeiou]$')).select("city").di
 spark.sql("select distinct city from station where city not rlike '^[AEIOUaeiou].*[AEIOUaeiou]$'").show()
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Query the list of CITY names from STATION that do not start with vowels and do not end with vowels. Your result cannot contain duplicates.(12)
+
+df = spark.read.option("header", "true").option("sep", "\t").csv("STATION_data.csv")
+# df.show()
+
+df.createOrReplaceTempView("station")
+
+df.filter(
+    ~col('CITY').rlike('^[AEIOUaeiou]') &  # CITY does not start with a vowel
+    ~col('CITY').rlike('[AEIOUaeiou]$')    # CITY does not end with a vowel
+).select('CITY').distinct().show()
+
+
+
+spark.sql("""SELECT DISTINCT CITY
+FROM station
+WHERE CITY NOT LIKE 'A%' 
+  AND CITY NOT LIKE 'E%' 
+  AND CITY NOT LIKE 'I%' 
+  AND CITY NOT LIKE 'O%' 
+  AND CITY NOT LIKE 'U%'
+  AND CITY NOT LIKE '%A'
+  AND CITY NOT LIKE '%E'
+  AND CITY NOT LIKE '%I'
+  AND CITY NOT LIKE '%O'
+  AND CITY NOT LIKE '%U'""").show()
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Query the sum of Northern Latitudes (LAT_N) from STATION having values greater than  and less than . Truncate your answer to  decimal places.(13)
+
+df = spark.read.option("header", "true").option("sep", "\t").csv("STATION_data.csv")
+# df.show()
+
+df.createOrReplaceTempView("station")
+
+df.filter("LAT_N > 38.7880 and LAT_N < 137.2345").agg(round(sum("LAT_N"), 4)).show()
+
+spark.sql("select round(sum(LAT_N), 4) from station where LAT_N > 38.7880 and LAT_N < 137.2345").show()
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Query the greatest value of the Northern Latitudes (LAT_N) from STATION that is less than . Truncate your answer to  decimal places.(14)
+
+df = spark.read.option("header", "true").option("sep", "\t").csv("STATION_data.csv")
+# df.show()
+
+df.createOrReplaceTempView("station")
+
+df.filter("LAT_N < 137.2345").agg(round(max("LAT_N"), 4)).show()
+
+spark.sql("select round(max(LAT_N), 4) from station where LAT_N < 137.2345").show()
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+
