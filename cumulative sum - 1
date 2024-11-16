@@ -1,0 +1,41 @@
+# Create input data
+input_data = [(2020, "2000"), (2021, "3000"), (2023, "10000"), (2024, "2000")]
+df = spark.createDataFrame(input_data, ["year", "amount"])
+
+# Order the data by year
+df = df.orderBy("year")
+df.show()
+
+# Clean the 'amount' column by removing non-numeric characters and casting to int
+df_cleaned = df.withColumn("amount", regexp_replace("amount", r"\\$", "").cast("int"))
+df_cleaned.show()
+
+# Get the minimum and maximum years
+min_year = df_cleaned.selectExpr("min(year)").first()[0]
+max_year = df_cleaned.selectExpr("max(year)").first()[0]
+
+# Generate a range of years and perform a left join with the cleaned data
+y_df = spark.range(min_year, max_year + 1).withColumnRenamed("id", "year")
+full_df = y_df.join(df_cleaned, "year", "left").fillna(0).orderBy("year")
+
+# Define a window specification
+window_spec = Window.orderBy("year").rowsBetween(Window.unboundedPreceding, Window.currentRow)
+
+# Calculate the cumulative sum
+final_df = full_df.withColumn("cumulative_sum", sum("amount").over(window_spec))
+final_df.show()
+
+# Format the cumulative sum with a dollar sign and rename the column
+df_final = final_df.withColumn(
+    "cumulative_sum",
+    concat(col("cumulative_sum").cast("string"), lit("$"))
+).drop("amount").withColumnRenamed("cumulative_sum", "amount")
+
+# Display the final DataFrame
+df_final.show()
+Explanation:
+Input Data: The data is a list of tuples with year and amount values.
+Data Cleaning: The regexp_replace function is used to clean the amount column, removing the dollar sign and casting to integer.
+Year Range: A range of years is created, and missing years are filled with 0 for the amount.
+Cumulative Sum: A window function calculates the cumulative sum of amounts by year.
+Formatting: The cumulative sum is formatted to include a dollar sign, and the column is renamed to amount.
