@@ -64,5 +64,114 @@ result.show()
 
 --------------------------------------------------------------
 
+How to get the minimum, 25th percentile, median, 75th, and max of a numeric column
+
+data = [("A", 10), ("B", 20), ("C", 30), ("D", 40), ("E", 50), ("F", 15), ("G", 28), ("H", 54), ("I", 41), ("J", 86)]
+df = spark.createDataFrame(data, ["Name", "Age"])
+
+df.show()
+
+df.select(max("Age"), min("Age"), median("Age")).show()
+
+quantiles = df.approxQuantile("Age", [0.25, 0.75], 0.01)
+
+print("25th percentile: ", quantiles[0])
+
+print("75th percentile: ", quantiles[1])
+
+|Name|Age|
++----+---+
+|   A| 10|
+|   B| 20|
+|   C| 30|
+|   D| 40|
+|   E| 50|
+|   F| 15|
+|   G| 28|
+|   H| 54|
+|   I| 41|
+|   J| 86|
++----+---+
+
++--------+--------+-----------+
+|max(Age)|min(Age)|median(Age)|
++--------+--------+-----------+
+|      86|      10|       35.0|
++--------+--------+-----------+
+
+25th percentile:  20.0
+75th percentile:  50.0
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+How to get frequency counts of unique items of a column?
+
+data = [
+        Row(name='John', job='Engineer'),
+        Row(name='John', job='Engineer'),
+        Row(name='Mary', job='Scientist'),
+        Row(name='Bob', job='Engineer'),
+        Row(name='Bob', job='Engineer'),
+        Row(name='Bob', job='Scientist'),
+        Row(name='Sam', job='Doctor'),
+]
+
+# create DataFrame
+df = spark.createDataFrame(data)
+
+# show DataFrame
+df.show()
+
+# To count by entire row
+df.groupby("name", "job").agg(count("job")).show()
+
+# To count the no of jobs
+df.groupby("job").agg(count("job")).show()
+
+or
+
+df.groupby("job").count().show()
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+How to keep only top 2 most frequent values as it is and replace everything else as ‘Other’?
+Difficulty Level: L3
+
+Input
+
+from pyspark.sql import Row
+
+# Sample data
+data = [
+Row(name='John', job='Engineer'),
+Row(name='John', job='Engineer'),
+Row(name='Mary', job='Scientist'),
+Row(name='Bob', job='Engineer'),
+Row(name='Bob', job='Engineer'),
+Row(name='Bob', job='Scientist'),
+Row(name='Sam', job='Doctor'),
+]
+
+# create DataFrame
+df = spark.createDataFrame(data)
+
+# show DataFrame
+df.show()
+
+# Get the top 2 most frequent jobs
+top_2_jobs = df.groupBy('job').count().orderBy('count', ascending=False).limit(2).select('job').rdd.flatMap(lambda x: x).collect()
+
+# Replace all but the top 2 most frequent jobs with 'Other'
+df = df.withColumn('job', when(col('job').isin(top_2_jobs), col('job')).otherwise('Other'))
+
+# show DataFrame
+df.show()
+
+or
+
+df.withColumn("job", expr("case when job = 'Doctor' then 'Doctor' when job = 'Engineer' then 'Engineer' else 'Other' end")).show()
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 
