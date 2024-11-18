@@ -173,5 +173,101 @@ df.withColumn("job", expr("case when job = 'Doctor' then 'Doctor' when job = 'En
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 
+How to Drop rows with NA values specific to a particular column?
+Difficulty Level: L1
 
+input
+
+# Assuming df is your DataFrame
+df = spark.createDataFrame([
+("A", 1, None),
+("B", None, "123" ),
+("B", 3, "456"),
+("D", None, None),
+], ["Name", "Value", "id"])
+
+df.show()
++----+-----+----+
+|Name|Value| id|
++----+-----+----+
+| A| 1|null|
+| B| null| 123|
+| B| 3| 456|
+| D| null|null|
++----+-----+----+
+
+df_2 = df.dropna(subset=['Value'])
+
+df_2.show()How to create contigency table?
+Difficulty Level: L1
+
+Input
+
+# Example DataFrame
+data = [("A", "X"), ("A", "Y"), ("A", "X"), ("B", "Y"), ("B", "X"), ("C", "X"), ("C", "X"), ("C", "Y")]
+df = spark.createDataFrame(data, ["category1", "category2"])
+
+df.show()
++---------+---------+
+|category1|category2|
++---------+---------+
+| A| X|
+| A| Y|
+| A| X|
+| B| Y|
+| B| X|
+| C| X|
+| C| X|
+| C| Y|
++---------+---------+
+Show Solution
+# Frequency
+df.cube("category1").count().show()
+
+# Contingency table
+df.crosstab('category1', 'category2').show()
+
++---------+-----+
+|category1|count|
++---------+-----+
+| null| 8|
+| A| 3|
+| B| 2|
+| C| 3|
++---------+-----+
+
++-------------------+---+---+
+|category1_category2| X| Y|
++-------------------+---+---+
+| A| 2| 1|
+| B| 1| 1|
+| C| 2| 1|
++-------------------+---+---+
+
+df1 = df.groupby("category1", "category2").count()
+df1.show()
+
+pivot = df1.groupby("category1").pivot("category2").agg(first("count"))
+pivot.show()
+
++---------+---------+-----+
+|category1|category2|count|
++---------+---------+-----+
+|        A|        X|    2|
+|        B|        Y|    1|
+|        C|        X|    2|
+|        C|        Y|    1|
+|        B|        X|    1|
+|        A|        Y|    1|
++---------+---------+-----+
+
++---------+---+---+
+|category1|  X|  Y|
++---------+---+---+
+|        B|  1|  1|
+|        C|  2|  1|
+|        A|  2|  1|
++---------+---+---+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
 
