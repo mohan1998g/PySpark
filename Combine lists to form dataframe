@@ -1,0 +1,34 @@
+# Data
+ids = [1, 2, 3]
+names = ['Alice', 'Bob', 'Charlie']
+
+# Combine lists into rows
+data = list(zip(ids, names))
+
+# Create DataFrame
+df = spark.createDataFrame(data, schema=["ID", "Name"])
+df.show()
+
++---+-------+
+| ID|   Name|
++---+-------+
+|  1|  Alice|
+|  2|    Bob|
+|  3|Charlie|
++---+-------+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Data
+ids = [1, 2, 3]
+names = ['Alice', 'Bob', 'Charlie']
+
+rdd = spark.sparkContext.parallelize(list(zip(ids, names)))
+df = rdd.toDF(["Column1", "Column2"])
+
+# Show the DataFrame
+df.show()
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
