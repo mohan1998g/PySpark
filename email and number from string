@@ -25,3 +25,21 @@ df1.show()
 df2 = df1.replace("", 'None')
 df2.show()
 
+
+or
+
+# Create a list
+data = ['buying books at amazom.com', 'rameses@egypt.com', 'matt@t.co', 'narendra@modi.com']
+
+# Convert the list to DataFrame
+df = spark.createDataFrame(data, "string")
+df.show(truncate =False)
+
+# Define a regular expression pattern for emails
+pattern = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+
+# Apply filter operation to keep only valid emails
+df_filtered = df.filter(col("value").rlike(pattern))
+
+# Show the DataFrame
+df_filtered.show()
