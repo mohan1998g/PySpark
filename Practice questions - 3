@@ -271,3 +271,103 @@ pivot.show()
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 
+How to get the names of DataFrame objects that have been created in an environment?
+
+dataframe_names = [name for name, obj in globals().items() if isinstance(obj, pyspark.sql.DataFrame)]
+
+for name in dataframe_names:
+print(name)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+How to convert the categorical string data into numerical data or index?
+
+from pyspark.ml.feature import StringIndexer
+
+# Create a sample DataFrame
+data = [('cat',), ('dog',), ('mouse',), ('fish',), ('dog',), ('cat',), ('mouse',)]
+df = spark.createDataFrame(data, ["animal"])
+
+df.show()
+
+# Initialize a StringIndexer
+indexer = StringIndexer(inputCol='animal', outputCol='animalIndex')
+
+# Fit the indexer to the DataFrame and transform the data
+indexed = indexer.fit(df).transform(df)
+indexed.show()
+
++------+-----------+
+|animal|animalIndex|
++------+-----------+
+| cat| 0.0|
+| dog| 1.0|
+| mouse| 2.0|
+| fish| 3.0|
+| dog| 1.0|
+| cat| 0.0|
+| mouse| 2.0|
++------+-----------+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+How to restrict the PySpark to use the number of cores in the system?
+
+from pyspark import SparkConf, SparkContext
+
+conf = SparkConf()
+conf.set("spark.executor.cores", "2") # set the number of cores you want here
+sc = SparkContext(conf=conf)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+How to View PySpark Cluster Details?
+
+print(spark.sparkContext.uiWebUrl)
+
+http://DESKTOP-UL3QT3E.mshome.net:4040
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+58. How to View PySpark Cluster Configuration Details?
+
+# Print all configurations
+for k,v in spark.sparkContext.getConf().getAll():
+print(f"{k} : {v}")
+
+spark.app.name : PySpark 101 Exercises
+spark.driver.extraJavaOptions : -XX:+IgnoreUnrecognizedVMOptions --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/sun.nio.cs=ALL-UNNAMED --add-opens=java.base/sun.security.action=ALL-UNNAMED --add-opens=java.base/sun.util.calendar=ALL-UNNAMED --add-opens=java.security.jgss/sun.security.krb5=ALL-UNNAMED
+spark.app.startTime : 1684510291553
+spark.app.id : local-1684510293468
+spark.driver.host : DESKTOP-UL3QT3E.mshome.net
+spark.executor.id : driver
+spark.sql.warehouse.dir : file:/C:/Users/RajeshVaddi/Documents/MLPlus/6_PySpark%20101%20Exercises/spark-warehouse
+spark.driver.port : 50321
+spark.app.submitTime : 1684510291319
+spark.rdd.compress : True
+spark.executor.extraJavaOptions : -XX:+IgnoreUnrecognizedVMOptions --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/sun.nio.cs=ALL-UNNAMED --add-opens=java.base/sun.security.action=ALL-UNNAMED --add-opens=java.base/sun.util.calendar=ALL-UNNAMED --add-opens=java.security.jgss/sun.security.krb5=ALL-UNNAMED
+spark.serializer.objectStreamReset : 100
+spark.master : local[*]
+spark.submit.pyFiles :
+spark.submit.deployMode : client
+spark.ui.showConsoleProgress : true
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+How to find installed location of Apache Spark and PySpark?
+
+import findspark
+findspark.init()
+
+print(findspark.find())
+
+import os
+import pyspark
+
+print(os.path.dirname(pyspark.__file__))
+
+C:\Users\subhash_narkedamilli\Projects\sudheer\venv\lib\site-packages\pyspark
+C:\Users\subhash_narkedamilli\Projects\sudheer\venv\lib\site-packages\pyspark
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
