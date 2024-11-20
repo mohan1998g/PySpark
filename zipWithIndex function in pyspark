@@ -103,43 +103,6 @@ Output:
 In this case, the join() function is used to join two RDDs based on their index, effectively merging the data in the order of appearance.
 
 
-Example 2:
-
-2. Applying zipWithIndex() to a Spark DataFrame:
-Since zipWithIndex() is available only for RDDs, you must first convert a DataFrame to an RDD, apply zipWithIndex(), and then convert it back to a DataFrame.
-
-
-from pyspark.sql import Row
-
-# Create sample DataFrame
-data = [("John", 25), ("Alice", 30), ("Bob", 28)]
-columns = ["Name", "Age"]
-df = spark.createDataFrame(data, columns)
-
-# Convert DataFrame to RDD and zip with index
-rdd_with_index = df.rdd.zipWithIndex()
-
-# Convert back to DataFrame
-df_with_index = rdd_with_index.map(lambda row: Row(index=row[1], Name=row[0]["Name"], Age=row[0]["Age"])).toDF()
-
-# Show DataFrame with the new index column
-df_with_index.show()
-Output:
-diff
-Copy code
-+-----+-----+---+
-|index| Name|Age|
-+-----+-----+---+
-|    0| John| 25|
-|    1|Alice| 30|
-|    2|  Bob| 28|
-+-----+-----+---+
-In this example:
-
-The DataFrame is converted to an RDD using .rdd.
-zipWithIndex() is applied, adding a unique index to each row.
-We map the RDD back to a Row object, converting it to a new DataFrame with an additional index column.
-
 
 from pyspark.sql import Row
 
