@@ -1,8 +1,10 @@
+For the data, schema is in nth row, how to make it the table schema
+
 df = spark.read.csv("df.csv")
 
 df.show()
 
-schema = df.filter("_c0 = 'id'").first()
+schema = df.filter("_c0 = 'id'").first()  # It will bring the schema in any row to schema variable
 
 print(schema)
 
