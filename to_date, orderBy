@@ -22,3 +22,13 @@ df = df.withColumn("hire_date", to_date(df["hire_date"], "dd-MMM-yy")).orderBy("
 
 # Show the DataFrame
 df.show()
+
+
+Below syntaxes work as well
+
+# Convert 'hire_date' from StringType to DateType
+df = df.withColumn("hire_date", to_date("hire_date", "dd-MMM-yy")).orderBy("hire_date", "dept_id")
+
+
+# Convert 'hire_date' from StringType to DateType
+df = df.withColumn("hire_date", to_date(col("hire_date"), "dd-MMM-yy")).orderBy("hire_date", "dept_id")
